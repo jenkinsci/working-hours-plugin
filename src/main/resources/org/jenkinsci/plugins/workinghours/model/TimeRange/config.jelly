@@ -1,0 +1,33 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:entry>
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <f:select field="dayOfWeek"  />
+                    </td>
+                    <td>
+                        <f:textbox field="startTime" />
+                    </td>
+                    <td>
+                        <f:textbox field="endTime" />
+                    </td>
+                    <td>
+                        <f:repeatableDeleteButton />
+                    </td>
+                </tr>
+                <!--
+                This provides an area to display validation errors. The Jenkins JS framework
+                looks for a tr element with this specific class to display errors, and
+                the config page won't load if it doesn't find it. Normally it is provided
+                by an <f:entry> tag, but <f:entry> also provides a bunch of styling information
+                -->
+                <tr class="validation-error-area">
+                    <td/>
+                    <td colspan="2" />
+                </tr>
+            </tbody>
+        </table>
+    </f:entry>
+</j:jelly>

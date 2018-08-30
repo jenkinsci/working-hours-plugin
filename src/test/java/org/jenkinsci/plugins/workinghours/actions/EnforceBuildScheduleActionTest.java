@@ -1,0 +1,123 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2018 GoDaddy Operating Company, LLC.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package org.jenkinsci.plugins.workinghours.actions;
+
+import hudson.model.Queue;
+import hudson.model.Queue.WaitingItem;
+import hudson.model.Run;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashSet;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mock;
+
+/**
+ *
+ * @author jxpearce
+ */
+public class EnforceBuildScheduleActionTest {
+    
+    private static long MOCK_QUEUE_ID = 2112;
+    
+    public EnforceBuildScheduleActionTest() {
+    }
+    
+    @BeforeClass
+    public static void setUpClass() {
+    }
+    
+    @AfterClass
+    public static void tearDownClass() {
+    }
+    
+    @Before
+    public void setUp() {
+    }
+    
+    @After
+    public void tearDown() {
+    }
+
+    /**
+     * Verifies isReleased can be called in the initial state, with no jobs released
+     */
+    @Test
+    public void testIsReleasedInitial() {
+        Queue.Item item = mock(Queue.Item.class);
+        EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
+        assertEquals(false, instance.isReleased(item));
+    }
+    
+    /**
+     * Verifies isReleased returns false after the initial state, when the hash
+     * store has been created, but the build isn't in the released list
+     */
+    @Test
+    public void testIsReleasedNotInList() {
+        Queue.Item item = mock(Queue.Item.class);
+        EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
+        instance.releasedJobs = new HashSet<Long>();
+        assertEquals(false, instance.isReleased(item));
+    }
+
+    /**
+     * Verifies isReleased returns true when the item passed in has been released
+     */
+    @Test
+    public void testIsReleasedReleasedItem() {
+        Queue.Item item = mock(Queue.Item.class);
+        when(item.getId()).thenReturn(MOCK_QUEUE_ID);
+
+        EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
+        instance.releaseJob(MOCK_QUEUE_ID);
+        
+        assertEquals(true, instance.isReleased(item));
+    }
+
+    /**
+     * Verifies isReleased returns true when the item passed in us a placeholder task
+     */
+    @Test
+    public void testIsReleasedPlaceholderTask() {
+        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
+        WaitingItem item = new WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+        
+        WorkflowRun mockRun = mock(WorkflowRun.class);
+        when(task.run()).thenReturn((Run)mockRun);
+        when(mockRun.getQueueId()).thenReturn(MOCK_QUEUE_ID);
+
+        EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
+        instance.releaseJob(MOCK_QUEUE_ID);
+        
+        assertEquals(true, instance.isReleased(item));
+    }
+}

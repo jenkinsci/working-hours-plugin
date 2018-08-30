@@ -1,0 +1,29 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:entry>
+        <table>
+            <tbody>
+                <tr>
+                    <th style="text-align:left">Job name</th>
+                </tr>
+                <tr>
+                    <td width="66%">
+
+<!--  <j:set var="name" value="${attrs.name ?: '_.'+attrs.field}"/>-->
+<!--  <j:set var="default" value="${attrs.default ?: ''}"/>
+  <j:set var="value" value="${attrs.value ?: instance[name] ?: default}"/>
+  
+  ${name} ${value}
+                        <j:set var="name" value="${attrs.name ?: '_.'+attrs.field}"/>
+                         <j:set var="value" value="${attrs.value ?: instance['name'] ?: default}"/>
+                        ${value}-->
+                        <f:readOnlyTextbox field="name" />
+                    </td>
+                    <td>
+                        <f:validateButton method="releaseJob" title="release job" with="name"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </f:entry>
+</j:jelly>
