@@ -49,8 +49,8 @@ public class EnforceScheduleJobProperty extends OptionalJobProperty<WorkflowJob>
     @Symbol("enforceBuildSchedule")
     public static class DescriptorImpl extends OptionalJobPropertyDescriptor {
 
-        @Override public String getDisplayName() {
-            return "Queues builds that run outside hours set in configuration";
+        @Override public String getDisplayName() {            
+            return Messages.EnforceScheduleJobProperty_DescriptorImpl_DisplayName();
         }
 
     }

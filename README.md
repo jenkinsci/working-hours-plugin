@@ -64,6 +64,8 @@ In order to use the working hours plugin, you must set up a schedule in your Jen
 system configuration page. You can configure both daily working hours and specific dates (such
   as holidays). The following configuration will cause jobs with  `enforceBuildSchedule` to queue if ran outside of Monday - Friday 8:00 AM to 6:00 PM.
 
+  *Note:* all times are local to your Jenkins master.
+
 ![Configuration options](images/working-hours-config.png "Configuration options")
 
 ### Allowable build times

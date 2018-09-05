@@ -85,7 +85,7 @@ public class WorkingHoursConfig extends GlobalConfiguration {
      */
     @Override
     public final String getDisplayName() {
-        return "Global configuration object for the working hours plugin";
+        return Messages.WorkingHoursConfig_DisplayName();
     }
 
     /**
