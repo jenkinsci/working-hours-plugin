@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours.utility;
+package test.org.jenkinsci.plugins.workinghours.utility;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours.model;
+package test.org.jenkinsci.plugins.workinghours.model;
 
 import java.util.Calendar;
+import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

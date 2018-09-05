@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours;
+package test.org.jenkinsci.plugins.workinghours;
 
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import jenkins.model.GlobalConfiguration;
+import org.jenkinsci.plugins.workinghours.WorkingHoursConfig;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

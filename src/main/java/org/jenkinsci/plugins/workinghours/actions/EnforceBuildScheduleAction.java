@@ -38,7 +38,7 @@ import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
 public class EnforceBuildScheduleAction extends InvisibleAction {
 
     protected transient boolean enforcingBuildSchedule;
-    protected transient HashSet<Long> releasedJobs;
+    private transient HashSet<Long> releasedJobs;
 
     /**
      * Constructor
@@ -83,6 +83,14 @@ public class EnforceBuildScheduleAction extends InvisibleAction {
             }
         }
         return false;
+    }
+
+    /**
+     * Set the release jobs.
+     * @param releasedJobs set of released jobs.
+     */
+    public void setReleasedJobs(HashSet<Long> releasedJobs) {
+        this.releasedJobs = releasedJobs;
     }
 
     private static void log(Level level, String format, Object... args) {

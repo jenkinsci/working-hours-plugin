@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours.model;
+package test.org.jenkinsci.plugins.workinghours.model;
 
 import hudson.util.FormValidation;
+import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

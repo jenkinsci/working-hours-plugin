@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours.functional;
+package test.org.jenkinsci.plugins.workinghours.functional;
 
 import hudson.model.Result;
 import hudson.model.queue.QueueTaskFuture;
@@ -30,7 +30,7 @@ import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workinghours.EnforceScheduleJobProperty;
 import org.jenkinsci.plugins.workinghours.WorkingHoursConfig;
-import org.jenkinsci.plugins.workinghours.utility.TimeRangeUtility;
+import test.org.jenkinsci.plugins.workinghours.utility.TimeRangeUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertFalse;

@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours.model;
+package test.org.jenkinsci.plugins.workinghours.model;
 
 import hudson.util.FormValidation;
 import hudson.util.ListBoxModel;
+import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours.actions;
+package test.org.jenkinsci.plugins.workinghours.actions;
 
 import hudson.model.Action;
 import java.util.Collection;
@@ -29,6 +29,8 @@ import jenkins.model.GlobalConfiguration;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workinghours.EnforceScheduleJobProperty;
+import org.jenkinsci.plugins.workinghours.actions.EnforceBuildScheduleAction;
+import org.jenkinsci.plugins.workinghours.actions.ReleaseJobAction;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

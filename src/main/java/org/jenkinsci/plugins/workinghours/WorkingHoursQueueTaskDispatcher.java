@@ -84,7 +84,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
      * @param item The queue item to check.
      * @return true if the item was manually released; false otherwise.
      */
-    protected boolean isReleased(EnforceBuildScheduleAction action,
+    public boolean isReleased(EnforceBuildScheduleAction action,
             Queue.Item item) {
         return action != null && action.isReleased(item);
     }
@@ -95,7 +95,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
      * @param item The queue item to check.     
      * @return true if the item can run now; false otherwise.
      */
-    protected boolean canRunNow(Actionable project,
+    public boolean canRunNow(Actionable project,
             Queue.Item item) {
         Calendar now = Calendar.getInstance();
 

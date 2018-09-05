@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours.actions;
+package test.org.jenkinsci.plugins.workinghours.actions;
 
 import hudson.model.Queue;
 import hudson.model.Queue.WaitingItem;
@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
+import org.jenkinsci.plugins.workinghours.actions.EnforceBuildScheduleAction;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -85,7 +86,7 @@ public class EnforceBuildScheduleActionTest {
     public void testIsReleasedNotInList() {
         Queue.Item item = mock(Queue.Item.class);
         EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
-        instance.releasedJobs = new HashSet<Long>();
+        instance.setReleasedJobs(new HashSet<Long>());
         assertEquals(false, instance.isReleased(item));
     }
 
