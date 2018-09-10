@@ -77,9 +77,9 @@ public class ReleaseJobAction implements Action {
      */
     @RequirePOST
     public void doRelease() {
-        EnforceBuildScheduleAction action = target.getParent().getAction(EnforceBuildScheduleAction.class);
+        EnforceBuildScheduleAction action = target.getAction(EnforceBuildScheduleAction.class);
         if (action != null) {
-            action.releaseJob(target.getQueueId());
+             action.releaseJob();
         }
     }
 

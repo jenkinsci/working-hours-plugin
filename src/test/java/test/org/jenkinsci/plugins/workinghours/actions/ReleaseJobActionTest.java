@@ -25,7 +25,6 @@ package test.org.jenkinsci.plugins.workinghours.actions;
 
 import hudson.model.Action;
 import java.util.Collection;
-import jenkins.model.GlobalConfiguration;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workinghours.EnforceScheduleJobProperty;
@@ -129,7 +128,7 @@ public class ReleaseJobActionTest {
         when(mockWorkflowJob.getAction(any())).thenReturn(action);
         when(mockWorkflowRun.getQueueId()).thenReturn(MOCK_QUEUE_ID);
         instance.doRelease();
-        Mockito.verify(action).releaseJob(MOCK_QUEUE_ID);
+        Mockito.verify(action).releaseJob();
     }
 
     /**

@@ -25,12 +25,7 @@ package org.jenkinsci.plugins.workinghours.actions;
 
 import hudson.model.InvisibleAction;
 import hudson.model.Queue;
-import hudson.model.Queue.Task;
-import hudson.model.Run;
-import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
+import java.util.Date;
 
 /**
  * Action attached to a project or build to manage enforcing the build schedule.
@@ -38,66 +33,49 @@ import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
 public class EnforceBuildScheduleAction extends InvisibleAction {
 
     protected transient boolean enforcingBuildSchedule;
-    private transient HashSet<Long> releasedJobs;
+    private long releasedTimeStamp;
 
     /**
      * Constructor
      */
     public EnforceBuildScheduleAction() {
         this.enforcingBuildSchedule = true;
+        releasedTimeStamp = 0;
     }
 
     /**
-     * Releases a job so it will run the next time  
+     * Releases the build the action refers to. It will start running again when
      * {@link org.jenkinsci.plugins.workinghours.WorkingHoursQueueTaskDispatcher#canRun(Queue.Item item)} 
-     * is called.
-     * @param queueId item in the queue to release.
+     * is called for the associated blocked queue item.
      */
-    public void releaseJob(long queueId) {
-        if (releasedJobs == null) {
-            releasedJobs = new HashSet();
-        }
-        releasedJobs.add(queueId);
+    public void releaseJob() {
+        this.enforcingBuildSchedule = false;
+        markReleased();
     }
 
     /**
-     * Determine whether an item is in our list of released jobs.
-     * @param item item to check.
-     * @return true if release; false otherwise.
+     * Determine whether the build this action refers to has been released.
+     * @return true if released; false otherwise.
      */
-    public boolean isReleased(Queue.Item item) {
-        if (releasedJobs == null) {
-            return false;
-        }
-
-        Task task = item.task;
-        if (releasedJobs.contains(item.getId())) {
-            log(Level.INFO, "Releasing item(1) %d", item.getId());
-            return true;
-        } else if (task instanceof ExecutorStepExecution.PlaceholderTask) {
-            Run run = ((ExecutorStepExecution.PlaceholderTask) task).run();
-            if (run != null
-                    && releasedJobs.contains(run.getQueueId())) {
-                log(Level.INFO, "Releasing item(2) %d", run.getQueueId());
-                return true;
-            }
-        }
-        return false;
+    public boolean isReleased() {
+        return !this.enforcingBuildSchedule;
     }
 
     /**
-     * Set the release jobs.
-     * @param releasedJobs set of released jobs.
+     * Marks a job as released, and sets the releasedTimeStamp if it isn't already
+     * set.
      */
-    public void setReleasedJobs(HashSet<Long> releasedJobs) {
-        this.releasedJobs = releasedJobs;
+    public void markReleased() {
+        if (releasedTimeStamp == 0) {
+            releasedTimeStamp = new Date().getTime();
+        }
     }
-
-    private static void log(Level level, String format, Object... args) {
-        getLogger().log(level, String.format(format, args));
-    }
-
-    private static Logger getLogger() {
-        return Logger.getLogger(EnforceBuildScheduleAction.class.getName());
+    
+    /** 
+     * Gets the released timestamp.
+     * @return time job was released (in unix timestamp).
+     */
+    public long getReleasedTimeStamp() {
+        return releasedTimeStamp;
     }
 }

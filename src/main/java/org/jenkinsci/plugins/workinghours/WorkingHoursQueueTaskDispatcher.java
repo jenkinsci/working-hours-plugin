@@ -30,16 +30,25 @@ import hudson.model.Actionable;
 import hudson.model.Node;
 import hudson.model.Queue;
 import hudson.model.Queue.Task;
+import hudson.model.Run;
 import hudson.model.queue.CauseOfBlockage;
 import hudson.model.queue.QueueTaskDispatcher;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
 
 /**
  *
  * @author jxpearce
+ */
+
+/**
+ * QueueTaskDispatcher implementation that can block jobs configured with the
+ * enforceBuildSchedule property outside of configured working hours.
+ * 
+ * @author jxpearce@godaddy.com
  */
 @Extension
 public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
@@ -52,16 +61,25 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
     @Override
     public CauseOfBlockage canRun(Queue.Item item) {
 
+        // Don't block tasks which don't have owners. This filters out both
+        // freestyle jobs and the task for the Job. The latter is important 
+        // because we want to block the Run not the Job.
         if (item.task == item.task.getOwnerTask()) {
             return super.canRun(item);
         }
-
+        
+        // We will only consider blocking PlaceholderTasks. We can get the
+        // run directly from such tasks.
+        if (!(item.task instanceof ExecutorStepExecution.PlaceholderTask)) {
+            return super.canRun(item);
+        }
         Task ownerTask = item.task.getOwnerTask();
         if (ownerTask instanceof WorkflowJob) {
             WorkflowJob workflowJob = (WorkflowJob) ownerTask;
+            Run workflowRun = ((ExecutorStepExecution.PlaceholderTask)item.task).run();
             EnforceScheduleJobProperty prop = workflowJob.getProperty(EnforceScheduleJobProperty.class);
             if (prop != null) {
-                if (!canRunNow(workflowJob, item)) {
+                if (!canRunNow(workflowRun, item)) {
                     log(Level.INFO, "Blocking item %d", item.getId());
                     return CauseOfBlockage.fromMessage(Messages._WorkingHoursQueueTaskDispatcher_Offline());
                 }
@@ -86,30 +104,34 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
      */
     public boolean isReleased(EnforceBuildScheduleAction action,
             Queue.Item item) {
-        return action != null && action.isReleased(item);
+        return action != null && action.isReleased();
     }
 
     /**
      * Determines whether a queue item can run at the current moment.
-     * @param project The project being checked.
+     * @param itemActionable The item being checked.
      * @param item The queue item to check.     
      * @return true if the item can run now; false otherwise.
      */
-    public boolean canRunNow(Actionable project,
+    public boolean canRunNow(Actionable itemActionable,
             Queue.Item item) {
         Calendar now = Calendar.getInstance();
+
+        EnforceBuildScheduleAction action = itemActionable.getAction(EnforceBuildScheduleAction.class);
 
         WorkingHoursConfig config = WorkingHoursConfig.get();
         for (TimeRange allowableTime : config.getBuildTimeMatrix()) {
             if (allowableTime.includesTime(now)) {
+                if (action != null) {
+                    // Mark the action as released for book-keeping
+                    action.markReleased();
+                }
                 return true;
             }
         }
-        EnforceBuildScheduleAction action = project.getAction(EnforceBuildScheduleAction.class);
-
         if (action == null) {
             action = new EnforceBuildScheduleAction();
-            project.addAction(action);
+            itemActionable.addAction(action);
         }
 
         if (isReleased(action, item)) {

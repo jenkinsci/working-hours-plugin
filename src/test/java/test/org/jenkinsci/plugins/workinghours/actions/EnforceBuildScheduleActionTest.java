@@ -28,7 +28,6 @@ import hudson.model.Queue.WaitingItem;
 import hudson.model.Run;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashSet;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
 import org.jenkinsci.plugins.workinghours.actions.EnforceBuildScheduleAction;
@@ -69,28 +68,6 @@ public class EnforceBuildScheduleActionTest {
     }
 
     /**
-     * Verifies isReleased can be called in the initial state, with no jobs released
-     */
-    @Test
-    public void testIsReleasedInitial() {
-        Queue.Item item = mock(Queue.Item.class);
-        EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
-        assertEquals(false, instance.isReleased(item));
-    }
-    
-    /**
-     * Verifies isReleased returns false after the initial state, when the hash
-     * store has been created, but the build isn't in the released list
-     */
-    @Test
-    public void testIsReleasedNotInList() {
-        Queue.Item item = mock(Queue.Item.class);
-        EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
-        instance.setReleasedJobs(new HashSet<Long>());
-        assertEquals(false, instance.isReleased(item));
-    }
-
-    /**
      * Verifies isReleased returns true when the item passed in has been released
      */
     @Test
@@ -99,9 +76,9 @@ public class EnforceBuildScheduleActionTest {
         when(item.getId()).thenReturn(MOCK_QUEUE_ID);
 
         EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
-        instance.releaseJob(MOCK_QUEUE_ID);
+        instance.releaseJob();
         
-        assertEquals(true, instance.isReleased(item));
+        assertEquals(true, instance.isReleased());
     }
 
     /**
@@ -117,8 +94,8 @@ public class EnforceBuildScheduleActionTest {
         when(mockRun.getQueueId()).thenReturn(MOCK_QUEUE_ID);
 
         EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
-        instance.releaseJob(MOCK_QUEUE_ID);
+        instance.releaseJob();
         
-        assertEquals(true, instance.isReleased(item));
+        assertEquals(true, instance.isReleased());
     }
 }

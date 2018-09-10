@@ -1,4 +1,4 @@
-/*
+    /*
  * The MIT License
  *
  * Copyright (c) 2018 GoDaddy Operating Company, LLC.
@@ -31,7 +31,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * Job property which is used to opt in to build schedules
- * @author jxpearce
+ * @author jxpearce@godaddy.com
  */
 public class EnforceScheduleJobProperty extends OptionalJobProperty<WorkflowJob> {
 

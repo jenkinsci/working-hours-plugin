@@ -193,7 +193,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
 
         EnforceBuildScheduleAction action = mock(EnforceBuildScheduleAction.class);
-        when(action.isReleased(any())).thenReturn(false);
+        when(action.isReleased()).thenReturn(false);
         assertFalse(instance.isReleased(action, item));
     }
 
@@ -209,7 +209,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
 
         EnforceBuildScheduleAction action = mock(EnforceBuildScheduleAction.class);
-        when(action.isReleased(any())).thenReturn(true);
+        when(action.isReleased()).thenReturn(true);
         assertTrue(instance.isReleased(action, item));
     }
 
@@ -268,7 +268,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
 
         EnforceBuildScheduleAction action = mock(EnforceBuildScheduleAction.class);
-        when(action.isReleased(item)).thenReturn(true);
+        when(action.isReleased()).thenReturn(true);
         Actionable project = mock(Actionable.class);
         when(project.getAction(any())).thenReturn(action);
 
