@@ -45,7 +45,7 @@ public class EnforceScheduleJobProperty extends OptionalJobProperty<WorkflowJob>
     /**
      * Required descriptor
      */
-    @Extension
+    @Extension(optional = true)
     @Symbol("enforceBuildSchedule")
     public static class DescriptorImpl extends OptionalJobPropertyDescriptor {
 

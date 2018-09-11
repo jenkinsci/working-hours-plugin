@@ -26,6 +26,8 @@ package test.org.jenkinsci.plugins.workinghours;
 import hudson.model.Actionable;
 import hudson.model.Node;
 import hudson.model.Queue;
+import hudson.model.Queue.Task;
+import hudson.model.Run;
 import java.util.Calendar;
 import java.util.Collections;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -46,6 +48,7 @@ import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.jvnet.hudson.test.JenkinsRule;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -121,8 +124,10 @@ public class WorkingHoursQueueTaskDispatcherTest {
         Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
 
         WorkflowJob job = mock(WorkflowJob.class);
+        Run run = mock(Run.class);
 
         when(task.getOwnerTask()).thenReturn(job);
+        when(task.run()).thenReturn(run);
 
         WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
         assertNull(instance.canRun(item));
@@ -143,14 +148,37 @@ public class WorkingHoursQueueTaskDispatcherTest {
 
         EnforceScheduleJobProperty prop = mock(EnforceScheduleJobProperty.class);
         WorkflowJob job = mock(WorkflowJob.class);
+        Run run = mock(Run.class);
         when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
 
         when(task.getOwnerTask()).thenReturn(job);
+        when(task.run()).thenReturn(run);
 
         WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
         assertNotNull(instance.canRun(item));
     }
 
+    /**
+     * Verifies that canRun doesn't block tasks which aren't placeholder tasks.
+     */
+    @Test
+    public void testCanRunBlockedNotPlaceholder() {
+        WorkingHoursConfig config = WorkingHoursConfig.get();
+        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+        config.save();
+
+        Task task = mock(Task.class);
+        Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+
+        EnforceScheduleJobProperty prop = mock(EnforceScheduleJobProperty.class);
+        WorkflowJob job = mock(WorkflowJob.class);
+        when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
+
+        when(task.getOwnerTask()).thenReturn(job);
+
+        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
+        assertNull(instance.canRun(item));
+    }
 
     /*
      * Verifies canTake won't block jobs
@@ -228,8 +256,11 @@ public class WorkingHoursQueueTaskDispatcherTest {
 
         WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
         Actionable project = mock(Actionable.class);
+        EnforceBuildScheduleAction action = mock(EnforceBuildScheduleAction.class);
+        when(project.getAction(any())).thenReturn(action);
 
         assertTrue(instance.canRunNow(project, item));
+        verify(action).markReleased();
     }
 
     /*

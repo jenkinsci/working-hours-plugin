@@ -87,7 +87,7 @@ public class ReleaseJobAction implements Action {
      * Dynamic action factory which determines whether to add the action to a
      * build.
      */
-    @Extension
+    @Extension(optional = true)
     public static class Factory extends TransientActionFactory<WorkflowRun> {
 
         /**

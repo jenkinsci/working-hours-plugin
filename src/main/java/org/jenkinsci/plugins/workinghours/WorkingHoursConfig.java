@@ -38,7 +38,7 @@ import jenkins.model.GlobalConfiguration;
  *
  * @author jxpearce@godaddy.com
  */
-@Extension
+@Extension(optional = true)
 public class WorkingHoursConfig extends GlobalConfiguration {
 
     /**

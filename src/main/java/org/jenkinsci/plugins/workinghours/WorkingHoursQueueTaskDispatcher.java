@@ -50,7 +50,7 @@ import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
  * 
  * @author jxpearce@godaddy.com
  */
-@Extension
+@Extension(optional = true)
 public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
 
     /**

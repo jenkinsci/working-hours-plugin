@@ -23,7 +23,6 @@
  */
 package test.org.jenkinsci.plugins.workinghours.actions;
 
-import hudson.model.Queue;
 import hudson.model.Queue.WaitingItem;
 import hudson.model.Run;
 import java.util.Calendar;
@@ -45,8 +44,6 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * @author jxpearce
  */
 public class EnforceBuildScheduleActionTest {
-    
-    private static long MOCK_QUEUE_ID = 2112;
     
     public EnforceBuildScheduleActionTest() {
     }
@@ -72,9 +69,6 @@ public class EnforceBuildScheduleActionTest {
      */
     @Test
     public void testIsReleasedReleasedItem() {
-        Queue.Item item = mock(Queue.Item.class);
-        when(item.getId()).thenReturn(MOCK_QUEUE_ID);
-
         EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
         instance.releaseJob();
         
@@ -87,15 +81,36 @@ public class EnforceBuildScheduleActionTest {
     @Test
     public void testIsReleasedPlaceholderTask() {
         ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
-        WaitingItem item = new WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
         
         WorkflowRun mockRun = mock(WorkflowRun.class);
         when(task.run()).thenReturn((Run)mockRun);
-        when(mockRun.getQueueId()).thenReturn(MOCK_QUEUE_ID);
 
         EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
         instance.releaseJob();
         
         assertEquals(true, instance.isReleased());
     }
+
+   /**
+     * Verifies getReleased returns 0 before markReleased is called.
+     */
+    @Test
+    public void testGetReleasedDefault() {
+        EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
+        
+        assertEquals(0, instance.getReleasedTimeStamp());
+    }
+
+       /**
+     * Verifies getReleased returns non-0 after markReleased is called.
+     */
+    @Test
+    public void testMarkReleased() {
+        EnforceBuildScheduleAction instance = new EnforceBuildScheduleAction();
+        
+        instance.markReleased();          
+        
+        assertNotEquals(0, instance.getReleasedTimeStamp());
+    }
+
 }

@@ -55,7 +55,6 @@ public class ReleaseJobActionTest {
 
     private WorkflowJob mockWorkflowJob;
     private WorkflowRun mockWorkflowRun;
-    private final long MOCK_QUEUE_ID = 2112;
 
     public ReleaseJobActionTest() {
     }
@@ -125,8 +124,7 @@ public class ReleaseJobActionTest {
     public void testDoReleaseNotNull() {
         ReleaseJobAction instance = new ReleaseJobAction(mockWorkflowRun);
         EnforceBuildScheduleAction action = PowerMockito.mock(EnforceBuildScheduleAction.class);
-        when(mockWorkflowJob.getAction(any())).thenReturn(action);
-        when(mockWorkflowRun.getQueueId()).thenReturn(MOCK_QUEUE_ID);
+        when(mockWorkflowRun.getAction(any())).thenReturn(action);
         instance.doRelease();
         Mockito.verify(action).releaseJob();
     }
