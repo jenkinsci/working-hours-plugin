@@ -11,8 +11,8 @@
         <f:repeatableProperty field="excludedDates" />
     </f:entry>
 
-      <f:entry title="Message to show when jobs are held" >
-          <f:textbox field="blockedJobText" />
+      <f:entry title="Message to show when jobs are held" field="customJobHoldText">
+          <f:textbox field="customJobHoldText" />
       </f:entry>
   </f:section>
 </j:jelly>

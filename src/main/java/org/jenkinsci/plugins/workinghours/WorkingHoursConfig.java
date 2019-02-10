@@ -54,7 +54,7 @@ public class WorkingHoursConfig extends GlobalConfiguration {
     /**
      *  Custom string to display when job is blocked
      */
-    private String blockedJobText;
+    private String customJobHoldText;
 
     /**
      * Default times for new configurations.
@@ -142,18 +142,18 @@ public class WorkingHoursConfig extends GlobalConfiguration {
      *
      * @return default message if the value is null
      */
-    public String getBlockedJobText() {
-        return blockedJobText == null
+    public String getCustomJobHoldText() {
+        return customJobHoldText == null
                 ? Messages._WorkingHoursQueueTaskDispatcher_Offline().toString()
-                : blockedJobText;
+                : customJobHoldText;
     }
 
     /**
      *  Sets new string to display when jobs are blocked
-     * @param blockedJobText
+     * @param customJobHoldText
      */
-    public void setBlockedJobText(String blockedJobText) {
-        this.blockedJobText = blockedJobText;
+    public void setCustomJobHoldText(String customJobHoldText) {
+        this.customJobHoldText = customJobHoldText.trim().length() > 0 ? customJobHoldText : null;
         save();
     }
 }
