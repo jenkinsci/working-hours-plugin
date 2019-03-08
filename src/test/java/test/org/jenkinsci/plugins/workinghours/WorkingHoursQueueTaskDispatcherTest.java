@@ -28,8 +28,10 @@ import hudson.model.Node;
 import hudson.model.Queue;
 import hudson.model.Queue.Task;
 import hudson.model.Run;
+
 import java.util.Calendar;
 import java.util.Collections;
+
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
@@ -43,14 +45,18 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.jvnet.hudson.test.JenkinsRule;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
+
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -157,9 +163,6 @@ public class WorkingHoursQueueTaskDispatcherTest {
         WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
         assertNotNull(instance.canRun(item));
     }
-
-
-
 
     /**
      * Verifies that canRun doesn't block tasks which aren't placeholder tasks.
