@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
 
 /**
@@ -73,6 +75,39 @@ public class TimeRangeUtility {
     }
 
     /**
+     * Helper function to configure a set of excluded dates which doesn't contain today.
+     *
+     * @return List of excluded dates.
+     */
+
+    public static List<ExcludedDate> getInclusiveDate() {
+        List<ExcludedDate> result = new ArrayList<>();
+
+        Calendar now = Calendar.getInstance();
+        Calendar tomorrow = (Calendar) now.clone();
+        tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+
+        result.add(new ExcludedDate("test exclude date", formattedDate(tomorrow)));
+
+        return result;
+    }
+
+    /**
+     * Helper function to configure a set of excluded dates that exclude today.
+     *
+     * @return List of excluded dates.
+     */
+    public static List<ExcludedDate> getExclusiveDate() {
+        List<ExcludedDate> result = new ArrayList<>();
+
+        Calendar now = Calendar.getInstance();
+
+        result.add(new ExcludedDate("test exclude date", formattedDate(now)));
+
+        return result;
+    }
+
+    /**
      * Helper function to configure a set of time ranges with one range that
      * includes the current time, but references a different day
      *
@@ -101,5 +136,16 @@ public class TimeRangeUtility {
         SimpleDateFormat format = new SimpleDateFormat("H:m");
         return format.format(time);
     }
-    
+
+    /**
+     * Gets a formatted date string for a calendar instance.
+     * @param cal the calender.
+     * @return formatted date string.
+     */
+    public static String formattedDate(Calendar cal) {
+        Date date = cal.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("M/d/y");
+        return format.format(date);
+    }
+
 }
