@@ -158,27 +158,8 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertNotNull(instance.canRun(item));
     }
 
-    @Test
-    public void testCanRunIn() {
-        //Configure with excluded date.
-        WorkingHoursConfig config = WorkingHoursConfig.get();
-        config.setExcludedDates(TimeRangeUtility.getExclusiveDate());
-        config.save();
 
-        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
-        Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
 
-        EnforceScheduleJobProperty prop = mock(EnforceScheduleJobProperty.class);
-        WorkflowJob job = mock(WorkflowJob.class);
-        Run run = mock(Run.class);
-        when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
-
-        when(task.getOwnerTask()).thenReturn(job);
-        when(task.run()).thenReturn(run);
-
-        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
-        assertNotNull(instance.canRun(item));
-    }
 
     /**
      * Verifies that canRun doesn't block tasks which aren't placeholder tasks.
@@ -302,6 +283,48 @@ public class WorkingHoursQueueTaskDispatcherTest {
         Actionable project = mock(Actionable.class);
 
         assertFalse(instance.canRunNow(project, item));
+    }
+
+    /*
+     * Verifies canRunNow returns false if today is excluded.
+     */
+    @Test
+    public void testCanRunNowExclusiveDate() {
+        //Configure with excluded date.
+        WorkingHoursConfig config = WorkingHoursConfig.get();
+        config.setExcludedDates(TimeRangeUtility.getExclusiveDate());
+        config.save();
+
+        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
+        Queue.WaitingItem waitingItem = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+        Queue.BuildableItem item = new Queue.BuildableItem(waitingItem);
+
+        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
+        Actionable project = mock(Actionable.class);
+
+        assertFalse(instance.canRunNow(project, item));
+    }
+
+    /*
+     * Verifies canRunNow returns true if today is not excluded.
+     */
+    @Test
+    public void testCanRunNowInclusiveDate() {
+        //Configure with excluded date.
+        WorkingHoursConfig config = WorkingHoursConfig.get();
+        config.setExcludedDates(TimeRangeUtility.getInclusiveDate());
+        //Also set inclusive time range to make it able to run.
+        config.setBuildTimeMatrix(TimeRangeUtility.getInclusiveRange());
+        config.save();
+
+        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
+        Queue.WaitingItem waitingItem = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+        Queue.BuildableItem item = new Queue.BuildableItem(waitingItem);
+
+        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
+        Actionable project = mock(Actionable.class);
+
+        assertTrue(instance.canRunNow(project, item));
     }
 
     /*

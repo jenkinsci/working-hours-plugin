@@ -75,6 +75,24 @@ public class TimeRangeUtility {
     }
 
     /**
+     * Helper function to configure a set of excluded dates which doesn't contain today.
+     *
+     * @return List of excluded dates.
+     */
+
+    public static List<ExcludedDate> getInclusiveDate() {
+        List<ExcludedDate> result = new ArrayList<>();
+
+        Calendar now = Calendar.getInstance();
+        Calendar tomorrow = (Calendar) now.clone();
+        tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+
+        result.add(new ExcludedDate("test exclude date", formattedDate(tomorrow)));
+
+        return result;
+    }
+
+    /**
      * Helper function to configure a set of excluded dates that exclude today.
      *
      * @return List of excluded dates.
