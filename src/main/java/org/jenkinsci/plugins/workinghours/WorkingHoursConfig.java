@@ -150,7 +150,7 @@ public class WorkingHoursConfig extends GlobalConfiguration {
 
     /**
      *  Sets new string to display when jobs are blocked
-     * @param customJobHoldText
+     * @param customJobHoldText string to use as the jobHeldDescription
      */
     public void setCustomJobHoldText(String customJobHoldText) {
         this.customJobHoldText = customJobHoldText.trim().length() > 0 ? customJobHoldText : null;
