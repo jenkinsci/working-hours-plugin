@@ -144,7 +144,7 @@ public class WorkingHoursConfig extends GlobalConfiguration {
      */
     public String getCustomJobHoldText() {
         return customJobHoldText == null
-                ? Messages._WorkingHoursQueueTaskDispatcher_Offline().toString()
+                ? Messages.WorkingHoursQueueTaskDispatcher_Offline()
                 : customJobHoldText;
     }
 
