@@ -1,15 +1,15 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-  <f:section title="Working Hours">
+    <f:section title="Working Hours">
 
-    <f:entry title="Allowable build times">
-        <f:repeatableProperty field="buildTimeMatrix" />
-    </f:entry>
+        <f:entry title="Allowable build times">
+            <f:repeatableProperty field="buildTimeMatrix"/>
+        </f:entry>
 
-    <f:entry title="Excluded dates">
-        <f:repeatableProperty field="excludedDates" />
-    </f:entry>
-    
-  </f:section>
+        <f:entry title="Excluded dates">
+            <f:repeatableProperty noAddButton="true" field="excludedDates"/>
+        </f:entry>
+    </f:section>
 </j:jelly>

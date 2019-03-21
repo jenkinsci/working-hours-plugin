@@ -23,6 +23,8 @@
  */
 package org.jenkinsci.plugins.workinghours.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
@@ -31,7 +33,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Calendar;
 
 /**
@@ -41,63 +42,35 @@ import java.util.Calendar;
  */
 public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
 
-    /**
-     * The display name of this rule.
-     */
-    private String name;
+    private DataContainer dataContainer = null;
+    private String jsonData = "";
+    private Gson gson = null;
 
     /**
-     * The date for this rule.
+     * Set or update the fields with a json which is then
      */
-    private String date;
+    public void setJsonData(String inputData) {
+        this.jsonData = inputData;
+        this.dataContainer = gson.fromJson(inputData, DataContainer.class);
+    }
+
+    public String getJsonData() {
+        return jsonData;
+    }
+
 
     /**
-     * Constructs an ExcludedDate object.
+     * Constructs an ExcludedDate object using json.
      *
-     * @param name Display name for date, e.g. "New Year's Day".
-     * @param date The date to exclude.
+     * @param jsonData Json data to deserialize to an ExcludedDate object.
      */
     @DataBoundConstructor
-    public ExcludedDate(final String name, final String date) {
-        this.name = name;
-        this.date = date;
+    public ExcludedDate(String jsonData) {
+        gson = new GsonBuilder().create();
+        this.dataContainer = gson.fromJson(jsonData, DataContainer.class);
+        this.jsonData = jsonData;
     }
 
-    /**
-     * Get the value of name.
-     *
-     * @return the value of name.
-     */
-    public final String getName() {
-        return name;
-    }
-
-    /**
-     * Get the value of date.
-     *
-     * @return the value of date.
-     */
-    public final String getDate() {
-        return date;
-    }
-
-    /**
-     * Set the value of date.
-     *
-     * @param date new value of date.
-     */
-    public final void setDate(final String date) {
-        this.date = date;
-    }
-
-    /**
-     * Set the value of name.
-     *
-     * @param name new value of name.
-     */
-    public final void setName(final String name) {
-        this.name = name;
-    }
 
     /**
      * Descriptor class required for the UI.
@@ -131,13 +104,111 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
     }
 
     public Boolean shouldExclude(Calendar date) {
-        LocalDate localDate = DateTimeUtility.localDate(getDate());
+//        LocalDate localDate = DateTimeUtility.localDate(getDate());
 
-        LocalDate checkTime = LocalDate.of(
-                date.get(Calendar.YEAR),
-                date.get(Calendar.MONTH) + 1,
-                date.get(Calendar.DAY_OF_MONTH));
+//        LocalDate checkTime = LocalDate.of(
+//                date.get(Calendar.YEAR),
+//                date.get(Calendar.MONTH) + 1,
+//                date.get(Calendar.DAY_OF_MONTH));
+//
+//        return localDate.equals(checkTime);
+        return false;
+    }
 
-        return localDate.equals(checkTime);
+    public static class DataContainer {
+        /**
+         * The display name of this rule.
+         */
+        public String name = "";
+
+        /**
+         * The start date for this rule.
+         */
+        public Date startDate = null;
+
+        /**
+         * If this rule is repeat, the end date of the repeat rule.
+         */
+        public Date endDate = null;
+
+        /**
+         * When repeat, whether this would end, if would, the end is todo
+         */
+        public boolean noEnd = true;
+
+        /**
+         * Whether the rule is repeat.
+         */
+        public boolean repeat = false;
+
+        /**
+         * How many times this would repeat.
+         */
+        public int repeatCount = -1;
+
+        /**
+         *
+         */
+        public int repeatPeriod = 1;
+
+        public int repeatInterval = 1;
+    }
+
+    public static class Date {
+
+        /**
+         * Indicates whether the date is dynamic,
+         * dynamic date would depend on week and vary every year
+         */
+        public boolean dynamic = false;
+
+        /**
+         * This field is in order to describe some date which
+         * is not static but depend on the occurrence of weekday,
+         * like Mother's Day (the second sunday of May).
+         */
+        public DynamicDate dynamicDate = null;
+
+        /**
+         * If static, the actual date(timestamp) of this excluded date.
+         */
+        public String date = "1234";
+
+        public Date(boolean dynamic, DynamicDate dynamicDate, String date) {
+            this.dynamic = dynamic;
+            this.dynamicDate = dynamicDate;
+            this.date = date;
+        }
+    }
+
+    public static class DynamicDate {
+        /**
+         * The month in the
+         * Ranging from 1 to 12, indicating from January to December.
+         */
+        public int month = 1;
+
+        /**
+         * The weekday content to describe a dynamic excluded date.
+         * Ranging from 1 to 7, indicating from Monday to Sunday.
+         */
+        public int weekday = 1;
+
+        /**
+         * The nth time the weekday appear.
+         * Ranging from 1 to 4, indicating the first, second, third and the fourth appearance.
+         */
+        public int week = 1;
+
+        /**
+         * The constructor.
+         * For example, Mother's Day is on the second Sunday of May,
+         * In order to describe Mother's Day, set month to 5, week to 2 and weekday to 7.
+         */
+        public DynamicDate(int month, int week, int weekday) {
+            this.month = month;
+            this.week = week;
+            this.weekday = weekday;
+        }
     }
 }
