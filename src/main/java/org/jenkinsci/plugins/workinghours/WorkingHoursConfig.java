@@ -140,9 +140,9 @@ public class WorkingHoursConfig extends GlobalConfiguration {
     /**
      * Gets the message to be displayed when the job is blocked
      *
-     * @return default message if the value is null
+     * @return custom message or the default message, if the custom message is null.
      */
-    public String getCustomJobHoldText() {
+    public String getJobHoldText() {
         return customJobHoldText == null
                 ? Messages.WorkingHoursQueueTaskDispatcher_Offline()
                 : customJobHoldText;

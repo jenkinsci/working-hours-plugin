@@ -84,7 +84,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
                     return new CauseOfBlockage() {
                         @Override
                         public String getShortDescription() {
-                            return WorkingHoursConfig.get().getCustomJobHoldText();
+                            return WorkingHoursConfig.get().getJobHoldText();
                         }
                     };
                 }
