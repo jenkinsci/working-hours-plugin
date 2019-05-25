@@ -9,35 +9,17 @@
         </f:entry>
 
         <f:entry title="Excluded dates">
-            <script>
-                function getScript(name) {
-                    var script = document.createElement('script');
-                    script.type = 'text/javascript';
-                    script.src = resUrl + '/plugin/working-hours' + name;
-                    return script
-                }
-
-                var head = document.getElementsByTagName('head')[0];
-                var resUrl = head.getAttribute('resurl')
-
-                var body = document.getElementsByTagName('body')[0];
-
-                // var list = ['babel.js', 'react.development.js', 'react-dom.development.js', 'moment.js']
-
-                // list.forEach(item => {
-                //     head.appendChild(getScript('/vendor/' + item))
-                // })
-
-                var list = ['main.chunk.js', 'runtime~main.js', 'vendor.chunk.js']
-                list.forEach(item => {
-                    head.appendChild(getScript('/js/' + item))
-                })
-            </script>
-
+            <!--React component mount point-->
             <div id="container-excluded-dates"></div>
+
+            <!--Data container to retrieve and save-->
             <div id="excluded-repeat-container" style="display: none;">
                 <f:repeatableProperty noAddButton="true" field="excludedDates"/>
             </div>
+
+            <script type="text/javascript" src="${resURL}/plugin/working-hours/js/main.chunk.js"></script>
+            <script type="text/javascript" src="${resURL}/plugin/working-hours/js/runtime~main.js"></script>
+            <script type="text/javascript" src="${resURL}/plugin/working-hours/js/vendor.chunk.js"></script>
         </f:entry>
     </f:section>
 </j:jelly>

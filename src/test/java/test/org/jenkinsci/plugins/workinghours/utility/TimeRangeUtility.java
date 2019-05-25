@@ -87,7 +87,7 @@ public class TimeRangeUtility {
         Calendar tomorrow = (Calendar) now.clone();
         tomorrow.add(Calendar.DAY_OF_MONTH, 1);
 
-        result.add(new ExcludedDate("test exclude date", formattedDate(tomorrow)));
+//        result.add(new ExcludedDate("test exclude date", formattedDate(tomorrow)));
 
         return result;
     }
@@ -102,7 +102,7 @@ public class TimeRangeUtility {
 
         Calendar now = Calendar.getInstance();
 
-        result.add(new ExcludedDate("test exclude date", formattedDate(now)));
+//        result.add(new ExcludedDate("test exclude date", formattedDate(now)));
 
         return result;
     }

@@ -26,6 +26,7 @@ package test.org.jenkinsci.plugins.workinghours;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -120,10 +121,10 @@ public class WorkingHoursConfigTest {
     public void testGetSetExcludedDates() {
         WorkingHoursConfig instance = new WorkingHoursConfig();
         
-        List<ExcludedDate> testList = Collections.singletonList(
-            new ExcludedDate("Test excluded date", "04/01/2012"));
+//        List<ExcludedDate> testList = Collections.singletonList(
+//            new ExcludedDate("Test excluded date", "04/01/2012"));
         
-        instance.setExcludedDates(testList);
+        instance.setExcludedDates(new ArrayList<>());
         List<ExcludedDate> result = instance.getExcludedDates();
         assertEquals(1, result.size());
     }
