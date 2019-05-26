@@ -16,32 +16,28 @@
  */
 package org.jenkinsci.plugins.workinghours;
 
+import com.google.inject.Binder;
+import com.google.inject.Inject;
+import com.google.inject.Module;
 import hudson.Extension;
 import hudson.model.ManagementLink;
-import hudson.model.TaskListener;
-import hudson.model.Hudson;
-import hudson.triggers.Trigger;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerProxy;
 
 /**
  * A backup solution for Hudson. Backs up configuration files from Hudson and its jobs.
- *
+ * <p>
  * Originally based on the Backup plugin by Vincent Sellier, Manufacture Fran�aise des Pneumatiques Michelin, Romain
  * Seguy, et.al. Subsequently heavily modified.
  */
 @Extension
-public class WorkingHoursMgmtLink extends ManagementLink {
+public class WorkingHoursMgmtLink extends ManagementLink implements StaplerProxy {
     private static final Logger LOGGER = Logger.getLogger("hudson.plugins.thinbackup");
+
+    @Inject
+    WorkingHoursUI app;
 
     @Override
     public String getDisplayName() {
@@ -63,5 +59,22 @@ public class WorkingHoursMgmtLink extends ManagementLink {
         return "Working Hours Config";
     }
 
+
+    @Override
+    public Object getTarget() {
+        return app;
+    }
+
+    /**
+     * Provides implementation of BlueOceanUI
+     */
+    @Extension
+    public static class ModuleImpl implements Module {
+
+        @Override
+        public void configure(Binder binder) {
+            binder.bind(WorkingHoursUI.class).toInstance(new WorkingHoursUI());
+        }
+    }
 
 }
