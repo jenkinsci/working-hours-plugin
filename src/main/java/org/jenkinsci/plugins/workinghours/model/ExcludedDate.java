@@ -44,7 +44,7 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
 
     private DataContainer dataContainer = null;
     private String jsonData = "";
-    private Gson gson = null;
+    private static Gson gson = null;
 
     /**
      * Set or update the fields with a json which is then
@@ -66,7 +66,9 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
      */
     @DataBoundConstructor
     public ExcludedDate(String jsonData) {
-        gson = new GsonBuilder().create();
+        if (gson == null) {
+            gson = new GsonBuilder().create();
+        }
         this.dataContainer = gson.fromJson(jsonData, DataContainer.class);
         this.jsonData = jsonData;
     }
