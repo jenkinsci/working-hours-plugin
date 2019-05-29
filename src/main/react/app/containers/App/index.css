@@ -1,0 +1,23 @@
+.form-item-label{
+  margin-right: 20px;
+  width: 100px;
+  text-align: right;
+}
+
+.form-row{
+  margin: 3px 0;
+}
+
+.form-row-indent{
+  margin-left: 80px;
+}
+
+.excluded-date{
+  border: 1px solid;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+.btn{
+  margin-left: 5px;
+}

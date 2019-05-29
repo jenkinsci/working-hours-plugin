@@ -87,15 +87,24 @@ public class WorkingHoursUI {
         return HttpResponses.okJSON(serializeExcludedDates());
     }
 
+    /**
+     * Serialize model excluded dates to JSONObejct
+     * @return
+     */
     private JSONArray serializeExcludedDates() {
         Map<String, String> res = new HashMap<>();
         JSONArray excludedDates = new JSONArray();
         config.getExcludedDates().forEach(item -> {
             excludedDates.add(item.getJsonData());
         });
-        return (excludedDates);
+        return excludedDates;
     }
 
+    /**
+     * Return all the excluded dates in JSON.
+     * @param request Request object passed by Stapler
+     * @return Response to send back to client.
+     */
     private HttpResponse listExcludedDate(StaplerRequest request) {
         return HttpResponses.okJSON(serializeExcludedDates());
     }
@@ -116,5 +125,4 @@ public class WorkingHoursUI {
         }
         return body;
     }
-
 }
