@@ -1,0 +1,87 @@
+.form-item-label {
+    margin-right: 20px;
+    width: 100px;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.form-row {
+    margin: 17px 0;
+    height: 25px;
+}
+
+.form-row-indent {
+    margin-left: 80px;
+}
+
+.label-inline{
+    margin-right: 15px;
+}
+
+.excluded-date {
+    padding: 20px;
+    margin: 10px;
+    border: 1px solid #cccccc;
+    background: #f9f9f9;
+}
+
+.btn {
+    margin-left: 5px;
+}
+
+.btn {
+    width: 60px;
+    height: 29px;
+    font-size: 12px;
+    padding: 3px 18px;
+    border-radius: 1px;
+
+    border: 1px solid #cccccc;
+    background-color: #e0e0e0;
+    font-family: Helvetica, Arial, sans-serif;
+
+    color: #505050;
+    font-weight: bold;
+
+    margin-left: 10px;
+}
+
+.btn:hover {
+    background-color: #d0d0d0;
+    border: 1px solid #c0c0c0;
+}
+
+.btn-delete {
+    align-items: flex-start;
+    background-color: rgb(210, 73, 57);
+    border-bottom-color: rgb(190, 58, 43);
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-block;
+    height: 24px;
+    width: 30px;
+    color: white;
+
+    position: relative;
+    margin-left: 10px;
+    top: 3px;
+}
+
+.btn-delete:hover {
+    background-color: rgb(162, 50, 37);
+    border-color: rgb(148, 46, 34);
+}
+
+.input{
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    padding: 6px;
+    background: white;
+}
+
+input{
+    height: 100%;
+}

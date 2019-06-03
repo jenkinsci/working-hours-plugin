@@ -26,6 +26,8 @@ import java.util.logging.Logger;
 
 import org.kohsuke.stapler.StaplerProxy;
 
+import javax.management.Descriptor;
+
 /**
  * A backup solution for Hudson. Backs up configuration files from Hudson and its jobs.
  * <p>

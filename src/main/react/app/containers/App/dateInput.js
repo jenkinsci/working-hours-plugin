@@ -42,27 +42,22 @@ export default function DateInput(props) {
     <hr/>
     <div className={"form-row"}>
       <div className={"form-item-label"}>{name}</div>
-    </div>
-    <hr/>
-    <div className={"form-row"}
-    >
-      <label className={"form-item-label"}>Dynamic</label>
       <input type='checkbox' checked={dateObject.dynamic}
              onChange={updateCheckbox("dynamic")}/>
+      <label className={"form-item-label"} style={{width:'auto'}}>Dynamic</label>
     </div>
+    <hr/>
 
     {!dateObject.dynamic && <div className={"form-row-indent"}
     >
       <div className={"form-row"}>
         <label style={{ marginRight: 10 }}>Date</label>
-        <div style={{ border: "1px solid black" }}>
-          <DatePicker selected={dateObject.date} placeholder="select"
-                      onChange={updateDate()}/>
-        </div>
+        <DatePicker className={"input"} selected={dateObject.date} placeholder="select"
+                    onChange={updateDate()}/>
       </div>
     </div>}
     {dateObject.dynamic && <div className={"form-row-indent"}>
-      <div className={"form-row"} style={{ display: "flex", flexDirection: "row" }}>
+      <div className={"form-row"} style={{ display: "flex", flexDirection: "row",lineHeight:'40px' }}>
         {(repeatPeriod >= PERIODS.Month || !repeat) &&
         <div className={"custom-control custom-control-inline"} style={{ paddingLeft: 0, marginRight: 0 }}>
           The
@@ -94,9 +89,9 @@ export default function DateInput(props) {
 
       </div>
       {repeatPeriod > PERIODS.Week && (
-        <div className={"form-row"}>
-          <label className={"form-item-label"} style={{ width: 120 }}>Next Occurrence</label>
-          <div>{repeatPeriod === PERIODS.BY_YEAR ?
+        <div className={"form-row"} style={{marginTop:"20px"}}>
+          <label className={"form-item-label"}>Next Occurrence</label>
+          <div>{repeatPeriod === PERIODS.Year ?
             format(nextOccurrenceByYear(dateObject.dynamicDate.month, dateObject.dynamicDate.week, dateObject.dynamicDate.day)) :
             format(nextOccurrenceByMonth(dateObject.dynamicDate.week, dateObject.dynamicDate.day))}</div>
         </div>

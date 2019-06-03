@@ -23,15 +23,21 @@
  */
 package org.jenkinsci.plugins.workinghours;
 
+import hudson.ExtensionList;
+import hudson.Plugin;
+import hudson.model.Describable;
+import hudson.model.Descriptor;
+import jenkins.model.GlobalConfiguration;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import hudson.Extension;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.CheckForNull;
-import jenkins.model.GlobalConfiguration;
+import javax.annotation.Nonnull;
 
 /**
  * Provides configuration options for this plugin.
@@ -39,7 +45,7 @@ import jenkins.model.GlobalConfiguration;
  * @author jxpearce@godaddy.com
  */
 @Extension(optional = true)
-public class WorkingHoursConfig extends GlobalConfiguration {
+public class WorkingHoursPlugin extends GlobalConfiguration {
 
     /**
      * The list of valid times.
@@ -55,11 +61,11 @@ public class WorkingHoursConfig extends GlobalConfiguration {
      * Default times for new configurations.
      */
     private final TimeRange[] defaultConfig = {
-        new TimeRange("8:00", "18:00", Calendar.MONDAY),
-        new TimeRange("8:00", "18:00", Calendar.TUESDAY),
-        new TimeRange("8:00", "18:00", Calendar.WEDNESDAY),
-        new TimeRange("8:00", "18:00", Calendar.THURSDAY),
-        new TimeRange("8:00", "18:00", Calendar.FRIDAY)
+            new TimeRange("8:00", "18:00", Calendar.MONDAY),
+            new TimeRange("8:00", "18:00", Calendar.TUESDAY),
+            new TimeRange("8:00", "18:00", Calendar.WEDNESDAY),
+            new TimeRange("8:00", "18:00", Calendar.THURSDAY),
+            new TimeRange("8:00", "18:00", Calendar.FRIDAY)
     };
 
     /**
@@ -67,26 +73,14 @@ public class WorkingHoursConfig extends GlobalConfiguration {
      *
      * @return the configuration object
      */
-    public static WorkingHoursConfig get() {
-        return GlobalConfiguration.all().get(WorkingHoursConfig.class);
-    }
 
     /**
      * Default constructor - loads the configuration.
      */
-    public WorkingHoursConfig() {
+    public WorkingHoursPlugin() {
         load();
     }
 
-    /**
-     * Gets human readable name.
-     *
-     * @return human readable name
-     */
-    @Override
-    public final String getDisplayName() {
-        return Messages.WorkingHoursConfig_DisplayName();
-    }
 
     /**
      * Gets the list of included times.
@@ -98,6 +92,13 @@ public class WorkingHoursConfig extends GlobalConfiguration {
                 ? Arrays.asList(defaultConfig)
                 : this.buildTimeMatrix;
     }
+
+    @Override
+    public String getDisplayName() {
+        return null;
+    }
+
+
 
     /**
      * Sets the list of included times.
@@ -131,4 +132,5 @@ public class WorkingHoursConfig extends GlobalConfiguration {
         this.excludedDates = value;
         save();
     }
+
 }

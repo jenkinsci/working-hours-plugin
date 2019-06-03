@@ -1,12 +1,10 @@
 package org.jenkinsci.plugins.workinghours;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import hudson.ExtensionList;
 import hudson.util.HttpResponses;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.NotImplementedException;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
@@ -19,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class WorkingHoursUI {
-    private WorkingHoursConfig config;
+    private WorkingHoursPlugin config;
 
     public WorkingHoursUI() {
     }
@@ -32,7 +30,7 @@ public class WorkingHoursUI {
      */
     public HttpResponse doDynamic(StaplerRequest request) {
         if (config == null) {
-            config = ExtensionList.lookup(WorkingHoursConfig.class).get(0);
+            config = ExtensionList.lookup(WorkingHoursPlugin.class).get(0);
         }
 
         String restOfPath = request.getRestOfPath();
@@ -59,6 +57,7 @@ public class WorkingHoursUI {
                 return setTimeRanges(request);
         }
 
+        // TODO: 30/5/2019 Implement or find a detailed error response Object
         throw new JsonHttpResponse(new JSONObject());
 
     }

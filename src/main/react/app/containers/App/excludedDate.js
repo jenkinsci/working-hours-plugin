@@ -98,6 +98,7 @@ export default class ExcludeDate extends React.Component {
     console.log("call update");
   }
 
+  /*Get a brief description of this excluded date.*/
   getBrief() {
     let words = [];
     words.push(this.state.name);
@@ -159,12 +160,13 @@ export default class ExcludeDate extends React.Component {
             <div className={"form-row"}>
               <label className={"form-item-label"}>Name</label>
               <input placeholder={"input date name"} value={this.state.name}
+                     className={"input"}
                      style={{ width: 200 }}
                      onChange={this.handleNameChange}/>
             </div>
             <div>
               <label className={"form-item-label"}>Preset</label>
-              <select className={"custom-select"}
+              <select className={"input"}
                       onChange={this.handlePresetChange}
                       style={{ width: 300 }}
                       placeholder="select preset date"
@@ -185,22 +187,23 @@ export default class ExcludeDate extends React.Component {
               <input id='radio-week' name="period" type="radio"
                      checked={this.state.repeatPeriod === PERIODS.Week}
                      onChange={this.handleRepeatPeriodChange} value={PERIODS.Week}/>
-              <label>Week </label>
+              <label className={"label-inline"}>Week </label>
 
-              <label><input id='radio-month' name="period" type="radio"
-                            checked={this.state.repeatPeriod === PERIODS.Month}
-                            onChange={this.handleRepeatPeriodChange} value={PERIODS.Month}/>Month</label>
+              <input id='radio-month' name="period" type="radio"
+                     checked={this.state.repeatPeriod === PERIODS.Month}
+                     onChange={this.handleRepeatPeriodChange} value={PERIODS.Month}/>
+              <label className={'label-inline'}>Month</label>
 
               <input id='radio-year' name="period" type="radio"
                      checked={this.state.repeatPeriod === PERIODS.Year}
                      onChange={this.handleRepeatPeriodChange} value={PERIODS.Year}/>
-              <label>Year </label>
+              <label className={'label-inline'}>Year </label>
             </div>
             }
 
             {repeat && <div className={"form-row"}>
               <label className={"form-item-label"}>Repeat Interval</label>
-              <div>Each <select className={"custom-select"} value={this.state.repeatInterval}
+              <div>Each <select className={"input"} value={this.state.repeatInterval}
                                 style={{ width: 70, marginRight: 10 }}
                                 onChange={this.handleIntervalChange}>
 
@@ -216,7 +219,7 @@ export default class ExcludeDate extends React.Component {
             </div>}
             {repeat && <div className={"form-row"}>
               <label className={"form-item-label"}>Repeat Count</label>
-              <div><select className={"custom-select"} value={this.state.repeatCount}
+              <div><select className={"input"} value={this.state.repeatCount}
                            style={{ width: 120, marginRight: 10 }}
                            onChange={this.handleCountChange}>
                 <option value={-1}>No End</option>
@@ -256,13 +259,13 @@ export default class ExcludeDate extends React.Component {
             <div className={"form-row"}>
               <div className={"form-item-label"}/>
               {/*<button type="button" className="btn btn-outline-primary">Save</button>*/}
-              <button type="button" className={"btn btn-outline-dark"} onClick={this.toggleEdit}>Close</button>
+              <button type="button" className={"btn"} onClick={this.toggleEdit}>Close</button>
             </div>
           </div> :
           <div>
             {this.getBrief()}
-            <button type="button" className={"btn btn-outline-dark"} onClick={this.toggleEdit}>Edit</button>
-            <button type="button" className={"btn btn-outline-danger"} onClick={this.deleteDate}>Delete</button>
+            <button type="button" className={"btn"} onClick={this.toggleEdit}>Edit</button>
+            <button type="button" className={"btn-delete"} onClick={this.deleteDate}>X</button>
           </div>}
       </div>
     );

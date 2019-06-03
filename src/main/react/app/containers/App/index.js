@@ -7,20 +7,18 @@
  */
 
 import React from "react";
-import { nextOccurrenceByYear, nextOccurrenceByMonth, format, formatDate } from "utils/date";
 
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "index.css";
-import ExcludedDate from './excludedDate'
+import "./style/index.css";
+import ExcludedDate from "./excludedDate";
 
 
 export default class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      excludedDate: [],
+      excludedDate: []
     };
   }
 
@@ -69,9 +67,9 @@ export default class App extends React.Component {
         {this.state.excludedDate.length <= 0 ?
           <div>There's no excluded dates</div> : this.state.excludedDate.map((item, index) => (
             <ExcludedDate key={index} date={item} onEdit={this.handleChildEdit} onDelete={this.handleChildDelete}
-                         />
+            />
           ))}
-        <button type={"button"} className='btn btn-outline-primary form-row' onClick={this.addChild}>Add</button>
+        <button type={'button'} className='btn' onClick={this.addChild}>Add</button>
       </div>
     );
   }

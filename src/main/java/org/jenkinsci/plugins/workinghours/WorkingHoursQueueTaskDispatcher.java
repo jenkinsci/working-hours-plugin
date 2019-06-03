@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.workinghours;
 
+import hudson.ExtensionList;
 import org.jenkinsci.plugins.workinghours.actions.EnforceBuildScheduleAction;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
@@ -120,7 +121,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
 
         EnforceBuildScheduleAction action = itemActionable.getAction(EnforceBuildScheduleAction.class);
 
-        WorkingHoursConfig config = WorkingHoursConfig.get();
+        WorkingHoursPlugin config = ExtensionList.lookup(WorkingHoursPlugin.class).get(0);
 
         // Check whether today should be excluded according to the excluded dates we set.
         for (ExcludedDate excludedDate : config.getExcludedDates()) {
