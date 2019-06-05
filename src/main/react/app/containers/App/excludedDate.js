@@ -8,7 +8,6 @@ export default class ExcludeDate extends React.Component {
   constructor() {
     super();
     this.state = {
-      edit: false,
       name: "",
       startDate: {
         dynamic: false,
@@ -78,10 +77,10 @@ export default class ExcludeDate extends React.Component {
 
 
   toggleEdit = () => {
-    if (this.props.date.edit) {
-      this.props.onEdit(this.props.date.index, false);
+    if (this.props.opened) {
+      this.props.onEdit(this.props.index, false, this.state);
     } else {
-      this.props.onEdit(this.props.date.index, true);
+      this.props.onEdit(this.props.index, true, this.state);
     }
   };
 
@@ -93,10 +92,6 @@ export default class ExcludeDate extends React.Component {
 
     }
   };
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log("call update");
-  }
 
   /*Get a brief description of this excluded date.*/
   getBrief() {
@@ -155,18 +150,18 @@ export default class ExcludeDate extends React.Component {
   render() {
     const { repeat, noEnd } = this.state;
     return (
-      <div className={"excluded-date"}>
-        {this.props.date.edit ? <div>
+      <div className={"config-item"}>
+        {this.props.opened ? <div>
             <div className={"form-row"}>
               <label className={"form-item-label"}>Name</label>
-              <input placeholder={"input date name"} value={this.state.name}
-                     className={"input"}
+              <input placeholder={"Enter a name"} value={this.state.name}
+                     className={"input input-text"}
                      style={{ width: 200 }}
                      onChange={this.handleNameChange}/>
             </div>
             <div>
               <label className={"form-item-label"}>Preset</label>
-              <select className={"input"}
+              <select className={"input input-select"}
                       onChange={this.handlePresetChange}
                       style={{ width: 300 }}
                       placeholder="select preset date"
@@ -192,18 +187,18 @@ export default class ExcludeDate extends React.Component {
               <input id='radio-month' name="period" type="radio"
                      checked={this.state.repeatPeriod === PERIODS.Month}
                      onChange={this.handleRepeatPeriodChange} value={PERIODS.Month}/>
-              <label className={'label-inline'}>Month</label>
+              <label className={"label-inline"}>Month</label>
 
               <input id='radio-year' name="period" type="radio"
                      checked={this.state.repeatPeriod === PERIODS.Year}
                      onChange={this.handleRepeatPeriodChange} value={PERIODS.Year}/>
-              <label className={'label-inline'}>Year </label>
+              <label className={"label-inline"}>Year </label>
             </div>
             }
 
             {repeat && <div className={"form-row"}>
               <label className={"form-item-label"}>Repeat Interval</label>
-              <div>Each <select className={"input"} value={this.state.repeatInterval}
+              <div>Each <select className={"input input-select"} value={this.state.repeatInterval}
                                 style={{ width: 70, marginRight: 10 }}
                                 onChange={this.handleIntervalChange}>
 
@@ -219,7 +214,7 @@ export default class ExcludeDate extends React.Component {
             </div>}
             {repeat && <div className={"form-row"}>
               <label className={"form-item-label"}>Repeat Count</label>
-              <div><select className={"input"} value={this.state.repeatCount}
+              <div><select className={"input input-select"} value={this.state.repeatCount}
                            style={{ width: 120, marginRight: 10 }}
                            onChange={this.handleCountChange}>
                 <option value={-1}>No End</option>
@@ -259,13 +254,14 @@ export default class ExcludeDate extends React.Component {
             <div className={"form-row"}>
               <div className={"form-item-label"}/>
               {/*<button type="button" className="btn btn-outline-primary">Save</button>*/}
-              <button type="button" className={"btn"} onClick={this.toggleEdit}>Close</button>
+              <button type="button" className={"btn btn-gray"} onClick={this.toggleEdit}>Save and Close</button>
+              <button type="button" className={"btn-delete"} onClick={this.deleteDate}>Delete</button>
             </div>
           </div> :
           <div>
-            {this.getBrief()}
-            <button type="button" className={"btn"} onClick={this.toggleEdit}>Edit</button>
-            <button type="button" className={"btn-delete"} onClick={this.deleteDate}>X</button>
+            <span style={{ lineHeight: "20px" }}>{this.getBrief()}</span>
+            <button type="button" className={"btn btn-gray"} onClick={this.toggleEdit}>Edit</button>
+            <button type="button" className={"btn btn-delete"} onClick={this.deleteDate}>X</button>
           </div>}
       </div>
     );
@@ -274,5 +270,4 @@ export default class ExcludeDate extends React.Component {
   componentDidMount() {
     this.setState(this.props.date);
   }
-
 }
