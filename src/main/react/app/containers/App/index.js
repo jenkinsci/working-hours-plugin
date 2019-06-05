@@ -44,52 +44,17 @@ export default class App extends React.Component {
 
     this.setState({
       excludedDates: list
-    });
+    }, );
 
+  };
+
+  uploadDates() {
     setExcludedDates({
-      data: list
+      data: this.state.excludedDates
         .map(item => JSON.stringify(item))
     }).then(res => {
       console.log("updated");
     });
-  };
-
-  /**
-   * Handler for updating a excluded date
-   * @param index The index of the child
-   * @param state The new state that the child want to update
-   */
-  handleExcludedDateUpdate = (state, index) => {
-    let list = this.state.excludedDates;
-    list[index] = state;
-    this.setState({
-      excludedDates: list
-    });
-  };
-
-  /**
-   * Handler for updating a time range.
-   * @param index The index of the child
-   * @param state The new state that the child want to update
-   */
-  handleTimeRangeUpdate = (state, index) => {
-    let list = this.state.timeRanges;
-    list[index] = state;
-    this.setState({
-      timeRanges: list
-    }, () => {
-      setExcludedDates({
-        data: this.state.timeRanges
-          .map(item => JSON.stringify(item))
-      }).then(res => {
-        console.log("updated");
-      });
-    });
-  };
-
-
-  componentWillUpdate(nextProps, nextState, nextContext) {
-
   }
 
 
@@ -118,11 +83,11 @@ export default class App extends React.Component {
    * @param index
    */
   handleExcludedDateDelete = (index) => {
+    if(openIndex === index){
+      openIndex = -1;
+    }
     let list = this.state.excludedDates;
     list.splice(index, index + 1);
-    list.forEach((item, index) => {
-      item.index = index;
-    });
     this.setState({
       excludedDates: list
     });
@@ -135,13 +100,14 @@ export default class App extends React.Component {
   handleTimeRangeDelete = (index) => {
     let list = this.state.timeRanges;
     list.splice(index, index + 1);
-    list.forEach((item, index) => {
-      item.index = index;
-    });
     this.setState({
       timeRanges: list
     });
   };
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    this.uploadDates(prevState.excludedDates)
+  }
 
 
   /**
@@ -190,20 +156,19 @@ export default class App extends React.Component {
     return (
       <div>
         Time Range
-        <div>
+        <div className={"config-item"}>
           {this.state.timeRanges.length <= 0 ?
-            <div className={"config-item"}>Time range is not
+            <div >Time range is not
               configured.</div> : this.state.timeRanges.map((item, index) => (
               <TimeRange key={index}
+                         index={index}
                          range={item}
-                         onEdit={this.handleTimeRangeChange}
-                         onUpdate={this.handleTimeRangeUpdate}
                          onDelete={this.handleTimeRangeDelete}
               />
             ))}
 
           {/*No more than 7 time ranges*/}
-          {this.state.timeRanges.length >= 7 &&
+          {this.state.timeRanges.length < 7 &&
           <button type={"button"} className='btn btn-gray' onClick={this.addTimeRange}>Add</button>}
         </div>
         Excluded Dates
