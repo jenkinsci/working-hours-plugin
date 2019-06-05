@@ -5,7 +5,9 @@ const logger = require('./logger');
 
 const argv = require('./argv');
 const port = require('./port');
+const config = require('./config')
 const setup = require('./middlewares/frontendMiddleware');
+var proxy = require('http-proxy-middleware')
 const isDev = process.env.NODE_ENV !== 'production';
 const ngrok =
   (isDev && process.env.ENABLE_TUNNEL) || argv.tunnel
@@ -27,13 +29,22 @@ setup(app, {
 const customHost = argv.host || process.env.HOST;
 const host = customHost || null; // Let http.Server use its default IPv6/4 host
 const prettyHost = customHost || 'localhost';
-
+const proxyTable = config.proxyTable;
 // use the gzipped bundle
 app.get('*.js', (req, res, next) => {
   req.url = req.url + '.gz'; // eslint-disable-line
   res.set('Content-Encoding', 'gzip');
   next();
 });
+
+Object.keys(proxyTable).forEach(function (context) {
+  var options = proxyTable[context]
+  if (typeof options === 'string') {
+    options = { target: options }
+  }
+  console.log("proxy", context, "to", options)
+  app.use(context,proxy(options))
+})
 
 // Start your app.
 app.listen(port, host, async err => {
