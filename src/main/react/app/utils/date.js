@@ -59,10 +59,6 @@ export function format(moment) {
 }
 
 export function formatDate(date) {
-  if (typeof date === 'string') {
-    return date;
-  } else {
     return moment(date).format('dddd, MMMM Do YYYY');
-  }
 }
 

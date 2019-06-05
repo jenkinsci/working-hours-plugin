@@ -87,7 +87,7 @@ export default class ExcludeDate extends React.Component {
   deleteDate = () => {
     if (window.confirm("Are you sure to delete?")
     ) {
-      this.props.onDelete(this.props.date.index);
+      this.props.onDelete(this.props.index);
     } else {
 
     }
