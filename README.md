@@ -1,5 +1,8 @@
 # Working Hours Jenkins Plugin
 
+[![Join the chat at https://gitter.im/jenkinsci/working-hours-plugin](https://badges.gitter.im/jenkinsci/working-hours-plugin.svg)](https://gitter.im/jenkinsci/working-hours-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 The working hours plugin allows you to set up a schedule of allowable build times;
 projects can opt in to use the schedule to prevent them from running outside of
 configured allowable build times. If a build is scheduled during non-working hours
