@@ -39,8 +39,17 @@ export default class ExcludeDate extends React.Component {
     };
   }
 
+  /*Apply the selected preset.*/
   applyPreset = ()=>{
-    // if(this.state.)
+
+    /*According to the selected date type, use different algorithms.*/
+    switch (this.state.selectedDateType) {
+      case DATE_TYPE.TYPE_GREGORIAN:
+        this.setState(this.getDatePresets()[parseInt(e.target.value)]);
+        break;
+      case DATE_TYPE.TYPE_CHINESE_LUNAR:
+        this.setState(this.getDatePresets()[parseInt(e.target.value)]);
+    }
   }
 
   getPeriodText = () => {
@@ -70,34 +79,21 @@ export default class ExcludeDate extends React.Component {
     this.setState({ repeatCount: e.target.value });
   };
 
-  /**
-   * Only when a preset was selected, we change the type of the excluded date.
-   * @param e event
-   */
   handlePresetChange = (e) => {
     this.setState({
-      type: this.state.selectedDateType,
-
-      /*Also set preset temporarily.*/
+      /*Set the preset index for later apply.*/
       selectedPreset: parseInt(e.target.value)
     });
 
 
-    /*According to the selected date type, use different algorithms.*/
-    switch (this.state.selectedDateType) {
-      case DATE_TYPE.TYPE_GREGORIAN:
-        this.setState(this.getDatePresets()[parseInt(e.target.value)]);
-        break;
-      case DATE_TYPE.TYPE_CHINESE_LUNAR:
-        debugger;
-        this.setState(this.getDatePresets()[parseInt(e.target.value)]);
-    }
+
   };
 
   handleDateTypeChange = (e) => {
     this.setState({
       selectedDateType: e.target.value,
-      selectedPreset: undefined
+      /*Set the default index of the selected preset*/
+      selectedPreset: 0,
     });
   };
 
@@ -113,14 +109,20 @@ export default class ExcludeDate extends React.Component {
     });
   };
 
+  /*For the selected date type, get its presets.*/
   getDatePresets() {
     return getDatePresets(this.state.selectedDateType);
   }
 
 
+  /*Tell the parent that this child want to be toggle open state.*/
   toggleEdit = () => {
+
+    /*Delete some field that is not relevant about data serializing*/
     delete this.state.selectedDateType
     delete this.state.selectedPreset
+
+    /*Call onEdit, also emit data to parent(for serializing use).*/
     if (this.props.opened) {
       this.props.onEdit(this.props.index, false, this.state);
     } else {
@@ -137,6 +139,7 @@ export default class ExcludeDate extends React.Component {
     }
   };
 
+  /*Helper function to judge whether the day is based on gregorian calendar*/
   isGregorian = () => {
     return this.state.type === DATE_TYPE.TYPE_GREGORIAN;
   };
