@@ -10,10 +10,10 @@ export default class ExcludeDate extends React.Component {
     super();
     this.state = {
       selectedDateType: DATE_TYPE.TYPE_GREGORIAN,
-      selectedPreset: undefined,
+      selectedPreset: -1,
 
       name: "",
-      type: DATE_TYPE.TYPE_GREGORIAN,
+      type: "",
       utcOffset: moment().utcOffset(),
       startDate: {
         dynamic: false,
@@ -37,6 +37,10 @@ export default class ExcludeDate extends React.Component {
       repeatInterval: 1,
       repeatPeriod: PERIODS.Year
     };
+  }
+
+  applyPreset = ()=>{
+    // if(this.state.)
   }
 
   getPeriodText = () => {
@@ -75,7 +79,7 @@ export default class ExcludeDate extends React.Component {
       type: this.state.selectedDateType,
 
       /*Also set preset temporarily.*/
-      selectedPreset: e.target.value
+      selectedPreset: parseInt(e.target.value)
     });
 
 
@@ -97,6 +101,12 @@ export default class ExcludeDate extends React.Component {
     });
   };
 
+  handleTimezoneChange = (e)=>{
+    this.setState({
+      utcOffset:e.target.value
+    })
+  }
+
   handleNameChange = (e) => {
     this.setState({
       name: e.target.value
@@ -109,6 +119,8 @@ export default class ExcludeDate extends React.Component {
 
 
   toggleEdit = () => {
+    delete this.state.selectedDateType
+    delete this.state.selectedPreset
     if (this.props.opened) {
       this.props.onEdit(this.props.index, false, this.state);
     } else {
@@ -196,6 +208,13 @@ export default class ExcludeDate extends React.Component {
                      style={{ width: 200 }}
                      onChange={this.handleNameChange}/>
             </div>
+            <div className={"form-row"}>
+              <label className={"form-item-label"}>Base Timezone</label>
+              <input placeholder={"Enter a name"} value={this.state.utcOffset}
+                     className={"input input-text"}
+                     style={{ width: 200 }}
+                     onChange={this.handleTimezoneChange}/>
+            </div>
             <div>
               <label className={"form-item-label"}>Preset</label>
               <select className={"input input-select"}
@@ -210,6 +229,7 @@ export default class ExcludeDate extends React.Component {
               </select>
               <select className={"input input-select"}
                       value={this.state.selectedPreset}
+                      defaultValue=""
                       onChange={this.handlePresetChange}
                       style={{ width: 300 }}
                       placeholder="select preset date"
@@ -218,6 +238,8 @@ export default class ExcludeDate extends React.Component {
                   <option key={index} value={index}>{item.name}</option>
                 )}
               </select>
+              <button type="button" className={"btn btn-gray"} onClick={this.applyPreset}>Apply</button>
+
             </div>
             <div className={"form-row"}
             >
