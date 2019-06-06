@@ -11,7 +11,7 @@ export const WEEKDAYS = {
 export const PERIODS = {
   Week: 1,
   Month: 2,
-  Year: 3,
+  Year: 3
 };
 
 export const ORDERS = { first: 1, second: 2, third: 3, fourth: 4 };
@@ -44,3 +44,8 @@ export const DATE_PRESETS = [
     }, repeatPeriod: PERIODS.Year, repeatInterval: 1, repeatCound: -1
   }
 ];
+
+export const DATE_TYPE = {
+  TYPE_GREGORIAN: "Gregorian",
+  TYPE_CHINESE_LUNAR: "Chinese Lunar"
+};

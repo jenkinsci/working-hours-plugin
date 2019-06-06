@@ -1,6 +1,6 @@
 import React from "react";
 import DateInput from "./dateInput";
-import { DATE_PRESETS, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "./constants";
+import { DATE_PRESETS, DATE_TYPE, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "./constants";
 import { formatDate } from "../../utils/date";
 
 
@@ -9,6 +9,8 @@ export default class ExcludeDate extends React.Component {
     super();
     this.state = {
       name: "",
+      type:DATE_TYPE.TYPE_GREGORIAN,
+        utcOffset:moment().utcOffset(),
       startDate: {
         dynamic: false,
         date: new Date(),

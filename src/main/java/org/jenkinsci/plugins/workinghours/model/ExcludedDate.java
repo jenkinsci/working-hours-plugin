@@ -34,6 +34,7 @@ import org.kohsuke.stapler.QueryParameter;
 
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Encapsulates an excluded date along with name for UI purposes.
@@ -118,6 +119,18 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
     }
 
     public static class DataContainer {
+
+        /**
+         * Minutes offset to the UTC time, indicates the base timezone of the excluded date.
+         * Default to UTC(UTC+0).
+         */
+        public int utcOffset = 0;
+
+        /**
+         * A type that indicates whether
+         */
+        public String type = DateType.TYPE_GREGORIAN;
+
         /**
          * The display name of this rule.
          */
