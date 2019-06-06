@@ -148,4 +148,17 @@ public class TimeRangeUtility {
         return format.format(date);
     }
 
+    /**
+     * New Method to get formatted date in dd/MM/yy format. Will consider adding 
+     * locale parameter for added flexibility. Will not change for now as it involves 
+     * much refactoring of code.
+     * @param cal the calender.
+     * @return formatted time string.
+     */
+    public static String formattedDateDay(Calendar cal) {
+        Date date = cal.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
+        return format.format(date);
+    }
+
 }
