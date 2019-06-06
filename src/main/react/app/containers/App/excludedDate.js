@@ -1,16 +1,20 @@
 import React from "react";
 import DateInput from "./dateInput";
-import { DATE_PRESETS, DATE_TYPE, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "./constants";
-import { formatDate } from "../../utils/date";
+import { DATE_PRESETS, DATE_TYPE, getDatePresets, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "./constants";
+import { format, formatDate, nextOccurrenceByMonth, nextOccurrenceByYear } from "../../utils/date";
+import moment from "moment";
 
 
 export default class ExcludeDate extends React.Component {
   constructor() {
     super();
     this.state = {
+      selectedDateType: DATE_TYPE.TYPE_GREGORIAN,
+      selectedPreset: undefined,
+
       name: "",
-      type:DATE_TYPE.TYPE_GREGORIAN,
-        utcOffset:moment().utcOffset(),
+      type: DATE_TYPE.TYPE_GREGORIAN,
+      utcOffset: moment().utcOffset(),
       startDate: {
         dynamic: false,
         date: new Date(),
@@ -43,10 +47,6 @@ export default class ExcludeDate extends React.Component {
     this.setState({ repeat: event.target.checked });
   };
 
-  handleRepeatTypeChange = (e) => {
-    this.setState({ dateType: e.target.value });
-  };
-
   handleRepeatPeriodChange = (e) => {
     this.setState({ repeatPeriod: Number.parseInt(e.target.value) });
   };
@@ -66,16 +66,46 @@ export default class ExcludeDate extends React.Component {
     this.setState({ repeatCount: e.target.value });
   };
 
+  /**
+   * Only when a preset was selected, we change the type of the excluded date.
+   * @param e event
+   */
   handlePresetChange = (e) => {
-    this.setState(DATE_PRESETS[e.target.value]);
+    this.setState({
+      type: this.state.selectedDateType,
+
+      /*Also set preset temporarily.*/
+      selectedPreset: e.target.value
+    });
+
+
+    /*According to the selected date type, use different algorithms.*/
+    switch (this.state.selectedDateType) {
+      case DATE_TYPE.TYPE_GREGORIAN:
+        this.setState(this.getDatePresets()[parseInt(e.target.value)]);
+        break;
+      case DATE_TYPE.TYPE_CHINESE_LUNAR:
+        debugger;
+        this.setState(this.getDatePresets()[parseInt(e.target.value)]);
+    }
   };
 
+  handleDateTypeChange = (e) => {
+    this.setState({
+      selectedDateType: e.target.value,
+      selectedPreset: undefined
+    });
+  };
 
   handleNameChange = (e) => {
     this.setState({
       name: e.target.value
     });
   };
+
+  getDatePresets() {
+    return getDatePresets(this.state.selectedDateType);
+  }
 
 
   toggleEdit = () => {
@@ -93,6 +123,10 @@ export default class ExcludeDate extends React.Component {
     } else {
 
     }
+  };
+
+  isGregorian = () => {
+    return this.state.type === DATE_TYPE.TYPE_GREGORIAN;
   };
 
   /*Get a brief description of this excluded date.*/
@@ -153,6 +187,7 @@ export default class ExcludeDate extends React.Component {
     const { repeat, noEnd } = this.state;
     return (
       <div className={"config-item"}>
+        {/*Allow each date item to open or close, need help of the parent component.*/}
         {this.props.opened ? <div>
             <div className={"form-row"}>
               <label className={"form-item-label"}>Name</label>
@@ -164,11 +199,22 @@ export default class ExcludeDate extends React.Component {
             <div>
               <label className={"form-item-label"}>Preset</label>
               <select className={"input input-select"}
+                      value={this.state.selectedDateType}
+                      onChange={this.handleDateTypeChange}
+                      style={{ width: 150, marginRight: 10 }}
+                      placeholder="select preset date"
+              >
+                {Object.keys(DATE_TYPE).map((key, index) =>
+                  <option key={index} value={DATE_TYPE[key]}>{DATE_TYPE[key]}</option>
+                )}
+              </select>
+              <select className={"input input-select"}
+                      value={this.state.selectedPreset}
                       onChange={this.handlePresetChange}
                       style={{ width: 300 }}
                       placeholder="select preset date"
               >
-                {DATE_PRESETS.map((item, index) =>
+                {this.getDatePresets().map((item, index) =>
                   <option key={index} value={index}>{item.name}</option>
                 )}
               </select>
@@ -233,12 +279,21 @@ export default class ExcludeDate extends React.Component {
               </select> {this.state.repeatCount > -1 && "Time"}{this.state.repeatCount > 1 && "s"}
               </div>
             </div>}
-            {DateInput.call(this,
+            {this.isGregorian() && DateInput.call(this,
               {
                 field: "startDate",
                 name: "Start Date"
               }
             )}
+
+            {/*Show next occurrence when it's a regional date.*/}
+            {!this.isGregorian() && <div className={"form-row"} style={{ marginTop: "20px" }}>
+              <label className={"form-item-label"}>Next Occurrence</label>
+              <div className={"text-highlight"}>{
+                formatDate(this.state.nextOccurance)}
+              </div>
+            </div>}
+
 
             {repeat && !noEnd && DateInput.call(this,
               {

@@ -84,7 +84,7 @@ export default function DateInput(props) {
           <select className={"input input-select"} style={{ width: 120, marginLeft: 10 }}
                   value={dateObject.dynamicDate.month}
                   onChange={updateDynamicDateData("month")}>
-            {Object.keys(MONTHS).map(key => <option value={MONTHS[key]} key={key}>{key}</option>)}
+            {Object.keys(MONTHS).map(key => <option value={ORDERS[key]} key={key}>{key}</option>)}
           </select></div>
         }
 

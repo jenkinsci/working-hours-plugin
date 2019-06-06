@@ -32,20 +32,45 @@ export const MONTHS = {
 };
 
 
-export const DATE_PRESETS = [
-  {
-    name: "Thanksgiving Day", repeat: true, startDate: {
-      dynamic: true, dynamicDate: { month: 11, week: 4, day: 4 }
-    }, repeatPeriod: PERIODS.Year, repeatInterval: 1, repeatCound: -1
-  },
-  {
-    name: "Mother's Day", repeat: true, startDate: {
-      dynamic: true, dynamicDate: { month: 5, week: 2, day: 7 }
-    }, repeatPeriod: PERIODS.Year, repeatInterval: 1, repeatCound: -1
-  }
-];
+
+
 
 export const DATE_TYPE = {
   TYPE_GREGORIAN: "Gregorian",
   TYPE_CHINESE_LUNAR: "Chinese Lunar"
 };
+
+
+export const getDatePresets = (type) => {
+  switch (type) {
+    case DATE_TYPE.TYPE_GREGORIAN:
+      return GREGORIAN_DATE_PRESETS;
+    case DATE_TYPE.TYPE_CHINESE_LUNAR:
+      return CHINESE_LUNAR_DATE_PRESETS;
+    default:
+      return GREGORIAN_DATE_PRESETS;
+  }
+};
+
+
+export const GREGORIAN_DATE_PRESETS = [
+  {
+    type: DATE_TYPE.TYPE_GREGORIAN, name: "Thanksgiving Day", repeat: true, startDate: {
+      dynamic: true, dynamicDate: { month: 11, week: 4, day: 4 }
+    }, repeatPeriod: PERIODS.Year
+  },
+  {
+    type: DATE_TYPE.TYPE_GREGORIAN,
+    name: "Mother's Day", repeat: true, startDate: {
+      dynamic: true, dynamicDate: { month: 5, week: 2, day: 7 }
+    }, repeatPeriod: PERIODS.Year
+  }
+];
+
+export const CHINESE_LUNAR_DATE_PRESETS = [
+  {
+    type: DATE_TYPE.TYPE_CHINESE_LUNAR,
+    name: "Chinese New Year", repeat: true,
+    params: [1, 1, 1]
+  }
+];
