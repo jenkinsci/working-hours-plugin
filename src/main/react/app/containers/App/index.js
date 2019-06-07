@@ -14,14 +14,19 @@ import "./style/index.css";
 import ExcludedDate from "./excludedDate";
 import TimeRange from "./timeRange";
 import { getExcludedDates, setExcludedDates } from "../../api";
-
+import lodash from 'lodash'
 let openIndex = [];
 
 export default class App extends React.Component {
   constructor() {
     super();
     this.state = {
+      /*Data used to pass to child*/
       excludedDates: [],
+
+      /*A copy of the data, and will be used to post data*/
+      excludedDatesSrcData:[],
+
       timeRanges: []
     };
   }
@@ -42,21 +47,33 @@ export default class App extends React.Component {
 
     list[index] = state;
 
+    let srcDataList = this.state.excludedDatesSrcData;
+
+    /*Use lodash to deepcopy an object, so we could delete some helper fields.*/
+    let newItem = lodash.cloneDeep(state);
+
+    /*Delete some field that is not relevant about data serializing*/
+    delete newItem.selectedDateType;
+    delete newItem.selectedPreset;
+
+    srcDataList[index] = newItem;
+
+    /*Set both data for child and data for submit.*/
     this.setState({
-      excludedDates: list
-    }, );
+      excludedDates: list,
+      excludedDatesSrcData:srcDataList
+    });
 
   };
 
   uploadDates() {
     setExcludedDates({
-      data: this.state.excludedDates
+      data: this.state.excludedDatesSrcData
         .map(item => JSON.stringify(item))
     }).then(res => {
       console.log("updated");
     });
   }
-
 
   /**
    * Handler for fold/unfold a excluded date
@@ -83,7 +100,7 @@ export default class App extends React.Component {
    * @param index
    */
   handleExcludedDateDelete = (index) => {
-    if(openIndex === index){
+    if (openIndex === index) {
       openIndex = -1;
     }
     let list = this.state.excludedDates;
@@ -106,7 +123,7 @@ export default class App extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    this.uploadDates(prevState.excludedDates)
+    this.uploadDates(prevState.excludedDates);
   }
 
 
@@ -147,7 +164,8 @@ export default class App extends React.Component {
   componentDidMount() {
     getExcludedDates().then(res => {
       this.setState({
-        excludedDates: res.data.data.map(item => JSON.parse(item))
+        excludedDates: res.data.data.map(item => JSON.parse(item)),
+        excludedDatesSrcData: res.data.data.map(item => JSON.parse(item))
       });
     });
   }
@@ -158,7 +176,7 @@ export default class App extends React.Component {
         Time Range
         <div className={"config-item"}>
           {this.state.timeRanges.length <= 0 ?
-            <div >Time range is not
+            <div>Time range is not
               configured.</div> : this.state.timeRanges.map((item, index) => (
               <TimeRange key={index}
                          index={index}

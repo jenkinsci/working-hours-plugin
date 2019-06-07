@@ -1,8 +1,15 @@
 import React from "react";
 import DateInput from "./dateInput";
 import { DATE_PRESETS, DATE_TYPE, getDatePresets, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "./constants";
-import { format, formatDate, nextOccurrenceByMonth, nextOccurrenceByYear } from "../../utils/date";
+import {
+  format,
+  formatDate,
+  nextOccurrenceByMonth,
+  nextOccurrenceByYear,
+  nextOccurrenceChineseLunar
+} from "../../utils/date";
 import moment from "moment";
+import _ from 'lodash'
 
 
 export default class ExcludeDate extends React.Component {
@@ -11,6 +18,7 @@ export default class ExcludeDate extends React.Component {
     this.state = {
       selectedDateType: DATE_TYPE.TYPE_GREGORIAN,
       selectedPreset: -1,
+      nextOccurrence:undefined,
 
       name: "",
       type: "",
@@ -40,17 +48,24 @@ export default class ExcludeDate extends React.Component {
   }
 
   /*Apply the selected preset.*/
-  applyPreset = ()=>{
-
+  applyPreset = () => {
     /*According to the selected date type, use different algorithms.*/
     switch (this.state.selectedDateType) {
       case DATE_TYPE.TYPE_GREGORIAN:
-        this.setState(this.getDatePresets()[parseInt(e.target.value)]);
+        this.setState(this.getDatePresets()[this.state.selectedPreset]);
         break;
       case DATE_TYPE.TYPE_CHINESE_LUNAR:
-        this.setState(this.getDatePresets()[parseInt(e.target.value)]);
+        let preset = this.getDatePresets()[this.state.selectedPreset]
+        this.setState(preset);
+
+        /*For types that are not gregorian, we calculate its occurrence
+        * using its corresponding algorithm.*/
+        debugger
+        this.setState({
+          nextOccurrence:nextOccurrenceChineseLunar(preset.params)
+        })
     }
-  }
+  };
 
   getPeriodText = () => {
     return Object.keys(PERIODS)[this.state.repeatPeriod - 1];
@@ -84,24 +99,21 @@ export default class ExcludeDate extends React.Component {
       /*Set the preset index for later apply.*/
       selectedPreset: parseInt(e.target.value)
     });
-
-
-
   };
 
   handleDateTypeChange = (e) => {
     this.setState({
       selectedDateType: e.target.value,
       /*Set the default index of the selected preset*/
-      selectedPreset: 0,
+      selectedPreset: 0
     });
   };
 
-  handleTimezoneChange = (e)=>{
+  handleTimezoneChange = (e) => {
     this.setState({
-      utcOffset:e.target.value
-    })
-  }
+      utcOffset: e.target.value
+    });
+  };
 
   handleNameChange = (e) => {
     this.setState({
@@ -117,10 +129,6 @@ export default class ExcludeDate extends React.Component {
 
   /*Tell the parent that this child want to be toggle open state.*/
   toggleEdit = () => {
-
-    /*Delete some field that is not relevant about data serializing*/
-    delete this.state.selectedDateType
-    delete this.state.selectedPreset
 
     /*Call onEdit, also emit data to parent(for serializing use).*/
     if (this.props.opened) {
@@ -196,6 +204,10 @@ export default class ExcludeDate extends React.Component {
     }
 
     return words.join(" ");
+  }
+
+  componentWillUpdate(nextProps, nextState, nextContext) {
+    console.log(nextState.selectedDateType);
   }
 
   render() {
@@ -315,7 +327,7 @@ export default class ExcludeDate extends React.Component {
             {!this.isGregorian() && <div className={"form-row"} style={{ marginTop: "20px" }}>
               <label className={"form-item-label"}>Next Occurrence</label>
               <div className={"text-highlight"}>{
-                formatDate(this.state.nextOccurance)}
+                formatDate(this.state.nextOccurrence)}
               </div>
             </div>}
 

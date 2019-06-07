@@ -32,9 +32,6 @@ export const MONTHS = {
 };
 
 
-
-
-
 export const DATE_TYPE = {
   TYPE_GREGORIAN: "Gregorian",
   TYPE_CHINESE_LUNAR: "Chinese Lunar"
@@ -67,10 +64,11 @@ export const GREGORIAN_DATE_PRESETS = [
   }
 ];
 
+/*Temporarily use a constant here, maybe later we could use some standalone Api or some files.*/
 export const CHINESE_LUNAR_DATE_PRESETS = [
   {
     type: DATE_TYPE.TYPE_CHINESE_LUNAR,
     name: "Chinese New Year", repeat: true,
-    params: [1, 1, 1]
+    params: "1,1"
   }
 ];
