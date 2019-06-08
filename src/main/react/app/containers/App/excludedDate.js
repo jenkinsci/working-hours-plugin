@@ -60,7 +60,6 @@ export default class ExcludeDate extends React.Component {
 
         /*For types that are not gregorian, we calculate its occurrence
         * using its corresponding algorithm.*/
-        debugger
         this.setState({
           nextOccurrence:nextOccurrenceChineseLunar(preset.params)
         })

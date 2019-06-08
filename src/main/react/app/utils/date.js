@@ -71,33 +71,38 @@ export function formatDate(date) {
 export function nextOccurrenceChineseLunar(param) {
   let splitParam = param.split(",").map(item => parseInt(item));
   if (splitParam[0] && splitParam[1]) {
-    let now = moment().hour(0).minute(0);
+    let now = moment();
 
     /*This year's target day in solar calendar.*/
     let solarResult = ChineseLunarCalendar.lunar2solar(now.year(), splitParam[0], splitParam[1]);
     console.log(moment({
       year: solarResult.cYear,
       month: solarResult.cMonth - 1,
-      day: solarResult.cDay
-    }))
+      date: solarResult.cDay
+    }));
+    console.log(moment({
+      year: now.year(),
+      month: now.month(),
+      date: now.date()
+    }));
     if (moment({
       year: solarResult.cYear,
       month: solarResult.cMonth - 1,
-      day: solarResult.cDay
-    }).isBefore(moment({year:now.year(),month:now.month(),day:now.day()}))) {
+      date: solarResult.cDay
+    }).isBefore(moment({ year: now.year(), month: now.month(), date: now.date() }))) {
       /*If is before today, we set it to the next year.*/
       let solarResultNextYear = ChineseLunarCalendar.lunar2solar(now.year() + 1, splitParam[0], splitParam[1]);
-      console.log(solarResultNextYear)
+      console.log(solarResultNextYear);
       return moment({
         year: solarResultNextYear.cYear,
         month: solarResultNextYear.cMonth - 1,
-        day: solarResultNextYear.cDay
+        date: solarResultNextYear.cDay
       });
-    }else {
+    } else {
       return moment({
         year: solarResult.cYear,
         month: solarResult.cMonth - 1,
-        day: solarResult.cDay
+        date: solarResult.cDay
       });
     }
   }

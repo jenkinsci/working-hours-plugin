@@ -70,5 +70,11 @@ export const CHINESE_LUNAR_DATE_PRESETS = [
     type: DATE_TYPE.TYPE_CHINESE_LUNAR,
     name: "Chinese New Year", repeat: true,
     params: "1,1"
+  },
+  {
+    type: DATE_TYPE.TYPE_CHINESE_LUNAR,
+    name: "Dragon Boat Festival", repeat: true,
+    params: "5,5"
   }
+
 ];
