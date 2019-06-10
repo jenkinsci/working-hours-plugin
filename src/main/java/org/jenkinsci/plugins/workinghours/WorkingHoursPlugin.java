@@ -81,7 +81,6 @@ public class WorkingHoursPlugin extends GlobalConfiguration {
         load();
     }
 
-
     /**
      * Gets the list of included times.
      *

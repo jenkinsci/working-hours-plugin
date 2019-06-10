@@ -48,7 +48,8 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
     private static Gson gson = null;
 
     /**
-     * Set or update the fields with a json which is then
+     * Set or update the fields with a json string.
+     * This json would be stored and return to the front app.
      */
     public void setJsonData(String inputData) {
         this.jsonData = inputData;
@@ -187,7 +188,7 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
         /**
          * If static, the actual date(timestamp) of this excluded date.
          */
-        public String date = "1234";
+        public String date = "";
 
         public Date(boolean dynamic, DynamicDate dynamicDate, String date) {
             this.dynamic = dynamic;

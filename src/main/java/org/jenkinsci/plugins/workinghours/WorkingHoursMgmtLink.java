@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2011  Matthias Steinkogler, Thomas Fürer
+ *  Copyright (C) 2019  Jack Shen
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,10 +29,7 @@ import org.kohsuke.stapler.StaplerProxy;
 import javax.management.Descriptor;
 
 /**
- * A backup solution for Hudson. Backs up configuration files from Hudson and its jobs.
- * <p>
- * Originally based on the Backup plugin by Vincent Sellier, Manufacture Fran�aise des Pneumatiques Michelin, Romain
- * Seguy, et.al. Subsequently heavily modified.
+ * An entry point for Working Hours Plugin's config page.
  */
 @Extension
 public class WorkingHoursMgmtLink extends ManagementLink implements StaplerProxy {
