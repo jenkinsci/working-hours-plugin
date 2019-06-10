@@ -12,9 +12,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/index.css";
 import ExcludedDate from "./excludedDate";
-import TimeRange from "./timeRange";
+import TimeRange from "./index/timeRange";
 import { getExcludedDates, setExcludedDates } from "../../api";
-import lodash from 'lodash'
+import {cloneDeep} from 'lodash'
+
 let openIndex = [];
 
 export default class App extends React.Component {
@@ -50,7 +51,7 @@ export default class App extends React.Component {
     let srcDataList = this.state.excludedDatesSrcData;
 
     /*Use lodash to deepcopy an object, so we could delete some helper fields.*/
-    let newItem = lodash.cloneDeep(state);
+    let newItem = cloneDeep(state);
 
     /*Delete some field that is not relevant about data serializing*/
     delete newItem.selectedDateType;

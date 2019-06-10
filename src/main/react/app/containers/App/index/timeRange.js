@@ -1,5 +1,5 @@
 import React from "react";
-import { WEEKDAYS } from "./constants";
+import { WEEKDAYS } from "../constants";
 import moment from "moment";
 import DatePicker from "react-datepicker/es";
 

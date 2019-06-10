@@ -1,16 +1,16 @@
 import React from "react";
 import DateInput from "./dateInput";
-import { DATE_PRESETS, DATE_TYPE, getDatePresets, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "./constants";
+import { DATE_PRESETS, DATE_TYPE, getDatePresets, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "../constants";
 import {
   format,
   formatDate,
   nextOccurrenceByMonth,
   nextOccurrenceByYear,
   nextOccurrenceChineseLunar
-} from "../../utils/date";
+} from "../../../utils/date";
 import moment from "moment";
-import _ from 'lodash'
-
+import { getBrief } from "../../../utils";
+import { range } from "lodash";
 
 export default class ExcludeDate extends React.Component {
   constructor() {
@@ -18,7 +18,7 @@ export default class ExcludeDate extends React.Component {
     this.state = {
       selectedDateType: DATE_TYPE.TYPE_GREGORIAN,
       selectedPreset: -1,
-      nextOccurrence:undefined,
+      nextOccurrence: undefined,
 
       name: "",
       type: "",
@@ -55,19 +55,15 @@ export default class ExcludeDate extends React.Component {
         this.setState(this.getDatePresets()[this.state.selectedPreset]);
         break;
       case DATE_TYPE.TYPE_CHINESE_LUNAR:
-        let preset = this.getDatePresets()[this.state.selectedPreset]
+        let preset = this.getDatePresets()[this.state.selectedPreset];
         this.setState(preset);
 
         /*For types that are not gregorian, we calculate its occurrence
         * using its corresponding algorithm.*/
         this.setState({
-          nextOccurrence:nextOccurrenceChineseLunar(preset.params)
-        })
+          nextOccurrence: nextOccurrenceChineseLunar(preset.params)
+        });
     }
-  };
-
-  getPeriodText = () => {
-    return Object.keys(PERIODS)[this.state.repeatPeriod - 1];
   };
 
   handleRepeatChange = (event) => {
@@ -125,10 +121,8 @@ export default class ExcludeDate extends React.Component {
     return getDatePresets(this.state.selectedDateType);
   }
 
-
   /*Tell the parent that this child want to be toggle open state.*/
   toggleEdit = () => {
-
     /*Call onEdit, also emit data to parent(for serializing use).*/
     if (this.props.opened) {
       this.props.onEdit(this.props.index, false, this.state);
@@ -141,8 +135,6 @@ export default class ExcludeDate extends React.Component {
     if (window.confirm("Are you sure to delete?")
     ) {
       this.props.onDelete(this.props.index);
-    } else {
-
     }
   };
 
@@ -151,62 +143,8 @@ export default class ExcludeDate extends React.Component {
     return this.state.type === DATE_TYPE.TYPE_GREGORIAN;
   };
 
-  /*Get a brief description of this excluded date.*/
-  getBrief() {
-    let words = [];
-    words.push(this.state.name);
-    if (this.state.repeat) {
-      words.push("repeat");
-      words.push("on");
-      if (this.state.startDate.dynamic) {
-        words.push("each");
-        if (this.state.repeatPeriod > PERIODS.Week) {
-          words.push(Object.keys(ORDERS)[this.state.startDate.dynamicDate.week - 1]);
-        }
-        words.push(Object.keys(WEEKDAYS)[this.state.startDate.dynamicDate.day - 1]);
-        if (this.state.repeatPeriod > PERIODS.Month) {
-          words.push("of");
-          words.push(Object.keys(MONTHS)[this.state.startDate.dynamicDate.month - 1]);
-        }
-      } else {
-        words.push(formatDate(this.state.startDate.date));
-      }
-      if (!this.state.noEnd) {
-        words.push("till");
-        if (this.state.endDate.dynamic) {
-          words.push("the");
-          words.push(Object.keys(ORDERS)[this.state.endDate.dynamicDate.week - 1]);
-          words.push(Object.keys(WEEKDAYS)[this.state.endDate.dynamicDate.day - 1]);
-          words.push("of");
-          words.push(Object.keys(MONTHS)[this.state.endDate.dynamicDate.month - 1]);
-        } else {
-          words.push(formatDate(this.state.endDate.date));
-        }
-      } else {
-
-      }
-
-    } else {
-      words.push("on");
-      if (this.state.startDate.dynamic) {
-        if (this.state.repeatPeriod > PERIODS.Week) {
-          words.push(Object.keys(ORDERS)[this.state.startDate.dynamicDate.week - 1]);
-        }
-        words.push(Object.keys(WEEKDAYS)[this.state.startDate.dynamicDate.day - 1]);
-        if (this.state.repeatPeriod > PERIODS.Month) {
-          words.push("of");
-          words.push(Object.keys(MONTHS)[this.state.startDate.dynamicDate.month - 1]);
-        }
-      } else {
-        words.push(formatDate(this.state.startDate.date));
-      }
-    }
-
-    return words.join(" ");
-  }
-
-  componentWillUpdate(nextProps, nextState, nextContext) {
-    console.log(nextState.selectedDateType);
+  componentDidMount() {
+    this.setState(this.props.date);
   }
 
   render() {
@@ -285,15 +223,11 @@ export default class ExcludeDate extends React.Component {
               <div>Each <select className={"input input-select"} value={this.state.repeatInterval}
                                 style={{ width: 70, marginRight: 10 }}
                                 onChange={this.handleIntervalChange}>
-
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-
+                {range(1, 6).map(item =>
+                  <option value={item}>{item}</option>
+                )}
               </select>
-                {this.getPeriodText() + (this.state.repeatInterval > 1 ? "s" : "")}
+                {Object.keys(PERIODS)[this.state.repeatPeriod - 1] + (this.state.repeatInterval > 1 ? "s" : "")}
               </div>
             </div>}
             {repeat && <div className={"form-row"}>
@@ -302,16 +236,9 @@ export default class ExcludeDate extends React.Component {
                            style={{ width: 120, marginRight: 10 }}
                            onChange={this.handleCountChange}>
                 <option value={-1}>No End</option>
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-                <option value={4}>4</option>
-                <option value={5}>5</option>
-                <option value={6}>6</option>
-                <option value={7}>7</option>
-                <option value={8}>8</option>
-                <option value={9}>9</option>
-                <option value={10}>10</option>
+                {range(1, 11).map(item =>
+                  <option value={item}>{item}</option>
+                )}
               </select> {this.state.repeatCount > -1 && "Time"}{this.state.repeatCount > 1 && "s"}
               </div>
             </div>}
@@ -352,15 +279,11 @@ export default class ExcludeDate extends React.Component {
             </div>
           </div> :
           <div>
-            <span style={{ lineHeight: "20px" }}>{this.getBrief()}</span>
+            <span style={{ lineHeight: "20px" }}>{getBrief.call(this)}</span>
             <button type="button" className={"btn btn-gray"} onClick={this.toggleEdit}>Edit</button>
             <button type="button" className={"btn btn-delete"} onClick={this.deleteDate}>X</button>
           </div>}
       </div>
     );
-  }
-
-  componentDidMount() {
-    this.setState(this.props.date);
   }
 }
