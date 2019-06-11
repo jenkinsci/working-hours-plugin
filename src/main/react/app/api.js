@@ -1,5 +1,5 @@
 import axios from "axios";
-import qs from "qs"
+import qs from "qs";
 
 let axiosInstance = {};
 
@@ -27,6 +27,13 @@ export const getExcludedDates = () => {
 };
 
 export const setExcludedDates = (params) => {
-  return axiosInstance.post("/working-hours/set-excluded-dates",params);
+  return axiosInstance.post("/working-hours/set-excluded-dates", params);
 };
 
+export const getTimeRanges = () => {
+  return axiosInstance.post("/working-hours/get-time-ranges");
+};
+
+export const setTimeRanges = (params) => {
+  return axiosInstance.post("/working-hours/set-time-ranges", params);
+};

@@ -43,15 +43,15 @@ public class TimeRangeUtility {
      * @return List of time ranges
      */
     public static List<TimeRange> getInclusiveRange() {
-        List<TimeRange> result = new ArrayList<>();
-
-        Calendar now = Calendar.getInstance();
-        Calendar oneHourFromNow = (Calendar) now.clone();
-        oneHourFromNow.add(Calendar.HOUR_OF_DAY, 1);
-
-        result.add(new TimeRange(formattedTime(now), formattedTime(oneHourFromNow), now.get(Calendar.DAY_OF_WEEK)));
-
-        return result;
+//        List<TimeRange> result = new ArrayList<>();
+//
+//        Calendar now = Calendar.getInstance();
+//        Calendar oneHourFromNow = (Calendar) now.clone();
+//        oneHourFromNow.add(Calendar.HOUR_OF_DAY, 1);
+//
+//        result.add(new TimeRange(formattedTime(now), formattedTime(oneHourFromNow), now.get(Calendar.DAY_OF_WEEK)));
+//
+        return new ArrayList<>();
     }
 
     /**
@@ -63,13 +63,13 @@ public class TimeRangeUtility {
     public static List<TimeRange> getExclusiveRange() {
         List<TimeRange> result = new ArrayList<>();
 
-        Calendar now = Calendar.getInstance();
-        Calendar oneHourBeforeNow = (Calendar) now.clone();
-        oneHourBeforeNow.add(Calendar.HOUR_OF_DAY, -1);
-        Calendar twoHoursBeforeNow = (Calendar) now.clone();
-        twoHoursBeforeNow.add(Calendar.HOUR_OF_DAY, -1);
-
-        result.add(new TimeRange(formattedTime(twoHoursBeforeNow), formattedTime(oneHourBeforeNow), now.get(Calendar.DAY_OF_WEEK)));
+//        Calendar now = Calendar.getInstance();
+//        Calendar oneHourBeforeNow = (Calendar) now.clone();
+//        oneHourBeforeNow.add(Calendar.HOUR_OF_DAY, -1);
+//        Calendar twoHoursBeforeNow = (Calendar) now.clone();
+//        twoHoursBeforeNow.add(Calendar.HOUR_OF_DAY, -1);
+//
+//        result.add(new TimeRange(formattedTime(twoHoursBeforeNow), formattedTime(oneHourBeforeNow), now.get(Calendar.DAY_OF_WEEK)));
 
         return result;
     }
@@ -116,12 +116,12 @@ public class TimeRangeUtility {
     public static List<TimeRange> getDifferentDayRange() {
         List<TimeRange> result = new ArrayList<>();
 
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.DAY_OF_MONTH, -1);
-        Calendar oneHourFromNow = (Calendar) now.clone();
-        oneHourFromNow.add(Calendar.HOUR_OF_DAY, 1);
-
-        result.add(new TimeRange(formattedTime(now), formattedTime(oneHourFromNow), now.get(Calendar.DAY_OF_WEEK)));
+//        Calendar now = Calendar.getInstance();
+//        now.add(Calendar.DAY_OF_MONTH, -1);
+//        Calendar oneHourFromNow = (Calendar) now.clone();
+//        oneHourFromNow.add(Calendar.HOUR_OF_DAY, 1);
+//
+//        result.add(new TimeRange(formattedTime(now), formattedTime(oneHourFromNow), now.get(Calendar.DAY_OF_WEEK)));
 
         return result;
     }

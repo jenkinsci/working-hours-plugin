@@ -6,6 +6,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
+import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.json.JsonHttpResponse;
@@ -25,6 +26,7 @@ public class WorkingHoursUI {
     /**
      * Handle dynamic routes, and do process on set/get excluded
      * dates and time ranges.
+     *
      * @param request Request object passed by Stapler
      * @return A JSON Response that handle back to client.
      */
@@ -63,19 +65,26 @@ public class WorkingHoursUI {
     }
 
     private HttpResponse listTimeRanges(StaplerRequest request) {
-        // TODO: 28/5/2019 implement listing time ranges
-        return null;
+        return HttpResponses.okJSON(serializeTimeRanges());
+
     }
 
     private HttpResponse setTimeRanges(StaplerRequest request) {
-        // TODO: 28/5/2019 implement set time ranges
-        return null;
+        List<TimeRange> newTimeRanges = new ArrayList();
+
+        JSONArray timeRangesJson = (JSONArray) getRequestBody(request).get("data");
+        for (Object o : timeRangesJson) {
+            newTimeRanges.add(new TimeRange((String) o));
+        }
+
+        config.setBuildTimeMatrix(newTimeRanges);
+
+        return HttpResponses.okJSON(serializeExcludedDates());
     }
 
     private HttpResponse setExcludedDates(StaplerRequest request) {
         List<ExcludedDate> newExcludedDates = new ArrayList();
 
-//        config.setExcludedDates();
         JSONArray excludedDatesJson = (JSONArray) getRequestBody(request).get("data");
         for (Object o : excludedDatesJson) {
             newExcludedDates.add(new ExcludedDate((String) o));
@@ -88,7 +97,8 @@ public class WorkingHoursUI {
 
     /**
      * Serialize model excluded dates to JSONObejct
-     * @return
+     *
+     * @return An array of serialized excluded dates.
      */
     private JSONArray serializeExcludedDates() {
         Map<String, String> res = new HashMap<>();
@@ -100,7 +110,23 @@ public class WorkingHoursUI {
     }
 
     /**
+     * Serialize model time ranges to JSONObejct
+     *
+     * @return JSONArray that contains a list of serialized time range data.
+     */
+    private JSONArray serializeTimeRanges() {
+        Map<String, String> res = new HashMap<>();
+        JSONArray timeRanges = new JSONArray();
+        config.getBuildTimeMatrix().forEach(item -> {
+            timeRanges.add(item.getJsonData());
+        });
+        return timeRanges;
+    }
+
+
+    /**
      * Return all the excluded dates in JSON.
+     *
      * @param request Request object passed by Stapler
      * @return Response to send back to client.
      */
@@ -111,6 +137,7 @@ public class WorkingHoursUI {
 
     /**
      * Get body from a post request.
+     *
      * @param request Request object passed by Stapler
      * @return A JSONObject that contains the request body.
      */

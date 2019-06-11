@@ -23,6 +23,8 @@
  */
 package org.jenkinsci.plugins.workinghours.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
@@ -42,44 +44,38 @@ import org.kohsuke.stapler.QueryParameter;
  */
 public class TimeRange extends AbstractDescribableImpl<TimeRange> {
 
-    /**
-     * The range start time.
-     */
-    private String startTime = "";
+    private TimeRangeDataContainer dataContainer = null;
+    private String jsonData = "";
+    private static Gson gson = null;
 
     /**
-     * The range end time.
+     * Get the actual time range data.
+     * @return TimeRangeDataContainer
      */
-    private String endTime = "";
+    public TimeRangeDataContainer getDataContainer() {
+        return dataContainer;
+    }
 
     /**
-     * The day of the week for this range.
+     * Get the json data and could be passed to front end.
+     * @return The source json data.
      */
-    private int dayOfWeek;
-
-    /**
-     * Default constructor.
-     */
-    public TimeRange() {
-        startTime = "";
-        endTime = "";
-        dayOfWeek = 0;
+    public String getJsonData() {
+        return jsonData;
     }
 
     /**
      * Constructs a TimeRange object.
      *
-     * @param startTime the range start time.
-     * @param endTime the range end time.
-     * @param dayOfWeek day of week to apply range.
+     * @param jsonData The json that explains the time range.
      */
     @DataBoundConstructor
-    public TimeRange(String startTime,
-            String endTime,
-            int dayOfWeek) {
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.dayOfWeek = dayOfWeek;
+    public TimeRange(String jsonData) {
+        if (gson == null) {
+            gson = new GsonBuilder().create();
+        }
+        this.jsonData = jsonData;
+        this.dataContainer = gson.fromJson(jsonData,TimeRangeDataContainer.class);
     }
 
     /**
@@ -166,59 +162,6 @@ public class TimeRange extends AbstractDescribableImpl<TimeRange> {
         }
     }
 
-    /**
-     * Get the value of startTime.
-     *
-     * @return the value of startTime.
-     */
-    public String getStartTime() {
-        return startTime;
-    }
-
-    /**
-     * Set the value of startTime.
-     *
-     * @param startTime new value of startTime.
-     */
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    /**
-     * Get the value of endTime.
-     *
-     * @return the value of endTime.
-     */
-    public String getEndTime() {
-        return endTime;
-    }
-
-    /**
-     * Set the value of endTime.
-     *
-     * @param endTime new value of endTime.
-     */
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    /**
-     * Get the value of dayOfWeek.
-     *
-     * @return the value of dayOfWeek.
-     */
-    public int getDayOfWeek() {
-        return dayOfWeek;
-    }
-
-    /**
-     * Set the value of dayOfWeek.
-     *
-     * @param dayOfWeek new value of dayOfWeek.
-     */
-    public void setDayOfWeek(int dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
 
     /**
      * Check whether configured rule includes a date.
@@ -227,18 +170,32 @@ public class TimeRange extends AbstractDescribableImpl<TimeRange> {
      * @return true if date is inside of configured rule.
      */
     public Boolean includesTime(Calendar date) {
-        LocalTime allowedStartTime = DateTimeUtility.localTime(getStartTime());
-        LocalTime allowedEndTime = DateTimeUtility.localTime(getEndTime());
+        // TODO: 12/6/2019 Implement include judge
+//        LocalTime allowedStartTime = DateTimeUtility.localTime(getStartTime());
+//        LocalTime allowedEndTime = DateTimeUtility.localTime(getEndTime());
+//
+//        LocalTime checkTime = LocalTime.of(
+//                date.get(Calendar.HOUR_OF_DAY),
+//                date.get(Calendar.MINUTE));
+//
+//        return date.get(Calendar.DAY_OF_WEEK) == getDayOfWeek()
+//                && (checkTime.equals(allowedStartTime)
+//                || checkTime.isAfter(allowedStartTime))
+//                && (checkTime.equals(allowedEndTime)
+//                || checkTime.isBefore(allowedEndTime));
+        return true;
+    }
 
-        LocalTime checkTime = LocalTime.of(
-                date.get(Calendar.HOUR_OF_DAY),
-                date.get(Calendar.MINUTE));
 
-        return date.get(Calendar.DAY_OF_WEEK) == getDayOfWeek()
-                && (checkTime.equals(allowedStartTime)
-                || checkTime.isAfter(allowedStartTime))
-                && (checkTime.equals(allowedEndTime)
-                || checkTime.isBefore(allowedEndTime));
+    public static class TimeRangeDataContainer {
 
+        /*The start time of the time range, like 00:00*/
+        public String startTime = "";
+
+        /*The end time of the time range, like 23:59*/
+        public String endTime = "";
+
+        /*The day of week*/
+        public int dayOfWeek = Calendar.SUNDAY;
     }
 }

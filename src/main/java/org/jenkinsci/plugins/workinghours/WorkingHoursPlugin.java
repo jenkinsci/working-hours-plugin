@@ -61,11 +61,6 @@ public class WorkingHoursPlugin extends GlobalConfiguration {
      * Default times for new configurations.
      */
     private final TimeRange[] defaultConfig = {
-            new TimeRange("8:00", "18:00", Calendar.MONDAY),
-            new TimeRange("8:00", "18:00", Calendar.TUESDAY),
-            new TimeRange("8:00", "18:00", Calendar.WEDNESDAY),
-            new TimeRange("8:00", "18:00", Calendar.THURSDAY),
-            new TimeRange("8:00", "18:00", Calendar.FRIDAY)
     };
 
     /**
@@ -87,9 +82,7 @@ public class WorkingHoursPlugin extends GlobalConfiguration {
      * @return list of included times.
      */
     public List<TimeRange> getBuildTimeMatrix() {
-        return this.buildTimeMatrix == null
-                ? Arrays.asList(defaultConfig)
-                : this.buildTimeMatrix;
+        return this.buildTimeMatrix;
     }
 
     @Override
