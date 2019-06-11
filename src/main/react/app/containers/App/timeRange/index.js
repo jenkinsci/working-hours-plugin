@@ -3,11 +3,11 @@ import { WEEKDAYS } from "../constants";
 import moment from "moment";
 import DatePicker from "react-datepicker/es";
 
-export default class TimeRange extends React.Component {
+export default class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      day: WEEKDAYS.Monday,
+      day: WEEKDAYS.Sunday,
       timeStart: moment({hour: 8}).toDate(),
       timeEnd: moment({hour: 18}).toDate()
     };

@@ -12,7 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/index.css";
 import ExcludedDate from "./excludedDate";
-import TimeRange from "./index/timeRange";
+import Index from "./timeRange";
 import { getExcludedDates, setExcludedDates } from "../../api";
 import {cloneDeep} from 'lodash'
 
@@ -179,10 +179,10 @@ export default class App extends React.Component {
           {this.state.timeRanges.length <= 0 ?
             <div>Time range is not
               configured.</div> : this.state.timeRanges.map((item, index) => (
-              <TimeRange key={index}
-                         index={index}
-                         range={item}
-                         onDelete={this.handleTimeRangeDelete}
+              <Index key={index}
+                     index={index}
+                     range={item}
+                     onDelete={this.handleTimeRangeDelete}
               />
             ))}
 
