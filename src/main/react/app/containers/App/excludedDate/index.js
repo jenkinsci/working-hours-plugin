@@ -1,18 +1,23 @@
 import React from "react";
 import DateInput from "./dateInput";
-import { DATE_PRESETS, DATE_TYPE, getDatePresets, getTimezones, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "../constants";
+import { DATE_TYPE, getDatePresets, PERIODS} from "../constants";
 import {
-  format,
   formatDate,
-  nextOccurrenceByMonth,
-  nextOccurrenceByYear,
   nextOccurrenceChineseLunar
 } from "../../../utils/date";
 import { getBrief } from "../../../utils";
-import { range } from "lodash";
 import moment from "moment";
-import { fetchTimezones } from "../../../api";
-// console.log(moment.tz.guess())
+import {
+  RepeatCount,
+  RepeatInterval,
+  RepeatPeriod,
+  NameInput,
+  TimezoneInput,
+  PresetSelect,
+  RepeatCheckbox
+} from "./formItems";
+
+
 export default class ExcludeDate extends React.Component {
   constructor() {
     super();
@@ -23,7 +28,10 @@ export default class ExcludeDate extends React.Component {
 
       name: "",
       type: "",
+
       utcOffset: moment().utcOffset(),
+      timezone:"",
+
       startDate: {
         dynamic: false,
         date: new Date(),
@@ -40,7 +48,7 @@ export default class ExcludeDate extends React.Component {
           day: 1
         }
       },
-      timezones:[],
+      timezones: [],
       noEnd: true, //No end in repeat
       repeat: true,
       repeatCount: -1,
@@ -106,17 +114,8 @@ export default class ExcludeDate extends React.Component {
     });
   };
 
-  handleTimezoneChange = (e) => {
-    this.setState({
-      utcOffset: e.target.value
-    });
-  };
 
-  handleNameChange = (e) => {
-    this.setState({
-      name: e.target.value
-    });
-  };
+
 
   /*For the selected date type, get its presets.*/
   getDatePresets() {
@@ -126,11 +125,7 @@ export default class ExcludeDate extends React.Component {
   /*Tell the parent that this child want to be toggle open state.*/
   toggleEdit = () => {
     /*Call onEdit, also emit data to parent(for serializing use).*/
-    if (this.props.opened) {
-      this.props.onEdit(this.props.index, false, this.state);
-    } else {
-      this.props.onEdit(this.props.index, true, this.state);
-    }
+    this.props.onEdit(this.props.index, !this.props.opened, this.state);
   };
 
   deleteDate = () => {
@@ -155,100 +150,14 @@ export default class ExcludeDate extends React.Component {
       <div className={"config-item"}>
         {/*Allow each date item to open or close, need help of the parent component.*/}
         {this.props.opened ? <div>
-            <div className={"form-row"}>
-              <label className={"form-item-label"}>Name</label>
-              <input placeholder={"Enter a name"} value={this.state.name}
-                     className={"input input-text"}
-                     style={{ width: 200 }}
-                     onChange={this.handleNameChange}/>
-            </div>
-            <div className={"form-row"}>
-              <label className={"form-item-label"}>Base Timezone</label>
-              <select className={"input input-select"}
-                      value={this.state.utcOffset}
-                      onChange={this.handleTimezoneChange}
-                      style={{ width: 150, marginRight: 10 }}
-                      placeholder="select preset date"
-              >
-                {Object.keys(getTimezones()).map((item,index) =>
-                  <option value={getTimezones()[item]} key={index}>{this.state.timezones[item]}</option>
-                )}
-              </select>
-            </div>
-            <div>
-              <label className={"form-item-label"}>Preset</label>
-              <select className={"input input-select"}
-                      value={this.state.selectedDateType}
-                      onChange={this.handleDateTypeChange}
-                      style={{ width: 150, marginRight: 10 }}
-                      placeholder="select preset date"
-              >
-                {Object.keys(DATE_TYPE).map((key, index) =>
-                  <option key={index} value={DATE_TYPE[key]}>{DATE_TYPE[key]}</option>
-                )}
-              </select>
-              <select className={"input input-select"}
-                      value={this.state.selectedPreset}
-                      defaultValue=""
-                      onChange={this.handlePresetChange}
-                      style={{ width: 300 }}
-                      placeholder="select preset date"
-              >
-                {this.getDatePresets().map((item, index) =>
-                  <option key={index} value={index}>{item.name}</option>
-                )}
-              </select>
-              <button type="button" className={"btn btn-gray"} onClick={this.applyPreset}>Apply</button>
-
-            </div>
-            <div className={"form-row"}
-            >
-              <label className={"form-item-label"} htmlFor="checkbox-repeat">Repeat</label>
-              <input id='checkbox-repeat' type='checkbox' checked={this.state.repeat} onChange={this.handleRepeatChange}>
-              </input>
-            </div>
-            {repeat && <div className={"form-row"}>
-              <label className={"form-item-label"}>Repeat Period</label>
-              <input id='radio-week' name="period" type="radio"
-                     checked={this.state.repeatPeriod === PERIODS.Week}
-                     onChange={this.handleRepeatPeriodChange} value={PERIODS.Week}/>
-              <label className={"label-inline"}>Week </label>
-
-              <input id='radio-month' name="period" type="radio"
-                     checked={this.state.repeatPeriod === PERIODS.Month}
-                     onChange={this.handleRepeatPeriodChange} value={PERIODS.Month}/>
-              <label className={"label-inline"}>Month</label>
-
-              <input id='radio-year' name="period" type="radio"
-                     checked={this.state.repeatPeriod === PERIODS.Year}
-                     onChange={this.handleRepeatPeriodChange} value={PERIODS.Year}/>
-              <label className={"label-inline"}>Year </label>
-            </div>
-            }
-
-            {repeat && <div className={"form-row"}>
-              <label className={"form-item-label"}>Repeat Interval</label>
-              <div>Each <select className={"input input-select"} value={this.state.repeatInterval}
-                                style={{ width: 70, marginRight: 10 }}
-                                onChange={this.handleIntervalChange}>
-                {range(1, 6).map(item =>
-                  <option value={item}>{item}</option>
-                )}
-              </select>
-                {Object.keys(PERIODS)[this.state.repeatPeriod - 1] + (this.state.repeatInterval > 1 ? "s" : "")}
-              </div>
-            </div>}
-            {repeat && <div className={"form-row"}>
-              <label className={"form-item-label"}>Repeat Count</label>
-              <div><select className={"input input-select"} value={this.state.repeatCount}
-                           style={{ width: 120, marginRight: 10 }}
-                           onChange={this.handleCountChange}>
-                <option value={-1}>No End</option>
-                {range(1, 11).map(item =>
-                  <option value={item}>{item}</option>
-                )}
-              </select> {this.state.repeatCount > -1 && "Time"}{this.state.repeatCount > 1 && "s"}
-              </div>
+            {NameInput.call(this)}
+            {TimezoneInput.call(this)}
+            {PresetSelect.call(this)}
+            {RepeatCheckbox.call(this)}
+            {repeat && <div>
+              {RepeatPeriod.call(this)}
+              {RepeatInterval.call(this)}
+              {RepeatCount.call(this)}
             </div>}
             {this.isGregorian() && DateInput.call(this,
               {
@@ -279,6 +188,8 @@ export default class ExcludeDate extends React.Component {
               <input type='checkbox' checked={this.state.noEnd}
                      onChange={this.handleNoEndChange}/>
             </div>}
+
+
             <div className={"form-row"}>
               <div className={"form-item-label"}/>
               {/*<button type="button" className="btn btn-outline-primary">Save</button>*/}
