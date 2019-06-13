@@ -82,7 +82,9 @@ public class WorkingHoursPlugin extends GlobalConfiguration {
      * @return list of included times.
      */
     public List<TimeRange> getBuildTimeMatrix() {
-        return this.buildTimeMatrix;
+        return this.buildTimeMatrix == null?
+                Collections.<TimeRange>emptyList()
+                : this.buildTimeMatrix;
     }
 
     @Override

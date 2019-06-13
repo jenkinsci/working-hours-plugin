@@ -79,7 +79,7 @@ public class WorkingHoursUI {
 
         config.setBuildTimeMatrix(newTimeRanges);
 
-        return HttpResponses.okJSON(serializeExcludedDates());
+        return HttpResponses.okJSON(serializeTimeRanges());
     }
 
     private HttpResponse setExcludedDates(StaplerRequest request) {
