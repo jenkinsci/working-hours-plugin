@@ -145,9 +145,9 @@ public class WorkingHoursQueueTaskDispatcherTest {
      */
     @Test
     public void testCanRunBlocked() {
-        WorkingHoursPlugin config = WorkingHoursPlugin.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+//        config.save();
 
         ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
         Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
@@ -169,9 +169,9 @@ public class WorkingHoursQueueTaskDispatcherTest {
      */
     @Test
     public void testCanRunBlockedNotPlaceholder() {
-        WorkingHoursPlugin config = WorkingHoursPlugin.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+//        config.save();
 
         Task task = mock(Task.class);
         Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
@@ -252,9 +252,9 @@ public class WorkingHoursQueueTaskDispatcherTest {
      */
     @Test
     public void testCanRunNowInclusiveRange() {
-        WorkingHoursPlugin config = WorkingHoursPlugin.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getInclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getInclusiveRange());
+//        config.save();
 
         ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
         Queue.WaitingItem waitingItem = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
@@ -274,9 +274,9 @@ public class WorkingHoursQueueTaskDispatcherTest {
      */
     @Test
     public void testCanRunNowExclusiveRange() {
-        WorkingHoursPlugin config = WorkingHoursPlugin.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+//        config.save();
 
         ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
         Queue.WaitingItem waitingItem = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
@@ -336,9 +336,9 @@ public class WorkingHoursQueueTaskDispatcherTest {
      */
     @Test
     public void testCanRunNowReleased() {
-        WorkingHoursPlugin config = WorkingHoursPlugin.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+//        config.save();
 
         ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
         Queue.WaitingItem waitingItem = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);

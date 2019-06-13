@@ -85,9 +85,9 @@ public class WorkingHoursPipelineTest {
     @Test
     public void testScriptedPipelineBlockOnTime() throws Exception {
 
-        WorkingHoursPlugin config = WorkingHoursPlugin.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+//        config.save();
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline");
         String pipelineScript
@@ -114,9 +114,9 @@ public class WorkingHoursPipelineTest {
     @Test
     public void testScriptedPipelineBlockOnDay() throws Exception {
 
-        WorkingHoursPlugin config = WorkingHoursPlugin.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getDifferentDayRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getDifferentDayRange());
+//        config.save();
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline");
         String pipelineScript
@@ -143,9 +143,9 @@ public class WorkingHoursPipelineTest {
     @Test
     public void testScriptedPipelineNoBlockOnTime() throws Exception {
 
-        WorkingHoursPlugin config = WorkingHoursPlugin.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+//        config.save();
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline");
         String pipelineScript
