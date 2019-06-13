@@ -30,6 +30,12 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import static org.junit.Assert.*;
 
 public class ExcludedDateTest {
@@ -59,7 +65,7 @@ public class ExcludedDateTest {
     @Test
     public void testGetName() {
         String testName = "test name";
-        ExcludedDate instance = new ExcludedDate(testName, "01-01-2017");
+        ExcludedDate instance = new ExcludedDate(testName, "01-01-2017", false);
         assertEquals(testName, instance.getName());
     }
 
@@ -69,7 +75,7 @@ public class ExcludedDateTest {
     @Test
     public void testGetSetName() {
         String testName = "test name";
-        ExcludedDate instance = new ExcludedDate("", "");
+        ExcludedDate instance = new ExcludedDate("", "", false);
         instance.setName(testName);
         assertEquals(testName, instance.getName());
     }
@@ -81,7 +87,7 @@ public class ExcludedDateTest {
     public void testGetDate() {
         String testName = "test name";
         String testDate = "01-01-2017";
-        ExcludedDate instance = new ExcludedDate(testName, testDate);
+        ExcludedDate instance = new ExcludedDate(testName, testDate, false);
         assertEquals(testDate, instance.getDate());
     }
 
@@ -91,9 +97,32 @@ public class ExcludedDateTest {
     @Test
     public void testGetSetDate() {
         String testDate = "01-01-2017";
-        ExcludedDate instance = new ExcludedDate("", "");
+        ExcludedDate instance = new ExcludedDate("", "", false);
         instance.setDate(testDate);
         assertEquals(testDate, instance.getDate());
+    }
+
+    /**
+     * Verify repeatYearly is set in constructor.
+     */
+    @Test
+    public void testIsRepeatYearly() {
+        String testName = "test name";
+        String testDate = "01-01-2017";
+        boolean testRepeatYearly = true;
+        ExcludedDate instance = new ExcludedDate(testName, testDate, testRepeatYearly);
+        assertEquals(testRepeatYearly, instance.isRepeatYearly());
+    }
+
+    /**
+     * Verify set/is repeatYearly.
+     */
+    @Test
+    public void testIsSetRepeatYearly() {
+        boolean testRepeatYearly = true;
+        ExcludedDate instance = new ExcludedDate("", "", false);
+        instance.setRepeatYearly(testRepeatYearly);
+        assertEquals(testRepeatYearly, instance.isRepeatYearly());
     }
     
     /**
@@ -126,5 +155,77 @@ public class ExcludedDateTest {
                 new ExcludedDate.DescriptorImpl();
         assertEquals(FormValidation.Kind.ERROR, 
                 descriptor.doCheckDate("01-01-2112z").kind);
+    }
+
+    /**
+     * Verify shouldExclude ignores the year if repeatYearly is set.
+     */
+    @Test
+    public void testShouldExcludeIgnoreYear() throws ParseException {
+        ExcludedDate instance = new ExcludedDate("testName", "01-01-2017", true);
+        Calendar date = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+        date.setTime(sdf.parse("Jan 01 2019"));
+        assert(instance.shouldExclude(date));
+    }
+
+    /**
+     * Verify shouldExclude takes the year into account if repeatYearly not set.
+     */
+    @Test
+    public void testShouldExcludeUseYear() throws ParseException {
+        ExcludedDate instance = new ExcludedDate("testName", "01-01-2017", false);
+        Calendar date = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+        date.setTime(sdf.parse("Jan 01 2019"));
+        assertFalse(instance.shouldExclude(date));
+    }
+
+    /**
+     * Verify shouldExclude takes the month into account
+     */
+    @Test
+    public void testShouldExcludeUseMonth() throws ParseException {
+        ExcludedDate instance = new ExcludedDate("testName", "02-01-2017", false);
+        Calendar date = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+        date.setTime(sdf.parse("Jan 01 2017"));
+        assertFalse(instance.shouldExclude(date));
+    }
+
+    /**
+     * Verify shouldExclude takes the month into account even if repeatYearly is set
+     */
+    @Test
+    public void testShouldExcludeWithRepeatYearlyUseMonth() throws ParseException {
+        ExcludedDate instance = new ExcludedDate("testName", "02-01-2017", true);
+        Calendar date = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+        date.setTime(sdf.parse("Jan 01 2017"));
+        assertFalse(instance.shouldExclude(date));
+    }
+
+    /**
+     * Verify shouldExclude takes the day into account
+     */
+    @Test
+    public void testShouldExcludeUseDay() throws ParseException {
+        ExcludedDate instance = new ExcludedDate("testName", "01-02-2017", false);
+        Calendar date = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+        date.setTime(sdf.parse("Jan 01 2017"));
+        assertFalse(instance.shouldExclude(date));
+    }
+
+    /**
+     * Verify shouldExclude takes the day into account even if repeatYearly is set
+     */
+    @Test
+    public void testShouldExcludeWithRepeatYearlyUseDay() throws ParseException {
+        ExcludedDate instance = new ExcludedDate("testName", "01-02-2017", true);
+        Calendar date = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy", Locale.ENGLISH);
+        date.setTime(sdf.parse("Jan 01 2017"));
+        assertFalse(instance.shouldExclude(date));
     }
 }
