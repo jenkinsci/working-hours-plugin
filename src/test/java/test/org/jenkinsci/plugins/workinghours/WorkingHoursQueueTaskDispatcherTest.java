@@ -29,6 +29,8 @@ import hudson.model.Queue;
 import hudson.model.Queue.Task;
 import hudson.model.Run;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 
@@ -186,7 +188,84 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertNull(instance.canRun(item));
     }
 
-    /*
+    /**
+     * Verifies that canRun doesn't block tasks when branches is empty.
+     */
+    @Test
+    public void testCanRunBlockedEmptyBranches() {
+        WorkingHoursConfig config = WorkingHoursConfig.get();
+        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+        config.save();
+
+        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
+        Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+
+        EnforceScheduleJobProperty prop = mock(EnforceScheduleJobProperty.class);
+        WorkflowJob job = mock(WorkflowJob.class);
+        Run run = mock(Run.class);
+
+        when(task.getOwnerTask()).thenReturn(job);
+        when(task.run()).thenReturn(run);
+        when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
+        when(prop.getBranches()).thenReturn(new ArrayList<>());
+
+        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
+        assertNotNull(instance.canRun(item));
+    }
+
+    /**
+     * Verifies that canRun doesn't block tasks when current branch doesn't match branches provided
+     */
+    @Test
+    public void testCanRunBlockedNonMatchingBranches() {
+        WorkingHoursConfig config = WorkingHoursConfig.get();
+        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+        config.save();
+
+        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
+        Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+
+        EnforceScheduleJobProperty prop = mock(EnforceScheduleJobProperty.class);
+        WorkflowJob job = mock(WorkflowJob.class);
+        Run run = mock(Run.class);
+
+        when(task.getOwnerTask()).thenReturn(job);
+        when(task.run()).thenReturn(run);
+        when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
+        when(job.getDisplayName()).thenReturn("master");
+        when(prop.getBranches()).thenReturn(new ArrayList<>(Arrays.asList("TestBranch")));
+
+        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
+        assertNull(instance.canRun(item));
+    }
+
+    /**
+     * Verifies that canRun blocks tasks when current branch matches a branch provided
+     */
+    @Test
+    public void testCanRunBlockedMatchingBranches() {
+        WorkingHoursConfig config = WorkingHoursConfig.get();
+        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+        config.save();
+
+        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
+        Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+
+        EnforceScheduleJobProperty prop = mock(EnforceScheduleJobProperty.class);
+        WorkflowJob job = mock(WorkflowJob.class);
+        Run run = mock(Run.class);
+
+        when(task.getOwnerTask()).thenReturn(job);
+        when(task.run()).thenReturn(run);
+        when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
+        when(job.getDisplayName()).thenReturn("master");
+        when(prop.getBranches()).thenReturn(new ArrayList<>(Arrays.asList("master")));
+
+        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
+        assertNotNull(instance.canRun(item));
+    }
+
+    /**
      * Verifies canTake won't block jobs
      */
     @Test
@@ -202,7 +281,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertNull(instance.canTake(mockNode, item));
     }
 
-    /*
+    /**
      * Verifies isReleased returns false if the action is null
      */
     @Test
@@ -215,7 +294,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertFalse(instance.isReleased(null, item));
     }
 
-    /*
+    /**
      * Verifies isReleased returns false if the action returns false
      */
     @Test
@@ -231,7 +310,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertFalse(instance.isReleased(action, item));
     }
 
-    /*
+    /**
      * Verifies isReleased returns true if the action returns true
      */
     @Test
@@ -247,7 +326,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertTrue(instance.isReleased(action, item));
     }
 
-    /*
+    /**
      * Verifies canRunNow returns true if current time is allowable
      */
     @Test
@@ -269,7 +348,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         verify(action).markReleased();
     }
 
-    /*
+    /**
      * Verifies canRunNow returns false if current time is not allowed
      */
     @Test
@@ -288,7 +367,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertFalse(instance.canRunNow(project, item));
     }
 
-    /*
+    /**
      * Verifies canRunNow returns false if today is excluded.
      */
     @Test
@@ -308,7 +387,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertFalse(instance.canRunNow(project, item));
     }
 
-    /*
+    /**
      * Verifies canRunNow returns true if today is not excluded.
      */
     @Test
@@ -330,7 +409,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         assertTrue(instance.canRunNow(project, item));
     }
 
-    /*
+    /**
      * Verifies canRunNow returns true if current time is not allowed, but
      * the job has been released
      */
