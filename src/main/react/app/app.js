@@ -32,6 +32,4 @@ if (module.hot) {
   });
 }
 
-initTimezones().then(res=>{
-  render()
-})
+render();

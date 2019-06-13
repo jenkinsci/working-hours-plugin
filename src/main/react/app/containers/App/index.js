@@ -221,7 +221,7 @@ export default class App extends React.Component {
         <div>
           {this.state.excludedDates.length <= 0 ?
             <div className={"config-item"}>There's no excluded
-              dates</div> : this.state.excludedDates.map((item, index) => (
+                dates</div> : this.state.excludedDates.map((item, index) => (
               <ExcludedDate key={index}
                             index={index}
                             opened={index === openIndex}

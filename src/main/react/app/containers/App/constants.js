@@ -80,18 +80,3 @@ export const CHINESE_LUNAR_DATE_PRESETS = [
   }
 
 ];
-
-let timezones = {};
-
-export const initTimezones = () => {
-  return new Promise(resolve => {
-    fetchTimezones().then(res => {
-      timezones = res.data;
-      resolve()
-    });
-  })
-};
-
-export const getTimezones = ()=>{
-  return timezones;
-}
