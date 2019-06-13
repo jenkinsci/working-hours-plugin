@@ -6,6 +6,8 @@
                 <tr>
                     <th style="text-align:left">Description</th>
                     <th style="text-align:left">Date</th>
+                    <th></th>
+                    <th style="text-align:left">Repeat yearly?</th>
                 </tr>
                 <tr>
                     <td>
@@ -15,7 +17,10 @@
                         <f:textbox field="date" />
                     </td>
                     <td>
-                        <f:repeatableDeleteButton class="hi"/>
+                        <f:repeatableDeleteButton/>
+                    </td>
+                    <td>
+                        <f:checkbox field="repeatYearly" />
                     </td>
                 </tr>
                 <!--

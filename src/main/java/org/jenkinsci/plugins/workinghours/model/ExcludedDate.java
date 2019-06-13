@@ -31,7 +31,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Calendar;
 
 /**
@@ -52,15 +51,35 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
     private String date;
 
     /**
+     * Whether or not this date applies every year
+     */
+    private boolean repeatYearly;
+
+    /**
+     * @deprecated use {@link #ExcludedDate(String, String, boolean)} instead}
+     *
      * Constructs an ExcludedDate object.
      *
      * @param name Display name for date, e.g. "New Year's Day".
      * @param date The date to exclude.
      */
-    @DataBoundConstructor
+    @Deprecated
     public ExcludedDate(final String name, final String date) {
+        this(name, date, false);
+    }
+
+    /**
+     * Constructs an ExcludedDate object.
+     *
+     * @param name Display name for date, e.g. "New Year's Day".
+     * @param date The date to exclude.
+     * @param repeatYearly Whether or not to check the year when excluding
+     */
+    @DataBoundConstructor
+    public ExcludedDate(final String name, final String date, final boolean repeatYearly) {
         this.name = name;
         this.date = date;
+        this.repeatYearly = repeatYearly;
     }
 
     /**
@@ -82,6 +101,15 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
     }
 
     /**
+     * Get the value of repeatYearly.
+     *
+     * @return the value of repeatYearly.
+     */
+    public final boolean isRepeatYearly() {
+        return repeatYearly;
+    }
+
+    /**
      * Set the value of date.
      *
      * @param date new value of date.
@@ -89,6 +117,13 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
     public final void setDate(final String date) {
         this.date = date;
     }
+
+    /**
+     * Set the value of repeatYearly.
+     *
+     * @param repeatYearly new value of repeatYearly.
+     */
+    public final void setRepeatYearly(final boolean repeatYearly) { this.repeatYearly = repeatYearly; }
 
     /**
      * Set the value of name.
@@ -133,11 +168,11 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
     public Boolean shouldExclude(Calendar date) {
         LocalDate localDate = DateTimeUtility.localDate(getDate());
 
-        LocalDate checkTime = LocalDate.of(
-                date.get(Calendar.YEAR),
-                date.get(Calendar.MONTH) + 1,
-                date.get(Calendar.DAY_OF_MONTH));
-
-        return localDate.equals(checkTime);
+        if (localDate.getDayOfMonth() == date.get(Calendar.DAY_OF_MONTH)
+                && localDate.getMonthValue() == date.get(Calendar.MONTH) + 1
+                && (localDate.getYear() == date.get(Calendar.YEAR) || isRepeatYearly())) {
+            return true;
+        }
+        return false;
     }
 }
