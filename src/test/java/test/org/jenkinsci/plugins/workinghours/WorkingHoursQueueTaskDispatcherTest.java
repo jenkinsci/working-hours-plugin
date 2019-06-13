@@ -23,11 +23,8 @@
  */
 package test.org.jenkinsci.plugins.workinghours;
 
-import hudson.model.Actionable;
-import hudson.model.Node;
-import hudson.model.Queue;
+import hudson.model.*;
 import hudson.model.Queue.Task;
-import hudson.model.Run;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +33,7 @@ import java.util.Collections;
 
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
 import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
 import org.jenkinsci.plugins.workinghours.EnforceScheduleJobProperty;
 import org.jenkinsci.plugins.workinghours.WorkingHoursConfig;
@@ -189,7 +187,32 @@ public class WorkingHoursQueueTaskDispatcherTest {
     }
 
     /**
-     * Verifies that canRun doesn't block tasks when branches is empty.
+     * Verifies that canRun returns a blockage reason when branches is null
+     */
+    @Test
+    public void testCanRunBlockedNullBranches() {
+        WorkingHoursConfig config = WorkingHoursConfig.get();
+        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+        config.save();
+
+        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
+        Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+
+        EnforceScheduleJobProperty prop = mock(EnforceScheduleJobProperty.class);
+        WorkflowJob job = mock(WorkflowJob.class);
+        Run run = mock(Run.class);
+
+        when(task.getOwnerTask()).thenReturn(job);
+        when(task.run()).thenReturn(run);
+        when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
+        when(prop.getBranches()).thenReturn(null);
+
+        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
+        assertNotNull(instance.canRun(item));
+    }
+
+    /**
+     * Verifies that canRun returns a blockage reason when branches is empty.
      */
     @Test
     public void testCanRunBlockedEmptyBranches() {
@@ -214,7 +237,33 @@ public class WorkingHoursQueueTaskDispatcherTest {
     }
 
     /**
-     * Verifies that canRun doesn't block tasks when current branch doesn't match branches provided
+     * Verifies that canRun returns a blockage reason when not a MultibranchPipeline
+     */
+    @Test
+    public void testCanRunBlockedNonMultibranchPipeline() {
+        WorkingHoursConfig config = WorkingHoursConfig.get();
+        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+        config.save();
+
+        ExecutorStepExecution.PlaceholderTask task = mock(ExecutorStepExecution.PlaceholderTask.class);
+        Queue.WaitingItem item = new Queue.WaitingItem(Calendar.getInstance(), task, Collections.EMPTY_LIST);
+
+        EnforceScheduleJobProperty prop = mock(EnforceScheduleJobProperty.class);
+        WorkflowJob job = mock(WorkflowJob.class);
+        Run run = mock(Run.class);
+
+        when(task.getOwnerTask()).thenReturn(job);
+        when(task.run()).thenReturn(run);
+        when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
+        when(job.getParent()).thenReturn(mock(Hudson.class));
+        when(prop.getBranches()).thenReturn(new ArrayList<>(Arrays.asList("TestBranch")));
+
+        WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();
+        assertNotNull(instance.canRun(item));
+    }
+
+    /**
+     * Verifies that canRun returns a blockage reason when current branch doesn't match branches provided
      */
     @Test
     public void testCanRunBlockedNonMatchingBranches() {
@@ -232,6 +281,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         when(task.getOwnerTask()).thenReturn(job);
         when(task.run()).thenReturn(run);
         when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
+        when(job.getParent()).thenReturn(mock(WorkflowMultiBranchProject.class));
         when(job.getDisplayName()).thenReturn("master");
         when(prop.getBranches()).thenReturn(new ArrayList<>(Arrays.asList("TestBranch")));
 
@@ -240,7 +290,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
     }
 
     /**
-     * Verifies that canRun blocks tasks when current branch matches a branch provided
+     * Verifies that canRun blocks tasks when current branch matches a branch provided and is a MultibranchPipeline
      */
     @Test
     public void testCanRunBlockedMatchingBranches() {
@@ -259,6 +309,7 @@ public class WorkingHoursQueueTaskDispatcherTest {
         when(task.run()).thenReturn(run);
         when(job.getProperty(EnforceScheduleJobProperty.class)).thenReturn(prop);
         when(job.getDisplayName()).thenReturn("master");
+        when(job.getParent()).thenReturn(mock(WorkflowMultiBranchProject.class));
         when(prop.getBranches()).thenReturn(new ArrayList<>(Arrays.asList("master")));
 
         WorkingHoursQueueTaskDispatcher instance = new WorkingHoursQueueTaskDispatcher();

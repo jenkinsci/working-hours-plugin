@@ -61,6 +61,9 @@ public class EnforceScheduleJobProperty extends OptionalJobProperty<WorkflowJob>
 
     /**
      * Constructor
+     *
+     * @param branches List of branch names to trigger enforcement of working hours
+     *
      */
     @DataBoundConstructor
     public EnforceScheduleJobProperty(ArrayList<String> branches) {
