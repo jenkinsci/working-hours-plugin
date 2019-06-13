@@ -9,7 +9,8 @@ configured allowable build times. If a build is scheduled during non-working hou
 then it is kept in the build queue until the next allowable time.
 
 Jobs opt in via the `enforceBuildSchedule` job parameter, which is provided by this
-plugin.
+plugin. It can optionally take in a `branches` parameter to limit it's usage to only those branches.
+This only works in MultiBranchPipelines.
 
 ## Usage
 
@@ -37,6 +38,16 @@ pipeline {
         echo 'this can wait til morning'
       }
     }
+  }
+}
+```
+
+Sample job with branches parameter (works in both declarative and scripted):
+```
+node {
+  properties([enforceBuildSchedule(branches: ['dev', 'qa', 'prod')])
+  stage('Do some stuff') {
+    echo 'this can wait til morning'
   }
 }
 ```
