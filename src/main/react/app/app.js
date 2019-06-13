@@ -11,6 +11,7 @@ import "sanitize.css/sanitize.css";
 
 // Import root app
 import App from "containers/App";
+import { initTimezones } from "./containers/App/constants";
 
 
 const MOUNT_NODE = document.getElementById("container-excluded-dates");
@@ -31,4 +32,6 @@ if (module.hot) {
   });
 }
 
-render()
+initTimezones().then(res=>{
+  render()
+})

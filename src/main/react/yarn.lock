@@ -5316,7 +5316,7 @@ header-case@^1.0.0:
     no-case "^2.2.0"
     upper-case "^1.1.3"
 
-history@4.7.2, history@^4.7.2:
+history@4.7.2:
   version "4.7.2"
   resolved "http://registry.npm.taobao.org/history/download/history-4.7.2.tgz#22b5c7f31633c5b8021c7f4a8a954ac139ee8d5b"
   integrity sha1-IrXH8xYzxbgCHH9KipVKwTnujVs=
@@ -7840,9 +7840,16 @@ mkpath@^0.1.0:
   resolved "http://registry.npm.taobao.org/mkpath/download/mkpath-0.1.0.tgz#7554a6f8d871834cc97b5462b122c4c124d6de91"
   integrity sha1-dVSm+Nhxg0zJe1RisSLEwSTW3pE=
 
-moment@^2.24.0:
+moment-timezone@^0.5.25:
+  version "0.5.25"
+  resolved "http://npm.6tiantian.com:4873/moment-timezone/-/moment-timezone-0.5.25.tgz#a11bfa2f74e088327f2cd4c08b3e7bdf55957810"
+  integrity sha1-oRv6L3TgiDJ/LNTAiz5731WVeBA=
+  dependencies:
+    moment ">= 2.9.0"
+
+"moment@>= 2.9.0", moment@^2.22.1:
   version "2.24.0"
-  resolved "http://registry.npm.taobao.org/moment/download/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  resolved "http://npm.6tiantian.com:4873/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
 
 moo@^0.4.3:
@@ -8841,13 +8848,6 @@ path-to-regexp@0.1.7:
   resolved "http://registry.npm.taobao.org/path-to-regexp/download/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
   integrity sha1-32BBeABfUi8V60SQ5yR6G/qmf4w=
 
-path-to-regexp@^1.7.0:
-  version "1.7.0"
-  resolved "http://registry.npm.taobao.org/path-to-regexp/download/path-to-regexp-1.7.0.tgz#59fde0f435badacba103a84e9d3bc64e96b9937d"
-  integrity sha1-Wf3g9DW62suhA6hOnTvGTpa5k30=
-  dependencies:
-    isarray "0.0.1"
-
 path-type@^1.0.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/path-type/download/path-type-1.1.0.tgz#59c44f7ee491da704da415da5a4070ba4f8fe441"
@@ -9570,35 +9570,10 @@ react-redux@5.0.7:
     loose-envify "^1.1.0"
     prop-types "^15.6.0"
 
-react-router-dom@4.3.1:
-  version "4.3.1"
-  resolved "http://registry.npm.taobao.org/react-router-dom/download/react-router-dom-4.3.1.tgz#4c2619fc24c4fa87c9fd18f4fb4a43fe63fbd5c6"
-  integrity sha1-TCYZ/CTE+ofJ/Rj0+0pD/mP71cY=
-  dependencies:
-    history "^4.7.2"
-    invariant "^2.2.4"
-    loose-envify "^1.3.1"
-    prop-types "^15.6.1"
-    react-router "^4.3.1"
-    warning "^4.0.1"
-
 react-router-redux@^4.0.0:
   version "4.0.8"
   resolved "http://registry.npm.taobao.org/react-router-redux/download/react-router-redux-4.0.8.tgz#227403596b5151e182377dab835b5d45f0f8054e"
   integrity sha1-InQDWWtRUeGCN32rg1tdRfD4BU4=
-
-react-router@^4.3.1:
-  version "4.3.1"
-  resolved "http://registry.npm.taobao.org/react-router/download/react-router-4.3.1.tgz#aada4aef14c809cb2e686b05cee4742234506c4e"
-  integrity sha1-qtpK7xTICcsuaGsFzuR0IjRQbE4=
-  dependencies:
-    history "^4.7.2"
-    hoist-non-react-statics "^2.5.0"
-    invariant "^2.2.4"
-    loose-envify "^1.3.1"
-    path-to-regexp "^1.7.0"
-    prop-types "^15.6.1"
-    warning "^4.0.1"
 
 react-side-effect@^1.1.0:
   version "1.1.5"
@@ -9793,16 +9768,6 @@ redent@^2.0.0:
     indent-string "^3.0.0"
     strip-indent "^2.0.0"
 
-redux-immutable@4.0.0:
-  version "4.0.0"
-  resolved "http://registry.npm.taobao.org/redux-immutable/download/redux-immutable-4.0.0.tgz#3a1a32df66366462b63691f0e1dc35e472bbc9f3"
-  integrity sha1-Ohoy32Y2ZGK2NpHw4dw15HK7yfM=
-
-redux-saga@0.16.2:
-  version "0.16.2"
-  resolved "http://registry.npm.taobao.org/redux-saga/download/redux-saga-0.16.2.tgz#993662e86bc945d8509ac2b8daba3a8c615cc971"
-  integrity sha1-mTZi6GvJRdhQmsK42ro6jGFcyXE=
-
 redux-seamless-immutable@^0.4.0:
   version "0.4.0"
   resolved "http://registry.npm.taobao.org/redux-seamless-immutable/download/redux-seamless-immutable-0.4.0.tgz#b50f8680ecc5ef04021551267f78fa1ffd3cf985"
@@ -9810,14 +9775,6 @@ redux-seamless-immutable@^0.4.0:
   dependencies:
     react-router-redux "^4.0.0"
     seamless-immutable "^7.1.2"
-
-redux@4.0.1:
-  version "4.0.1"
-  resolved "http://registry.npm.taobao.org/redux/download/redux-4.0.1.tgz#436cae6cc40fbe4727689d7c8fae44808f1bfef5"
-  integrity sha1-Q2yubMQPvkcnaJ18j65EgI8b/vU=
-  dependencies:
-    loose-envify "^1.4.0"
-    symbol-observable "^1.2.0"
 
 regenerate-unicode-properties@^7.0.0:
   version "7.0.0"
@@ -11154,7 +11111,7 @@ swap-case@^1.1.0:
     lower-case "^1.1.1"
     upper-case "^1.1.1"
 
-symbol-observable@^1.1.0, symbol-observable@^1.2.0:
+symbol-observable@^1.1.0:
   version "1.2.0"
   resolved "http://registry.npm.taobao.org/symbol-observable/download/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
   integrity sha1-wiaIrtTqs83C3+rLtWFmBWCgCAQ=
@@ -12023,7 +11980,7 @@ warning@^3.0.0:
   dependencies:
     loose-envify "^1.0.0"
 
-warning@^4.0.1, warning@^4.0.2:
+warning@^4.0.2:
   version "4.0.3"
   resolved "http://registry.npm.taobao.org/warning/download/warning-4.0.3.tgz#16e9e077eb8a86d6af7d64aa1e05fd85b4678ca3"
   integrity sha1-Fungd+uKhtavfWSqHgX9hbRnjKM=

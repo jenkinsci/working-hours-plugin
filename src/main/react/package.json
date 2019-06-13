@@ -73,8 +73,10 @@
     "loadable-components": "2.2.3",
     "lodash": "4.17.11",
     "minimist": "1.2.0",
-    "moment": "^2.24.0",
+    "moment": "^2.22.1",
+    "moment-timezone": "^0.5.25",
     "prop-types": "15.6.2",
+    "qs": "latest",
     "react": "16.6.0",
     "react-datepicker": "^2.3.0",
     "react-dom": "16.6.0",
@@ -84,8 +86,7 @@
     "reselect": "4.0.0",
     "sanitize.css": "4.1.0",
     "styled-components": "4.0.2",
-    "warning": "4.0.2",
-    "qs": "latest"
+    "warning": "4.0.2"
   },
   "devDependencies": {
     "@babel/cli": "7.1.2",

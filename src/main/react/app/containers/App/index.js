@@ -13,8 +13,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/index.css";
 import ExcludedDate from "./excludedDate";
 import Index from "./timeRange";
-import { getExcludedDates, setExcludedDates } from "../../api";
-import {cloneDeep} from 'lodash'
+import { getExcludedDates, getTimeRanges, setExcludedDates, setTimeRanges } from "../../api";
+import { cloneDeep } from "lodash";
 
 let openIndex = [];
 
@@ -26,7 +26,7 @@ export default class App extends React.Component {
       excludedDates: [],
 
       /*A copy of the data, and will be used to post data*/
-      excludedDatesSrcData:[],
+      excludedDatesSrcData: [],
 
       timeRanges: []
     };
@@ -62,39 +62,59 @@ export default class App extends React.Component {
     /*Set both data for child and data for submit.*/
     this.setState({
       excludedDates: list,
-      excludedDatesSrcData:srcDataList
+      excludedDatesSrcData: srcDataList
     });
+
+    this.uploadDates(srcDataList);
 
   };
 
-  uploadDates() {
+  /**
+   * Handler for changing a excluded date
+   * @param index The index of the child.
+   * @param state The new state of the time range.
+   * */
+  handleTimeRangeChange = (index, state) => {
+    let list = this.state.timeRanges;
+
+    list[index] = state;
+
+    let srcDataList = this.state.timeRangesSrcData;
+
+    /*Use lodash to deepcopy an object, so we could delete some helper fields.*/
+    let newItem = cloneDeep(state);
+
+    /*Delete some field that is not relevant about data serializing*/
+
+    srcDataList[index] = newItem;
+
+    /*Set both data for child and data for submit.*/
+    this.setState({
+      timeRanges: list,
+      excludedDatesSrcData: srcDataList
+    });
+
+    this.uploadTimes(srcDataList);
+  };
+
+
+  uploadDates(param) {
     setExcludedDates({
-      data: this.state.excludedDatesSrcData
+      data: param
         .map(item => JSON.stringify(item))
     }).then(res => {
-      console.log("updated");
+      console.log("excluded dates updated");
     });
   }
 
-  /**
-   * Handler for fold/unfold a excluded date
-   * @param index The index of the child
-   * @param show Status that indicates whether the child want to be unfold or fold
-   */
-  handleTimeRangeChange = (index, show) => {
-    let list = this.state.excludedDates;
-    if (show) {
-      list.forEach(item => {
-        item.edit = false;
-      });
-      list[index].edit = true;
-    } else {
-      list[index].edit = false;
-    }
-    this.setState({
-      excludedDates: list
+  uploadTimes(param) {
+    setTimeRanges({
+      data: param.map(item => JSON.stringify(item))
+    }).then(res => {
+      console.log("time ranges updated");
     });
-  };
+  }
+
 
   /**
    * Handler for deleting a excluded date
@@ -124,7 +144,6 @@ export default class App extends React.Component {
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    this.uploadDates(prevState.excludedDates);
   }
 
 
@@ -169,6 +188,13 @@ export default class App extends React.Component {
         excludedDatesSrcData: res.data.data.map(item => JSON.parse(item))
       });
     });
+
+    getTimeRanges().then(res => {
+      this.setState({
+        timeRanges: res.data.data.map(item => JSON.parse(item)),
+        timeRangesSrcData: res.data.data.map(item => JSON.parse(item))
+      });
+    });
   }
 
   render() {
@@ -182,6 +208,7 @@ export default class App extends React.Component {
               <Index key={index}
                      index={index}
                      range={item}
+                     onEdit={this.handleTimeRangeChange}
                      onDelete={this.handleTimeRangeDelete}
               />
             ))}

@@ -1,3 +1,5 @@
+import { fetchTimezones } from "../../api";
+
 export const WEEKDAYS = {
   Sunday: 1,
   Monday: 2,
@@ -5,7 +7,7 @@ export const WEEKDAYS = {
   Wednesday: 4,
   Thursday: 5,
   Friday: 6,
-  Saturday: 7,
+  Saturday: 7
 };
 
 export const PERIODS = {
@@ -78,3 +80,18 @@ export const CHINESE_LUNAR_DATE_PRESETS = [
   }
 
 ];
+
+let timezones = {};
+
+export const initTimezones = () => {
+  return new Promise(resolve => {
+    fetchTimezones().then(res => {
+      timezones = res.data;
+      resolve()
+    });
+  })
+};
+
+export const getTimezones = ()=>{
+  return timezones;
+}

@@ -31,9 +31,13 @@ export const setExcludedDates = (params) => {
 };
 
 export const getTimeRanges = () => {
-  return axiosInstance.post("/working-hours/get-time-ranges");
+  return axiosInstance.post("/working-hours/list-time-ranges");
 };
 
 export const setTimeRanges = (params) => {
   return axiosInstance.post("/working-hours/set-time-ranges", params);
+};
+
+export const fetchTimezones = () => {
+  return axiosInstance.get("http://worldtimeapi.org/api/timezone")
 };

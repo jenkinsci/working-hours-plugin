@@ -1,6 +1,6 @@
 import React from "react";
 import DateInput from "./dateInput";
-import { DATE_PRESETS, DATE_TYPE, getDatePresets, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "../constants";
+import { DATE_PRESETS, DATE_TYPE, getDatePresets, getTimezones, MONTHS, ORDERS, PERIODS, WEEKDAYS } from "../constants";
 import {
   format,
   formatDate,
@@ -8,10 +8,11 @@ import {
   nextOccurrenceByYear,
   nextOccurrenceChineseLunar
 } from "../../../utils/date";
-import moment from "moment";
 import { getBrief } from "../../../utils";
 import { range } from "lodash";
-
+import moment from "moment";
+import { fetchTimezones } from "../../../api";
+// console.log(moment.tz.guess())
 export default class ExcludeDate extends React.Component {
   constructor() {
     super();
@@ -39,6 +40,7 @@ export default class ExcludeDate extends React.Component {
           day: 1
         }
       },
+      timezones:[],
       noEnd: true, //No end in repeat
       repeat: true,
       repeatCount: -1,
@@ -162,10 +164,16 @@ export default class ExcludeDate extends React.Component {
             </div>
             <div className={"form-row"}>
               <label className={"form-item-label"}>Base Timezone</label>
-              <input placeholder={"Enter a name"} value={this.state.utcOffset}
-                     className={"input input-text"}
-                     style={{ width: 200 }}
-                     onChange={this.handleTimezoneChange}/>
+              <select className={"input input-select"}
+                      value={this.state.utcOffset}
+                      onChange={this.handleTimezoneChange}
+                      style={{ width: 150, marginRight: 10 }}
+                      placeholder="select preset date"
+              >
+                {Object.keys(getTimezones()).map((item,index) =>
+                  <option value={getTimezones()[item]} key={index}>{this.state.timezones[item]}</option>
+                )}
+              </select>
             </div>
             <div>
               <label className={"form-item-label"}>Preset</label>
