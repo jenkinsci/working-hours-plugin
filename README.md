@@ -84,7 +84,8 @@ for the day it's running, the job will be aborted. Please note that if no allowa
 time ranges are configured for a day, `enforceBuildStep` will abort the job.
 
 ### Excluded dates
-This section contains explicit days (such as holidays) to abort the `enforceBuildStep`. This takes precedence over a`Allowable build times`, so jobs
-will always be queued on an excluded date. Here's an example of some holidays configured in the Working Days calendar:
+This section contains explicit days (such as holidays) to abort the `enforceBuildStep`. This takes precedence over `Allowable build times`, so jobs
+will never be queued on an excluded date. The `Repeat Yearly?` checkbox will make the excluded date apply every year. It still needs to have a year set in order to be to be a valid date.
+Here's an example of some holidays configured in the Working Days calendar:
 
 ![Excluded days](images/excluded-days.png "Excluded days")
