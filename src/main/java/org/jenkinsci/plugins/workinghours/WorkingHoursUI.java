@@ -101,7 +101,7 @@ public class WorkingHoursUI {
      * @return An array of serialized excluded dates.
      */
     private JSONArray serializeExcludedDates() {
-        Map<String, String> res = new HashMap<>();
+//        Map<String, String> res = new HashMap<>();
         JSONArray excludedDates = new JSONArray();
         config.getExcludedDates().forEach(item -> {
             excludedDates.add(item.getJsonData());
@@ -115,7 +115,7 @@ public class WorkingHoursUI {
      * @return JSONArray that contains a list of serialized time range data.
      */
     private JSONArray serializeTimeRanges() {
-        Map<String, String> res = new HashMap<>();
+//        Map<String, String> res = new HashMap<>();
         JSONArray timeRanges = new JSONArray();
         config.getBuildTimeMatrix().forEach(item -> {
             timeRanges.add(item.getJsonData());

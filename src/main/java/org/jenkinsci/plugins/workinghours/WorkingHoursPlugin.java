@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Provides configuration options for this plugin.
@@ -89,7 +90,7 @@ public class WorkingHoursPlugin extends GlobalConfiguration {
 
     @Override
     public String getDisplayName() {
-        return null;
+        return "";
     }
 
 

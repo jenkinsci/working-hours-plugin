@@ -25,6 +25,7 @@ package org.jenkinsci.plugins.workinghours.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
@@ -51,6 +52,7 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
      * Set or update the fields with a json string.
      * This json would be stored and return to the front app.
      */
+    @SuppressFBWarnings(value="URF_UNREAD_FIELD", justification="will be used in the near future")
     public void setJsonData(String inputData) {
         this.jsonData = inputData;
         this.dataContainer = gson.fromJson(inputData, DataContainer.class);
@@ -176,6 +178,7 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
          * Indicates whether the date is dynamic,
          * dynamic date would depend on week and vary every year
          */
+        @SuppressFBWarnings(value="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification="will be used in the near future")
         public boolean dynamic = false;
 
         /**
@@ -183,11 +186,13 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
          * is not static but depend on the occurrence of weekday,
          * like Mother's Day (the second sunday of May).
          */
+        @SuppressFBWarnings(value="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification="will be used in the near future")
         public DynamicDate dynamicDate = null;
 
         /**
          * If static, the actual date(timestamp) of this excluded date.
          */
+        @SuppressFBWarnings(value="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification="will be used in the near future")
         public String date = "";
 
         public Date(boolean dynamic, DynamicDate dynamicDate, String date) {
@@ -202,18 +207,21 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
          * The month in the
          * Ranging from 1 to 12, indicating from January to December.
          */
+        @SuppressFBWarnings(value="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification="will be used in the near future")
         public int month = 1;
 
         /**
          * The weekday content to describe a dynamic excluded date.
          * Ranging from 1 to 7, indicating from Monday to Sunday.
          */
+        @SuppressFBWarnings(value="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification="will be used in the near future")
         public int weekday = 1;
 
         /**
          * The nth time the weekday appear.
          * Ranging from 1 to 4, indicating the first, second, third and the fourth appearance.
          */
+        @SuppressFBWarnings(value="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD", justification="will be used in the near future")
         public int week = 1;
 
         /**
