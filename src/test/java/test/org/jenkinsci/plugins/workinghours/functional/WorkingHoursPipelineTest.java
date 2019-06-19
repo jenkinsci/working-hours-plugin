@@ -29,7 +29,7 @@ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.jenkinsci.plugins.workinghours.EnforceScheduleJobProperty;
-import org.jenkinsci.plugins.workinghours.WorkingHoursConfig;
+import org.jenkinsci.plugins.workinghours.WorkingHoursPlugin;
 import test.org.jenkinsci.plugins.workinghours.utility.TimeRangeUtility;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -85,9 +85,9 @@ public class WorkingHoursPipelineTest {
     @Test
     public void testScriptedPipelineBlockOnTime() throws Exception {
 
-        WorkingHoursConfig config = WorkingHoursConfig.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+//        config.save();
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline");
         String pipelineScript
@@ -114,9 +114,9 @@ public class WorkingHoursPipelineTest {
     @Test
     public void testScriptedPipelineBlockOnDay() throws Exception {
 
-        WorkingHoursConfig config = WorkingHoursConfig.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getDifferentDayRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getDifferentDayRange());
+//        config.save();
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline");
         String pipelineScript
@@ -143,9 +143,9 @@ public class WorkingHoursPipelineTest {
     @Test
     public void testScriptedPipelineNoBlockOnTime() throws Exception {
 
-        WorkingHoursConfig config = WorkingHoursConfig.get();
-        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
-        config.save();
+//        WorkingHoursPlugin config = WorkingHoursPlugin.get();
+//        config.setBuildTimeMatrix(TimeRangeUtility.getExclusiveRange());
+//        config.save();
 
         WorkflowJob job = jenkins.createProject(WorkflowJob.class, "test-pipeline");
         String pipelineScript
