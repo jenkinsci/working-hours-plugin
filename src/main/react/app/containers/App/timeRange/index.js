@@ -1,15 +1,16 @@
 import React from "react";
 import { WEEKDAYS } from "../constants";
 import moment from "moment";
-import DatePicker from "react-datepicker/es";
+import TimePicker from "rc-time-picker";
+import "rc-time-picker/assets/index.css";
 
 export default class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       dayOfWeek: WEEKDAYS.Sunday,
-      startTime: moment({ hour: 8 }).toDate(),
-      endTime: moment({ hour: 18 }).toDate()
+      startTime: moment({ hour: 8 }),
+      endTime: moment({ hour: 18 })
     };
   }
 
@@ -41,35 +42,29 @@ export default class Index extends React.Component {
     this.props.onEdit(this.props.index, this.state);
   };
 
+  validate(){
+    return this.state.endTime.isSameOrAfter(this.state.startTime)
+  }
+
 
   render() {
     return (
-      <div className={"time-range"} style={{ display: "flex" }}>
+      <div className={["time-range", this.validate() ? "" : "time-range-invalid"].join(" ")}
+           style={{ display: "flex" }}>
         <select value={this.state.dayOfWeek} onChange={this.updateDay} className={"input input-select"}>
           {Object.keys(WEEKDAYS).map(key => <option value={WEEKDAYS[key]} key={key}>{key}</option>)}
         </select>
         <div>
-          <DatePicker className={"input input-time"}
-                      selected={this.state.startTime}
-                      placeholder="select"
-                      dateFormat="h:mm aa"
-                      minTime={moment({ hour: 0, minute: 0 }).toDate()}
-                      maxTime={this.state.endTime}
-                      showTimeSelect
-                      showTimeSelectOnly
+          <TimePicker className={"input-time"}
+                      defaultValue={this.state.startTime}
+                      showSecond={false}
                       onChange={this.updateStartTime}/>
         </div>
         <div>
           -
-          <DatePicker className={"input input-time"}
-                      selected={this.state.endTime}
-                      placeholder="select"
-                      dateFormat="h:mm aa"
-                      timeIntervals={1}
-                      minTime={this.state.startTime}
-                      maxTime={moment({ hour: 24, minute: 0 }).toDate()}
-                      showTimeSelect
-                      showTimeSelectOnly
+          <TimePicker className={"input-time"}
+                      defaultValue={this.state.endTime}
+                      showSecond={false}
                       onChange={this.updateEndTime}/>
         </div>
         <button type="button" className={"btn btn-delete"} onClick={this.delete}>X</button>
