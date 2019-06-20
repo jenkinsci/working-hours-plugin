@@ -9527,6 +9527,19 @@ rc-animate@2.x:
     raf "^3.4.0"
     react-lifecycles-compat "^3.0.4"
 
+rc-slider@^8.6.13:
+  version "8.6.13"
+  resolved "http://npm.6tiantian.com:4873/rc-slider/-/rc-slider-8.6.13.tgz#88a8150c2dda6709f3f119135de11fba80af765b"
+  integrity sha1-iKgVDC3aZwnz8RkTXeEfuoCvdls=
+  dependencies:
+    babel-runtime "6.x"
+    classnames "^2.2.5"
+    prop-types "^15.5.4"
+    rc-tooltip "^3.7.0"
+    rc-util "^4.0.4"
+    shallowequal "^1.0.1"
+    warning "^4.0.3"
+
 rc-time-picker@^3.7.1:
   version "3.7.1"
   resolved "http://npm.6tiantian.com:4873/rc-time-picker/-/rc-time-picker-3.7.1.tgz#35a2c9cbd9758827c1ce57b8817db49472c95cc3"
@@ -9538,7 +9551,16 @@ rc-time-picker@^3.7.1:
     raf "^3.4.1"
     rc-trigger "^2.2.0"
 
-rc-trigger@^2.2.0:
+rc-tooltip@^3.7.0:
+  version "3.7.3"
+  resolved "http://npm.6tiantian.com:4873/rc-tooltip/-/rc-tooltip-3.7.3.tgz#280aec6afcaa44e8dff0480fbaff9e87fc00aecc"
+  integrity sha1-KArsavyqROjf8EgPuv+eh/wArsw=
+  dependencies:
+    babel-runtime "6.x"
+    prop-types "^15.5.8"
+    rc-trigger "^2.2.2"
+
+rc-trigger@^2.2.0, rc-trigger@^2.2.2:
   version "2.6.3"
   resolved "http://npm.6tiantian.com:4873/rc-trigger/-/rc-trigger-2.6.3.tgz#9d8b1adcb8f438038ee64039571dafbe03864fec"
   integrity sha1-nYsa3Lj0OAOO5kA5Vx2vvgOGT+w=
@@ -12079,7 +12101,7 @@ warning@^3.0.0:
   dependencies:
     loose-envify "^1.0.0"
 
-warning@^4.0.2:
+warning@^4.0.2, warning@^4.0.3:
   version "4.0.3"
   resolved "http://registry.npm.taobao.org/warning/download/warning-4.0.3.tgz#16e9e077eb8a86d6af7d64aa1e05fd85b4678ca3"
   integrity sha1-Fungd+uKhtavfWSqHgX9hbRnjKM=
