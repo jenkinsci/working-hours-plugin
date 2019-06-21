@@ -9551,7 +9551,7 @@ rc-time-picker@^3.7.1:
     raf "^3.4.1"
     rc-trigger "^2.2.0"
 
-rc-tooltip@^3.7.0:
+rc-tooltip@^3.7.0, rc-tooltip@^3.7.3:
   version "3.7.3"
   resolved "http://npm.6tiantian.com:4873/rc-tooltip/-/rc-tooltip-3.7.3.tgz#280aec6afcaa44e8dff0480fbaff9e87fc00aecc"
   integrity sha1-KArsavyqROjf8EgPuv+eh/wArsw=
