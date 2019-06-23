@@ -6,3 +6,5 @@ work/
 .idea
 *.iml
 /nbproject/
+build
+node_modules
