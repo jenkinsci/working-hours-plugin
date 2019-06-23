@@ -32,9 +32,7 @@ import hudson.util.FormValidation;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 /**
  * Encapsulates an excluded date along with name for UI purposes.
@@ -43,8 +41,8 @@ import java.util.TimeZone;
  */
 public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
 
-    private DataContainer dataContainer = null;
-    private String jsonData = "";
+    private DataContainer dataContainer;
+    private String jsonData;
     private static Gson gson = null;
 
     /**
@@ -73,6 +71,10 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
         }
         this.dataContainer = gson.fromJson(jsonData, DataContainer.class);
         this.jsonData = jsonData;
+    }
+
+    public DataContainer getDataContainer() {
+        return dataContainer;
     }
 
 
@@ -148,7 +150,7 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
         public Date endDate = null;
 
         /**
-         * When repeat, whether this would end, if would, the end is todo
+         * When repeat, whether this would end, if would, the end is the field "end date"
          */
         public boolean noEnd = true;
 
@@ -168,33 +170,86 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
         public int repeatPeriod = 1;
 
         public int repeatInterval = 1;
+
+        public int getUtcOffset() {
+            return utcOffset;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Date getStartDate() {
+            return startDate;
+        }
+
+        public Date getEndDate() {
+            return endDate;
+        }
+
+        public boolean isNoEnd() {
+            return noEnd;
+        }
+
+        public boolean isRepeat() {
+            return repeat;
+        }
+
+        public int getRepeatCount() {
+            return repeatCount;
+        }
+
+        public int getRepeatPeriod() {
+            return repeatPeriod;
+        }
+
+        public int getRepeatInterval() {
+            return repeatInterval;
+        }
     }
 
     public static class Date {
+
+        public boolean isDynamic() {
+            return dynamic;
+        }
 
         /**
          * Indicates whether the date is dynamic,
          * dynamic date would depend on week and vary every year
          */
-        public boolean dynamic = false;
+        public boolean dynamic;
 
         /**
          * This field is in order to describe some date which
          * is not static but depend on the occurrence of weekday,
          * like Mother's Day (the second sunday of May).
          */
-        public DynamicDate dynamicDate = null;
+        public DynamicDate dynamicDate;
 
         /**
          * If static, the actual date(timestamp) of this excluded date.
          */
-        public String date = "";
+        public String date;
 
         public Date(boolean dynamic, DynamicDate dynamicDate, String date) {
             this.dynamic = dynamic;
             this.dynamicDate = dynamicDate;
             this.date = date;
         }
+
+        public String getDate() {
+            return date;
+        }
+
+        public DynamicDate getDynamicDate() {
+            return dynamicDate;
+        }
+
     }
 
     public static class DynamicDate {
@@ -202,19 +257,19 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
          * The month in the
          * Ranging from 1 to 12, indicating from January to December.
          */
-        public int month = 1;
+        public int month;
 
         /**
          * The weekday content to describe a dynamic excluded date.
          * Ranging from 1 to 7, indicating from Monday to Sunday.
          */
-        public int weekday = 1;
+        public int weekday;
 
         /**
          * The nth time the weekday appear.
          * Ranging from 1 to 4, indicating the first, second, third and the fourth appearance.
          */
-        public int week = 1;
+        public int week;
 
         /**
          * The constructor.
@@ -225,6 +280,18 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
             this.month = month;
             this.week = week;
             this.weekday = weekday;
+        }
+
+        public int getMonth() {
+            return month;
+        }
+
+        public int getWeekday() {
+            return weekday;
+        }
+
+        public int getWeek() {
+            return week;
         }
     }
 }

@@ -87,9 +87,14 @@ public class WorkingHoursPlugin extends GlobalConfiguration {
                 : this.buildTimeMatrix;
     }
 
+    /**
+     * Hide it from the system configure page by returning "".
+     * @return "" empty string to hide it from the system configure page.
+     */
+    @Nonnull
     @Override
     public String getDisplayName() {
-        return null;
+        return "";
     }
 
 
