@@ -141,7 +141,9 @@ export default class ExcludeDate extends React.Component {
   };
 
   componentDidMount() {
-    this.setState(this.props.date);
+    this.setState(this.props.date,() => {
+      this.props.onEdit(this.props.index, true, this.state);
+    });
   }
 
   render() {

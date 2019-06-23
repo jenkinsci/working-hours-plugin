@@ -1,15 +1,20 @@
 import React from "react";
 import { WEEKDAYS } from "../constants";
-import moment from "moment";
 
-import TimePicker from "rc-time-picker";
-import "../style/components.css"
+import "../style/components.css";
 import "rc-time-picker/assets/index.css";
 import "rc-slider/assets/index.css";
-import Slider, { createSliderWithTooltip, Range,Handle } from "rc-slider";
-import Tooltip from "rc-tooltip"
+import Slider, { createSliderWithTooltip, Range, Handle } from "rc-slider";
 
-const timeRegExp = /^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$/;
+const timeRegExp = /^(^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])|^(24:00))$/;
+
+const timeMarks = {
+  0: "00:00",
+  360: "6:00",
+  720: "12:00",
+  1080: "18:00",
+  1440: "24:00"
+};
 
 /**
  * Convert number of minutes to string like '00:00'.
@@ -129,23 +134,30 @@ export default class TimeRange extends React.Component {
     });
   };
 
+  componentDidMount() {
+    this.setState(this.props.range);
+  }
+
   render() {
     return (
       <div className={["time-range", this.validate() ? "" : "time-range-invalid"].join(" ")}
            style={{ display: "flex" }}>
-        <select value={this.state.dayOfWeek} onChange={this.updateDay} className={"input input-select"}>
-          {Object.keys(WEEKDAYS).map(key => <option value={WEEKDAYS[key]} key={key}>{key}</option>)}
-        </select>
+        <p className={'label-weekday'}>{Object.keys(WEEKDAYS)[this.state.dayOfWeek]}
+        </p>
 
-        <input value={this.state.tempStartTime} className={"input input-text"} style={{ width: 70, marginLeft: 10 }}
+        <input value={this.state.tempStartTime} className={"input input-text input-time"} style={{ width: 70, marginLeft: 10 }}
                onChange={this.updateStartTime}
                onBlur={this.handleInputBlur}
         />
         <Range
-          style={{ margin: 10 }}
-          max={1439}
+          style={{ margin: "10px 25px" }}
+          max={1440}
           min={0}
           step={30}
+          dotStyle={{ borderColor: "#e9e9e9" }}
+          activeDotStyle={{ borderColor: "rgb(177,177,177)" }}
+          marks={timeMarks}
+          pushable={true}
           trackStyle={[{ backgroundColor: "#b1b1b1" }, { backgroundColor: "#b1b1b1" }]}
           handleStyle={[
             {
@@ -163,7 +175,7 @@ export default class TimeRange extends React.Component {
 
         >
         </Range>
-        <input value={this.state.tempEndTime} className={"input input-text"} style={{ width: 70 }}
+        <input value={this.state.tempEndTime} className={"input input-text input-time"} style={{ width: 70 }}
                onChange={this.updateEndTime}
                onBlur={this.handleInputBlur}
         />

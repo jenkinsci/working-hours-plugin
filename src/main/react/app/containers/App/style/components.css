@@ -9,3 +9,7 @@
     background-color: white;
     border: 4px solid rgb(200, 200, 200);
 }
+
+.rc-slider-dot-active{
+    border-color: rgb(177, 177, 177);
+}

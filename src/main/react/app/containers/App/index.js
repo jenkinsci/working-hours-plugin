@@ -12,9 +12,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./style/index.css";
 import ExcludedDate from "./excludedDate";
-import Index from "./timeRange";
+import TimeRange from "./timeRange";
 import { getExcludedDates, getTimeRanges, setExcludedDates, setTimeRanges } from "../../api";
 import { cloneDeep } from "lodash";
+import { WEEKDAYS } from "./constants";
+import only from "only";
+
 let openIndex = [];
 
 export default class App extends React.Component {
@@ -23,10 +26,6 @@ export default class App extends React.Component {
     this.state = {
       /*Data used to pass to child*/
       excludedDates: [],
-
-      /*A copy of the data, and will be used to post data*/
-      excludedDatesSrcData: [],
-
       timeRanges: []
     };
   }
@@ -47,25 +46,12 @@ export default class App extends React.Component {
 
     list[index] = state;
 
-    let srcDataList = this.state.excludedDatesSrcData;
-
-    /*Use lodash to deepcopy an object, so we could delete some helper fields.*/
-    let newItem = cloneDeep(state);
-
-    /*Delete some field that is not relevant about data serializing*/
-    delete newItem.selectedDateType;
-    delete newItem.selectedPreset;
-
-    srcDataList[index] = newItem;
-
     /*Set both data for child and data for submit.*/
     this.setState({
-      excludedDates: list,
-      excludedDatesSrcData: srcDataList
+      excludedDates: list
     });
 
-    this.uploadDates(srcDataList);
-
+    this.uploadDates(list);
   };
 
   /**
@@ -78,29 +64,29 @@ export default class App extends React.Component {
 
     list[index] = state;
 
-    let srcDataList = this.state.timeRangesSrcData;
-
-    /*Use lodash to deepcopy an object, so we could delete some helper fields.*/
-    let newItem = cloneDeep(state);
-
-    /*Delete some field that is not relevant about data serializing*/
-
-    srcDataList[index] = newItem;
-
     /*Set both data for child and data for submit.*/
     this.setState({
-      timeRanges: list,
-      excludedDatesSrcData: srcDataList
+      timeRanges: list
     });
 
-    this.uploadTimes(srcDataList);
+    this.uploadTimes(list);
   };
 
 
   uploadDates(param) {
     setExcludedDates({
       data: param
-        .map(item => JSON.stringify(item))
+        .map(item => JSON.stringify(only(item, [
+          "name",
+          "type",
+          "utcOffset",
+          "startDate",
+          "endDate",
+          "noEnd",
+          "repeat",
+          "repeatCount",
+          "repeatInterval",
+          "repeatPeriod"].join(" "))))
     }).then(res => {
       console.log("excluded dates updated");
     });
@@ -108,7 +94,7 @@ export default class App extends React.Component {
 
   uploadTimes(param) {
     setTimeRanges({
-      data: param.map(item => JSON.stringify(item))
+      data: param.map(item => JSON.stringify(only(item, "dayOfWeek endTime startTime")))
     }).then(res => {
       console.log("time ranges updated");
     });
@@ -128,6 +114,8 @@ export default class App extends React.Component {
     this.setState({
       excludedDates: list
     });
+
+    this.uploadDates(list);
   };
 
   /**
@@ -135,46 +123,40 @@ export default class App extends React.Component {
    * @param index
    */
   handleTimeRangeDelete = (index) => {
+    console.log(index);
     let list = this.state.timeRanges;
-    list.splice(index, index + 1);
+    list.splice(index, 1);
     this.setState({
       timeRanges: list
     });
+    this.uploadTimes(list);
   };
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-  }
-
 
   /**
    * Handler for adding a new excluded date
    */
   addExcludedDate = () => {
-
     let list = this.state.excludedDates;
-    let newItem = {};
     list.push({});
-    list.forEach((item, index) => {
-      item.index = index;
-    });
     this.setState({
       excludedDates: list
     });
+    this.uploadDates(list);
   };
 
   /**
-   * Handler for adding a new time range
+   * Handler for adding a new time range.
+   * @param weekday The preset weekday passed to the new time range, default to sunday.
    */
-  addTimeRange = () => {
+  addTimeRange = (weekday = WEEKDAYS.Sunday) => {
     let list = this.state.timeRanges;
     let newItem = {};
-    list.push({});
-    list.forEach((item, index) => {
-      item.index = index;
-    });
+    list.push({ dayOfWeek: weekday });
+    list.sort((a,b)=>a.dayOfWeek - b.dayOfWeek)
     this.setState({
       timeRanges: list
     });
+    this.uploadTimes(list);
   };
 
   /**
@@ -183,18 +165,26 @@ export default class App extends React.Component {
   componentDidMount() {
     getExcludedDates().then(res => {
       this.setState({
-        excludedDates: res.data.data.map(item => JSON.parse(item)),
-        excludedDatesSrcData: res.data.data.map(item => JSON.parse(item))
+        excludedDates: res.data.data.map(item => JSON.parse(item))
       });
     });
 
     getTimeRanges().then(res => {
       this.setState({
-        timeRanges: res.data.data.map(item => JSON.parse(item)),
-        timeRangesSrcData: res.data.data.map(item => JSON.parse(item))
+        timeRanges: res.data.data.map(item => JSON.parse(item))
       });
     });
   }
+
+  weekdayList = () => {
+    let res = [];
+    Object.entries(WEEKDAYS).forEach(entry => {
+      if (!this.state.timeRanges.some(item => item.dayOfWeek === entry[1])) {
+        res.push(entry);
+      }
+    });
+    return res;
+  };
 
   render() {
     return (
@@ -204,23 +194,25 @@ export default class App extends React.Component {
           {this.state.timeRanges.length <= 0 ?
             <div>Time range is not
               configured.</div> : this.state.timeRanges.map((item, index) => (
-              <Index key={index}
-                     index={index}
-                     range={item}
-                     onEdit={this.handleTimeRangeChange}
-                     onDelete={this.handleTimeRangeDelete}
+              <TimeRange key={item.dayOfWeek}
+                         index={index}
+                         range={item}
+                         onEdit={this.handleTimeRangeChange}
+                         onDelete={this.handleTimeRangeDelete}
               />
             ))}
-
           {/*No more than 7 time ranges*/}
-          {this.state.timeRanges.length < 7 &&
-          <button type={"button"} className='btn btn-gray' onClick={this.addTimeRange}>Add</button>}
+          <div className={"form-row"}>
+            {this.weekdayList().map(item => (
+              <button onClick={() => this.addTimeRange(item[1])} className='btn btn-gray'>{item[0]}</button>
+            ))}
+          </div>
         </div>
         Excluded Dates
         <div>
           {this.state.excludedDates.length <= 0 ?
             <div className={"config-item"}>There's no excluded
-                dates</div> : this.state.excludedDates.map((item, index) => (
+              dates</div> : this.state.excludedDates.map((item, index) => (
               <ExcludedDate key={index}
                             index={index}
                             opened={index === openIndex}

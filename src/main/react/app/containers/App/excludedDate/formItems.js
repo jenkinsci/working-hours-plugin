@@ -71,7 +71,8 @@ export function NameInput() {
 export function TimezoneInput() {
   const handleTimezoneChange = (e) => {
     this.setState({
-      timezone: e
+      timezone: e.name,
+      utcOffset:e.offset*60,
     });
   };
   return <div className={"form-row"}>
