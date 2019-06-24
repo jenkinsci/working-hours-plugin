@@ -43,7 +43,7 @@ function timeStringToMinutes(timeString) {
 export default class TimeRange extends React.Component {
   constructor(props) {
     super(props);
-    this.debouncedSave = debounce(this.save, 5000)
+    this.debouncedSave = debounce(this.save, 500)
     this.state = {
       dayOfWeek: WEEKDAYS.Sunday,
       startTime: 8 * 60,

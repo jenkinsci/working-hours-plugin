@@ -7,7 +7,7 @@ import "rc-slider/assets/index.css";
 import Slider, {createSliderWithTooltip, Range, Handle} from "rc-slider";
 import {debounce} from "lodash";
 import {getTimeRanges, setTimeRanges} from "../../../api";
-import {SavingState} from "../../common/savingState";
+import {LOADING_STATE, SavingState} from "../../common/savingState";
 import ExcludedDateContainer from "../excludedDate";
 import TimeRange from "./timeRange";
 import only from "only";
@@ -49,9 +49,16 @@ export default class TimeRangeContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      timeRanges: []
+      timeRanges: [],
+      loadingState: LOADING_STATE.WAITING,
     };
   }
+
+  debouncedClearLoading = debounce(()=>{
+    this.setState({
+      loadingState:LOADING_STATE.WAITING
+    })
+  },1000)
 
   /**
    * Handler for changing a excluded date
@@ -73,10 +80,17 @@ export default class TimeRangeContainer extends React.Component {
 
 
   uploadTimes(param) {
+    this.setState({
+      loadingState: LOADING_STATE.LOADING
+    })
     setTimeRanges({
       data: param.map(item => JSON.stringify(only(item, "dayOfWeek endTime startTime")))
     }).then(res => {
       console.log("time ranges updated");
+      this.setState({
+        loadingState: LOADING_STATE.SUCCESS
+      })
+      this.debouncedClearLoading();
     });
   }
 
@@ -125,11 +139,17 @@ export default class TimeRangeContainer extends React.Component {
    * Fetching data once the app is mounted.
    */
   componentDidMount() {
-
+    this.setState({
+      loadingState: LOADING_STATE.LOADING
+    })
     getTimeRanges().then(res => {
       this.setState({
         timeRanges: res.data.data.map(item => JSON.parse(item))
       });
+      this.setState({
+        loadingState: LOADING_STATE.SUCCESS
+      })
+      this.debouncedClearLoading();
     });
   }
 
@@ -137,7 +157,7 @@ export default class TimeRangeContainer extends React.Component {
     return (
       <div>
         Time Range
-        <SavingState loading={true}/>
+        <SavingState loadingState={this.state.loadingState}/>
         <div className={"config-item"}>
           {this.state.timeRanges.length <= 0 ?
             <div>Time range is not

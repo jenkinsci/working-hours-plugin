@@ -3,6 +3,14 @@ import React from "react";
 /**
  * @return {string}
  */
+export const LOADING_STATE = {
+  WAITING: "waiting",
+  LOADING: "loading",
+  SAVING: "saving",
+  SUCCESS: "success",
+  FAIL: "fail"
+}
+
 export function SavingState(props) {
   let style = {
     width: 15,
@@ -17,9 +25,34 @@ export function SavingState(props) {
     display: "inline",
     fontWeight: 600
   }
-  let {loading} = props;
-  return (!loading ? <div style={style}
-                          className="spinner-border text-secondary" role="status">
-    <span className="sr-only">Loading...</span>
-  </div> : <div style={successStyle}>Success!</div>)
+
+  let failStyle = {
+    color: "#e04745",
+    marginLeft: 10,
+    display: "inline",
+    fontWeight: 600
+  }
+  let {loadingState} = props;
+  switch (loadingState) {
+    case LOADING_STATE.WAITING:
+      return <div/>
+    case LOADING_STATE.LOADING:
+      return <div style={{display: 'inline'}}>
+        <div style={style}
+             className="spinner-border text-secondary" role="status">
+        </div>
+        Loading
+      </div>
+    case LOADING_STATE.SAVING:
+      return <div style={{display: 'inline'}}>
+        <div style={style}
+             className="spinner-border text-secondary" role="status">
+        </div>
+        Saving
+      </div>
+    case LOADING_STATE.SUCCESS:
+      return <div style={successStyle}>Success</div>
+    case LOADING_STATE.FAIL:
+      return <div style={failStyle}>Fail</div>
+  }
 }
