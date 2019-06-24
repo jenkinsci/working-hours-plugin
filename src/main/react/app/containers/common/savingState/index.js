@@ -11,7 +11,7 @@ export const LOADING_STATE = {
   FAIL: "fail"
 }
 
-export function SavingState(props) {
+export function LoadingState(props) {
   let style = {
     width: 15,
     height: 15,
