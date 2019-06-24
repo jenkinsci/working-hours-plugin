@@ -38,7 +38,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Provides configuration options for this plugin.
@@ -88,6 +87,11 @@ public class WorkingHoursPlugin extends GlobalConfiguration {
                 : this.buildTimeMatrix;
     }
 
+    /**
+     * Hide it from the system configure page by returning "".
+     * @return "" empty string to hide it from the system configure page.
+     */
+    @Nonnull
     @Override
     public String getDisplayName() {
         return "";

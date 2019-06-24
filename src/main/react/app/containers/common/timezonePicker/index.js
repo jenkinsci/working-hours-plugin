@@ -1,12 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import timezones from './timezones';
+import timezones from "./timezones";
+
 
 class TimezonePicker extends React.Component {
   static propTypes = {
     value: PropTypes.string,
-    offset: PropTypes.oneOf(['GMT', 'UTC']),
+    offset: PropTypes.oneOf(["GMT", "UTC"]),
     onChange: PropTypes.func.isRequired,
     className: PropTypes.string,
     style: PropTypes.shape({}),
@@ -14,26 +15,26 @@ class TimezonePicker extends React.Component {
       onBlur: PropTypes.func,
       onFocus: PropTypes.func,
       onChange: PropTypes.func,
-      onKeyDown: PropTypes.func,
-    }),
+      onKeyDown: PropTypes.func
+    })
   };
 
   static defaultProps = {
-    value: '',
-    offset: 'GMT',
-    className: '',
+    value: "",
+    offset: "GMT",
+    className: "",
     style: {},
-    inputProps: {},
+    inputProps: {}
   };
 
   state = {
     focus: null,
-    query: '',
-    currentZone: this.props.value ? timezones.find(zone => zone.name === this.props.value) : null,
+    query: "",
+    currentZone: this.props.value ? timezones.find(zone => zone.name === this.props.value) : null
   };
 
   static getDerivedStateFromProps(props, state) {
-    if (props.value !== (state.currentZone ? state.currentZone.name : '')) {
+    if (props.value !== (state.currentZone ? state.currentZone.name : "")) {
       return { currentZone: timezones.find(zone => zone.name === props.value) };
     }
     return null;
@@ -42,8 +43,8 @@ class TimezonePicker extends React.Component {
   stringifyZone(zone, offset) {
     const ensure2Digits = num => (num > 9 ? `${num}` : `0${num}`);
 
-    return `(${offset}${zone.offset < 0 ? '-' : '+'}${ensure2Digits(
-      Math.floor(Math.abs(zone.offset)),
+    return `(${offset}${zone.offset < 0 ? "-" : "+"}${ensure2Digits(
+      Math.floor(Math.abs(zone.offset))
     )}:${ensure2Digits(Math.abs((zone.offset % 1) * 60))}) ${zone.label}`;
   }
 
@@ -53,8 +54,8 @@ class TimezonePicker extends React.Component {
     return timezones.filter(zone =>
       zone.label
         .toLowerCase()
-        .replace(/\s+/g, '')
-        .includes(this.state.query.toLowerCase().replace(/\s+/g, '')),
+        .replace(/\s+/g, "")
+        .includes(this.state.query.toLowerCase().replace(/\s+/g, ""))
     );
   }
 
@@ -67,14 +68,14 @@ class TimezonePicker extends React.Component {
   };
 
   handleBlur = e => {
-    this.setState({ focus: null, query: '' });
+    this.setState({ focus: null, query: "" });
 
     if (this.props.inputProps.onBlur) {
       this.props.inputProps.onBlur(e);
     }
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     this.setState({ query: e.currentTarget.value, focus: 0 });
 
     if (this.props.inputProps.onChange) {
@@ -83,11 +84,11 @@ class TimezonePicker extends React.Component {
   };
 
   handleKeyDown = e => {
-    if (e.key === 'ArrowDown') {
+    if (e.key === "ArrowDown") {
       e.stopPropagation();
       e.preventDefault();
 
-      const ulElement = e.currentTarget.parentElement.querySelector('ul');
+      const ulElement = e.currentTarget.parentElement.querySelector("ul");
       const zones = this.timezones();
       this.setState(state => {
         const focus = state.focus === zones.length - 1 ? 0 : state.focus + 1;
@@ -96,11 +97,11 @@ class TimezonePicker extends React.Component {
 
         return { focus };
       });
-    } else if (e.key === 'ArrowUp') {
+    } else if (e.key === "ArrowUp") {
       e.stopPropagation();
       e.preventDefault();
 
-      const ulElement = e.currentTarget.parentElement.querySelector('ul');
+      const ulElement = e.currentTarget.parentElement.querySelector("ul");
       const zones = this.timezones();
       this.setState(state => {
         const focus = state.focus === 0 ? zones.length - 1 : state.focus - 1;
@@ -109,12 +110,12 @@ class TimezonePicker extends React.Component {
 
         return { focus };
       });
-    } else if (e.key === 'Escape' && this.input) {
+    } else if (e.key === "Escape" && this.input) {
       e.stopPropagation();
       e.preventDefault();
 
       this.input.blur();
-    } else if (e.key === 'Enter') {
+    } else if (e.key === "Enter") {
       e.stopPropagation();
       e.preventDefault();
       e.currentTarget.blur();
@@ -167,30 +168,30 @@ class TimezonePicker extends React.Component {
     const open = focus !== null;
 
     return (
-      <div className={'timezone-div'} style={this.props.style}>
-        <input className={'timezone-input input-select'}
-          type="text"
-          autoComplete="off"
-          {...inputProps}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          onChange={this.handleChange}
-          onKeyDown={this.handleKeyDown}
-          value={currentZone && !open ? this.stringifyZone(currentZone, offset) : query}
-          ref={input => {
-            this.input = input;
-          }}
+      <div className={"timezone-div"} style={this.props.style}>
+        <input className={"timezone-input input-select"}
+               type="text"
+               autoComplete="off"
+               {...inputProps}
+               onFocus={this.handleFocus}
+               onBlur={this.handleBlur}
+               onChange={this.handleChange}
+               onKeyDown={this.handleKeyDown}
+               value={currentZone && !open ? this.stringifyZone(currentZone, offset) : query}
+               ref={input => {
+                 this.input = input;
+               }}
         />
 
-        <ul className={(open ? 'timezone-open' : '') + ' timezone-ul'}>
+        <ul className={(open ? "timezone-open" : "") + " timezone-ul"}>
           {this.timezones().map((zone, index) => (
-            <li className={'timezone-li'} key={zone.name}>
+            <li className={"timezone-li"} key={zone.name}>
               <button
                 title={zone.label}
                 onMouseDown={() => this.handleChangeZone(zone)}
                 onMouseOver={() => this.handleHoverItem(index)}
                 onFocus={() => this.handleHoverItem(index)}
-                className={(focus === index ? 'timezone-button-focus' : '') + ' timezone-button'}
+                className={(focus === index ? "timezone-button-focus" : "") + " timezone-button"}
               >
                 {this.stringifyZone(zone, offset)}
               </button>

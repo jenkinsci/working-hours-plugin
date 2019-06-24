@@ -15,7 +15,6 @@ import ExcludedDate from "./excludedDate";
 import Index from "./timeRange";
 import { getExcludedDates, getTimeRanges, setExcludedDates, setTimeRanges } from "../../api";
 import { cloneDeep } from "lodash";
-
 let openIndex = [];
 
 export default class App extends React.Component {

@@ -8,10 +8,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "sanitize.css/sanitize.css";
-
 // Import root app
 import App from "containers/App";
-import { initTimezones } from "./containers/App/constants";
 
 
 const MOUNT_NODE = document.getElementById("container-excluded-dates");

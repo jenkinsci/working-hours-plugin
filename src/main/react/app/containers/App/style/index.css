@@ -32,6 +32,14 @@
 
 .time-range{
     margin: 5px;
+    display: flex;
+    width: 644px;
+}
+
+.time-range-invalid{
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px red dashed;
 }
 
 .btn {
