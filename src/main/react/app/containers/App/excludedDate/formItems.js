@@ -1,6 +1,6 @@
 import { range } from "lodash";
 import React from "react";
-import { DATE_TYPE, getTimezones, PERIODS } from "../constants";
+import { DATE_TYPE, PERIODS } from "../constants";
 import TimezonePicker from '../../common/timezonePicker'
 export function RepeatCount() {
   return <div className={"form-row"}>

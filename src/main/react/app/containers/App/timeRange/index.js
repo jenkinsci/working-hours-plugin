@@ -1,10 +1,16 @@
 import React from "react";
-import { WEEKDAYS } from "../constants";
+import {WEEKDAYS} from "../constants";
 
 import "../style/components.css";
 import "rc-time-picker/assets/index.css";
 import "rc-slider/assets/index.css";
-import Slider, { createSliderWithTooltip, Range, Handle } from "rc-slider";
+import Slider, {createSliderWithTooltip, Range, Handle} from "rc-slider";
+import {debounce} from "lodash";
+import {getTimeRanges, setTimeRanges} from "../../../api";
+import {SavingState} from "../../common/savingState";
+import ExcludedDateContainer from "../excludedDate";
+import TimeRange from "./timeRange";
+import only from "only";
 
 const timeRegExp = /^(^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])|^(24:00))$/;
 
@@ -39,148 +45,119 @@ function timeStringToMinutes(timeString) {
   return hour * 60 + minute;
 }
 
-const SliderWithTooltip = createSliderWithTooltip(Slider);
-
-export default class TimeRange extends React.Component {
+export default class TimeRangeContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dayOfWeek: WEEKDAYS.Sunday,
-      startTime: 8 * 60,
-      endTime: 18 * 60,
-
-      /*Strings used for store temp times, which would be checked on blur.*/
-      tempStartTime: "08:00",
-      tempEndTime: "18:00",
-
-      /*Symbol that indicates whether time is valid.*/
-      validStartTime: true,
-      validEndTime: true
-
+      timeRanges: []
     };
   }
 
-  updateStartTime = (e) => {
+  /**
+   * Handler for changing a excluded date
+   * @param index The index of the child.
+   * @param state The new state of the time range.
+   * */
+  handleTimeRangeChange = (index, state) => {
+    let list = this.state.timeRanges;
+
+    list[index] = state;
+
+    /*Set both data for child and data for submit.*/
     this.setState({
-      tempStartTime: e.target.value.trim()
+      timeRanges: list
     });
+
+    this.uploadTimes(list);
   };
 
-  updateEndTime = (e) => {
-    this.setState({
-      tempEndTime: e.target.value.trim()
+
+  uploadTimes(param) {
+    setTimeRanges({
+      data: param.map(item => JSON.stringify(only(item, "dayOfWeek endTime startTime")))
+    }).then(res => {
+      console.log("time ranges updated");
     });
+  }
+
+
+  /**
+   * Handler for deleting a time range
+   * @param index
+   */
+  handleTimeRangeDelete = (index) => {
+    console.log(index);
+    let list = this.state.timeRanges;
+    list.splice(index, 1);
+    this.setState({
+      timeRanges: list
+    });
+    this.uploadTimes(list);
+  };
+
+
+  /**
+   * Handler for adding a new time range.
+   * @param weekday The preset weekday passed to the new time range, default to sunday.
+   */
+  addTimeRange = (weekday = WEEKDAYS.Sunday) => {
+    let list = this.state.timeRanges;
+    let newItem = {};
+    list.push({dayOfWeek: weekday, isNew: true});
+    list.sort((a, b) => a.dayOfWeek - b.dayOfWeek);
+    this.setState({
+      timeRanges: list
+    });
+    this.uploadTimes(list);
+  };
+
+  weekdayList = () => {
+    let res = [];
+    Object.entries(WEEKDAYS).forEach(entry => {
+      if (!this.state.timeRanges.some(item => item.dayOfWeek === entry[1])) {
+        res.push(entry);
+      }
+    });
+    return res;
   };
 
   /**
-   * Process time after the input blur.
+   * Fetching data once the app is mounted.
    */
-  handleInputBlur = () => {
-    /*Test input format*/
-    if (timeRegExp.test(this.state.tempStartTime)) {
-      this.setState({
-        startTime: timeStringToMinutes(this.state.tempStartTime),
-        tempStartTime: timeFormatter(timeStringToMinutes(this.state.tempStartTime)),
-        validStartTime: true
-      });
-    } else {
-      this.setState({
-        validStartTime: false
-      });
-    }
-
-    if (timeRegExp.test(this.state.tempEndTime)) {
-      this.setState({
-        endTime: timeStringToMinutes(this.state.tempEndTime),
-        tempEndTime: timeFormatter(timeStringToMinutes(this.state.tempEndTime)),
-        validEndTime: true
-      });
-    } else {
-      this.setState({
-        validEndTime: false
-      });
-    }
-  };
-
-
-  delete = () => {
-    if (window.confirm("Are you sure to delete this range?")) {
-      this.props.onDelete(this.props.index);
-    }
-  };
-
-  updateDay = (event) => {
-    this.setState({
-      dayOfWeek: event.target.value
-    });
-  };
-
-  save = () => {
-    this.props.onEdit(this.props.index, this.state);
-  };
-
-  validate = () => {
-    return this.state.validEndTime && this.state.validStartTime;
-  };
-
-  handleRangeChange = (range) => {
-    this.setState({
-
-      tempStartTime: timeFormatter(range[0]),
-      tempEndTime: timeFormatter(range[1]),
-
-      startTime: range[0],
-      endTime: range[1]
-    });
-  };
-
   componentDidMount() {
-    this.setState(this.props.range);
+
+    getTimeRanges().then(res => {
+      this.setState({
+        timeRanges: res.data.data.map(item => JSON.parse(item))
+      });
+    });
   }
 
   render() {
     return (
-      <div className={["time-range", this.validate() ? "" : "time-range-invalid"].join(" ")}
-           style={{ display: "flex" }}>
-        <p className={'label-weekday'}>{Object.keys(WEEKDAYS)[this.state.dayOfWeek]}
-        </p>
-
-        <input value={this.state.tempStartTime} className={"input input-text input-time"} style={{ width: 70, marginLeft: 10 }}
-               onChange={this.updateStartTime}
-               onBlur={this.handleInputBlur}
-        />
-        <Range
-          style={{ margin: "10px 25px" }}
-          max={1440}
-          min={0}
-          step={30}
-          dotStyle={{ borderColor: "#e9e9e9" }}
-          activeDotStyle={{ borderColor: "rgb(177,177,177)" }}
-          marks={timeMarks}
-          pushable={true}
-          trackStyle={[{ backgroundColor: "#b1b1b1" }, { backgroundColor: "#b1b1b1" }]}
-          handleStyle={[
-            {
-              boxShadow: "0 0 5px #868686",
-              backgroundColor: "white",
-              border: "4px solid rgb(200, 200, 200)"
-            },
-            {
-              boxShadow: "0 0 5px #868686",
-              backgroundColor: "white",
-              border: "4px solid rgb(200, 200, 200)"
-            }]}
-          value={[this.state.startTime, this.state.endTime]}
-          onChange={this.handleRangeChange}
-
-        >
-        </Range>
-        <input value={this.state.tempEndTime} className={"input input-text input-time"} style={{ width: 70 }}
-               onChange={this.updateEndTime}
-               onBlur={this.handleInputBlur}
-        />
-        <button type="button" className={"btn btn-delete"} onClick={this.delete}>X</button>
-        <button type="button" className={"btn"} onClick={this.save}>Save</button>
+      <div>
+        Time Range
+        <SavingState loading={true}/>
+        <div className={"config-item"}>
+          {this.state.timeRanges.length <= 0 ?
+            <div>Time range is not
+              configured.</div> : this.state.timeRanges.map((item, index) => (
+              <TimeRange key={item.dayOfWeek}
+                         index={index}
+                         range={item}
+                         onEdit={this.handleTimeRangeChange}
+                         onDelete={this.handleTimeRangeDelete}
+              />
+            ))}
+          {/*No more than 7 time ranges*/}
+          {this.state.timeRanges.length < 7 && <div className={"form-row"} style={{marginBottom: 0}}>
+            Add
+            {this.weekdayList().map(item => (
+              <button onClick={() => this.addTimeRange(item[1])} className='btn btn-gray'>{item[0]}</button>
+            ))}
+          </div>
+          }
+        </div>
       </div>
     );
   }

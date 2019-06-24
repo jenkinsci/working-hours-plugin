@@ -15,7 +15,7 @@
     margin-left: 40px;
 }
 
-.label-inline{
+.label-inline {
     margin-right: 15px;
 }
 
@@ -26,17 +26,17 @@
     background: #f9f9f9;
 }
 
-.excluded-date{
+.excluded-date {
 
 }
 
-.time-range{
+.time-range {
     margin: 5px;
     display: flex;
     width: 775px;
 }
 
-.time-range-invalid{
+.time-range-invalid {
     padding: 5px;
     border-radius: 3px;
     border: 1px red dashed;
@@ -53,11 +53,11 @@
     margin-left: 10px;
 }
 
-.btn-dropdown{
+.btn-dropdown {
     background-image: url("../../../images/menu-button-arrow.png");
 }
 
-.btn-gray{
+.btn-gray {
     border: 1px solid #cccccc;
     background-color: #e0e0e0;
     color: #505050;
@@ -68,7 +68,7 @@
     border: 1px solid #c0c0c0;
 }
 
-.btn-gray:active{
+.btn-gray:active {
     background-color: #bbb;
     box-shadow: inset 0px 1px 6px 2px #929292;
 }
@@ -91,7 +91,7 @@
     color: white;
 }
 
-.input{
+.input {
     width: auto;
     border-radius: 3px;
     border: 1px solid #ccc;
@@ -102,34 +102,53 @@
     padding: 2px 8px;
 }
 
-.input-time{
+.input-time {
     width: 100px;
-    height: 24px;
+    height: 35px;
     margin: 0 20px;
 }
 
-.label-weekday{
-    min-width:90px;
+.label-weekday {
+    padding: 0 10px;
+    min-width: 90px;
+    font-weight: 100;
+    text-align: right;
+    position: relative;
+    width: 90px;
+    height: 35px;
+    border-radius: 7px;
+    background: #d3d3d37d;
+    line-height: 35px;
 }
 
-input[type='radio']{
+input[type='radio'] {
     height: 100%;
 }
 
-input[type='checkbox']{
+input[type='checkbox'] {
     height: 100%;
 }
 
 
-
-.input-select{
+.input-select {
     padding: 2px;
 }
 
-.input-text{
+.input-text {
 
 }
 
-.text-highlight{
+.text-highlight {
     font-weight: bold;
+}
+
+.is-new {
+    width: 10px;
+    height: 10px;
+    background: #28a745;
+    border: 1.5px solid white;
+    position: absolute;
+    right: -4px;
+    top: -4px;
+    border-radius: 5px;
 }
