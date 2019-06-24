@@ -43,7 +43,6 @@ function timeStringToMinutes(timeString) {
 export default class TimeRange extends React.Component {
   constructor(props) {
     super(props);
-    this.debouncedSave = debounce(this.save, 500)
     this.state = {
       dayOfWeek: WEEKDAYS.Sunday,
       startTime: 8 * 60,
@@ -62,12 +61,32 @@ export default class TimeRange extends React.Component {
     };
   }
 
+  /**
+   * A debounced function to avoid the save function to be called directly and frequently,
+   * also provide ability to save automatically.
+   * @type {debounce} The debounce function provided by @lodash.
+   */
+  debouncedSave = debounce(() => {
+    this.props.onEdit(this.props.index, this.state);
+    this.setState({
+      isNew: false,
+    })
+  }, 500)
+
+  /**
+   * Update the temp start time string.
+   * @param e
+   */
   updateStartTime = (e) => {
     this.setState({
       tempStartTime: e.target.value.trim()
     });
   };
 
+  /**
+   * Update the temp end time string.
+   * @param e
+   */
   updateEndTime = (e) => {
     this.setState({
       tempEndTime: e.target.value.trim()
@@ -84,7 +103,7 @@ export default class TimeRange extends React.Component {
         startTime: timeStringToMinutes(this.state.tempStartTime),
         tempStartTime: timeFormatter(timeStringToMinutes(this.state.tempStartTime)),
         validStartTime: true,
-        isNew:true,
+        isNew: true,
       });
       this.debouncedSave()
     } else {
@@ -98,7 +117,7 @@ export default class TimeRange extends React.Component {
         endTime: timeStringToMinutes(this.state.tempEndTime),
         tempEndTime: timeFormatter(timeStringToMinutes(this.state.tempEndTime)),
         validEndTime: true,
-        isNew:true,
+        isNew: true,
       });
       this.debouncedSave();
     } else {
@@ -115,13 +134,11 @@ export default class TimeRange extends React.Component {
     }
   };
 
-  save = () => {
-    this.props.onEdit(this.props.index, this.state);
-    this.setState({
-      isNew: false,
-    })
-  };
 
+  /**
+   * Return whether the temp time string is valid.
+   * @returns {boolean}
+   */
   validate = () => {
     return this.state.validEndTime && this.state.validStartTime;
   };
@@ -134,15 +151,17 @@ export default class TimeRange extends React.Component {
 
       startTime: range[0],
       endTime: range[1],
-      isNew:true,
-
+      isNew: true, // Set the symbol to @true so the indicator could be available.
     });
 
     this.debouncedSave()
   };
 
+  /**
+   * Set the initial data passed in (currently with just weekday)
+   */
   componentDidMount() {
-    this.setState(this.props.range,() => {
+    this.setState(this.props.range, () => {
       this.debouncedSave()
     });
   }

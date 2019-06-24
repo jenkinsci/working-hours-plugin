@@ -7,44 +7,14 @@ import "rc-slider/assets/index.css";
 import Slider, {createSliderWithTooltip, Range, Handle} from "rc-slider";
 import {debounce} from "lodash";
 import {getTimeRanges, setTimeRanges} from "../../../api";
-import {LOADING_STATE, SavingState} from "../../common/savingState";
+import {LOADING_STATE, LoadingState} from "../../common/savingState";
 import ExcludedDateContainer from "../excludedDate";
 import TimeRange from "./timeRange";
 import only from "only";
 
-const timeRegExp = /^(^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])|^(24:00))$/;
-
-const timeMarks = {
-  0: "00:00",
-  360: "6:00",
-  720: "12:00",
-  1080: "18:00",
-  1440: "24:00"
-};
-
 /**
- * Convert number of minutes to string like '00:00'.
- * @param v Number of minutes
- * @returns {string}
+ * Container for time ranges. In charge of data fetch/submit, loading state control.
  */
-function timeFormatter(v) {
-  let totalMinutes = v;
-  let hours = Math.floor(totalMinutes / 60);
-  let minutes = Math.floor(totalMinutes % 60);
-  return `${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}`;
-}
-
-
-/**
- * Convert time string like 00:00 to a number of its minutes from 00:00.
- */
-function timeStringToMinutes(timeString) {
-  let hour = parseInt(timeString.split(":")[0]);
-  let minute = parseInt(timeString.split(":")[1]);
-
-  return hour * 60 + minute;
-}
-
 export default class TimeRangeContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -54,6 +24,8 @@ export default class TimeRangeContainer extends React.Component {
     };
   }
 
+  /*A debounced function used to clear loading state.
+  * */
   debouncedClearLoading = debounce(()=>{
     this.setState({
       loadingState:LOADING_STATE.WAITING
@@ -79,6 +51,10 @@ export default class TimeRangeContainer extends React.Component {
   };
 
 
+  /**
+   * Upload time ranges to server.
+   * @param param
+   */
   uploadTimes(param) {
     this.setState({
       loadingState: LOADING_STATE.LOADING
@@ -157,7 +133,7 @@ export default class TimeRangeContainer extends React.Component {
     return (
       <div>
         Time Range
-        <SavingState loadingState={this.state.loadingState}/>
+        <LoadingState loadingState={this.state.loadingState}/>
         <div className={"config-item"}>
           {this.state.timeRanges.length <= 0 ?
             <div>Time range is not
