@@ -6,7 +6,7 @@ const OfflinePlugin = require('offline-plugin');
 const { HashedModuleIdsPlugin } = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 module.exports = require('./webpack.base.babel')({
   mode: 'production',
 
@@ -70,6 +70,9 @@ module.exports = require('./webpack.base.babel')({
 
     // Put it in the end to capture all the HtmlWebpackPlugin's
     // assets manipulations and do leak its manipulations to HtmlWebpackPlugin
+    new CopyWebpackPlugin([
+      {from:'build/main.js',to:'../../webapp/js/'}
+    ])
   ],
 
   performance: {

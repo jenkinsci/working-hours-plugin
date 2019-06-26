@@ -41,7 +41,7 @@ export default class ExcludeDateContainer extends React.Component {
    * @param index
    */
   handleExcludedDateDelete = (index) => {
-    if (openIndex === index) {
+    if (this.state.openIndex === index) {
       this.setState({
         openIndex: -1
       })
@@ -61,6 +61,7 @@ export default class ExcludeDateContainer extends React.Component {
         .map(item => JSON.stringify(only(item, [
           "name",
           "type",
+          "timezone",
           "utcOffset",
           "startDate",
           "endDate",

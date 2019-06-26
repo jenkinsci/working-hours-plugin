@@ -11,6 +11,7 @@ export function stringifyQuery(args) {
 }
 
 const AXIOS_DEFAULT_CONFIG = {
+  baseURL: "/jenkins/working-hours/",
   timeout: 20000,
   maxContentLength: 2000,
   headers: {},
@@ -23,21 +24,17 @@ axiosInstance = axios.create(AXIOS_DEFAULT_CONFIG);
 export default axiosInstance;
 
 export const getExcludedDates = () => {
-  return axiosInstance.post("/working-hours/list-excluded-dates");
+  return axiosInstance.post("/list-excluded-dates");
 };
 
 export const setExcludedDates = (params) => {
-  return axiosInstance.post("/working-hours/set-excluded-dates", params);
+  return axiosInstance.post("/set-excluded-dates", params);
 };
 
 export const getTimeRanges = () => {
-  return axiosInstance.post("/working-hours/list-time-ranges");
+  return axiosInstance.post("/list-time-ranges");
 };
 
 export const setTimeRanges = (params) => {
-  return axiosInstance.post("/working-hours/set-time-ranges", params);
-};
-
-export const fetchTimezones = () => {
-  return axiosInstance.get("http://worldtimeapi.org/api/timezone")
+  return axiosInstance.post("/set-time-ranges", params);
 };

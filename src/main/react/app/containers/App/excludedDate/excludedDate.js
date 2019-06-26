@@ -196,7 +196,7 @@ export default class ExcludeDate extends React.Component {
               <div className={"form-item-label"}/>
               {/*<button type="button" className="btn btn-outline-primary">Save</button>*/}
               <button type="button" className={"btn btn-gray"} onClick={this.toggleEdit}>Save and Close</button>
-              <button type="button" className={"btn-delete"} onClick={this.deleteDate}>Delete</button>
+              <button type="button" className={"btn btn-delete"} onClick={this.deleteDate}>Delete</button>
             </div>
           </div> :
           <div>
