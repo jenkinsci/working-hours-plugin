@@ -1,11 +1,11 @@
 import React from "react";
 import DateInput from "./dateInput";
-import { DATE_TYPE, getDatePresets, PERIODS} from "../constants";
+import {DATE_TYPE, getDatePresets, PERIODS} from "../constants";
 import {
   formatDate,
   nextOccurrenceChineseLunar
 } from "../../../utils/date";
-import { getBrief } from "../../../utils";
+import {getBrief} from "../../../utils";
 import moment from "moment";
 import {
   RepeatCount,
@@ -30,7 +30,7 @@ export default class ExcludeDate extends React.Component {
       type: "",
 
       utcOffset: moment().utcOffset(),
-      timezone:"",
+      timezone: "",
 
       startDate: {
         dynamic: false,
@@ -42,7 +42,9 @@ export default class ExcludeDate extends React.Component {
         }
       },
       endDate: {
-        dynamic: false, date: new Date(), dynamicDate: {
+        dynamic: false,
+        date: new Date(),
+        dynamicDate: {
           month: 1,
           week: 1,
           day: 1
@@ -77,26 +79,26 @@ export default class ExcludeDate extends React.Component {
   };
 
   handleRepeatChange = (event) => {
-    this.setState({ repeat: event.target.checked });
+    this.setState({repeat: event.target.checked});
   };
 
   handleRepeatPeriodChange = (e) => {
-    this.setState({ repeatPeriod: Number.parseInt(e.target.value) });
+    this.setState({repeatPeriod: Number.parseInt(e.target.value)});
   };
 
   handleNoEndChange = (event) => {
-    this.setState({ noEnd: event.target.checked });
+    this.setState({noEnd: event.target.checked});
   };
 
   handleIntervalChange = (e) => {
-    this.setState({ repeatInterval: e.target.value });
+    this.setState({repeatInterval: e.target.value});
   };
 
   handleCountChange = (e) => {
     if (e.target.value === "-1") {
-      this.setState({ noEnd: true });
+      this.setState({noEnd: true});
     }
-    this.setState({ repeatCount: e.target.value });
+    this.setState({repeatCount: e.target.value});
   };
 
   handlePresetChange = (e) => {
@@ -113,8 +115,6 @@ export default class ExcludeDate extends React.Component {
       selectedPreset: 0
     });
   };
-
-
 
 
   /*For the selected date type, get its presets.*/
@@ -141,13 +141,13 @@ export default class ExcludeDate extends React.Component {
   };
 
   componentDidMount() {
-    this.setState(this.props.date,() => {
+    this.setState(this.props.date, () => {
       this.props.onEdit(this.props.index, true, this.state);
     });
   }
 
   render() {
-    const { repeat, noEnd } = this.state;
+    const {repeat, noEnd} = this.state;
     return (
       <div className={"config-item"}>
         {/*Allow each date item to open or close, need help of the parent component.*/}
@@ -169,7 +169,7 @@ export default class ExcludeDate extends React.Component {
             )}
 
             {/*Show next occurrence when it's a regional date.*/}
-            {!this.isGregorian() && <div className={"form-row"} style={{ marginTop: "20px" }}>
+            {!this.isGregorian() && <div className={"form-row"} style={{marginTop: "20px"}}>
               <label className={"form-item-label"}>Next Occurrence</label>
               <div className={"text-highlight"}>{
                 formatDate(this.state.nextOccurrence)}
@@ -200,7 +200,7 @@ export default class ExcludeDate extends React.Component {
             </div>
           </div> :
           <div>
-            <span style={{ lineHeight: "20px" }}>{getBrief.call(this)}</span>
+            <span style={{lineHeight: "20px"}}>{getBrief.call(this)}</span>
             <button type="button" className={"btn btn-gray"} onClick={this.toggleEdit}>Edit</button>
             <button type="button" className={"btn btn-delete"} onClick={this.deleteDate}>X</button>
           </div>}
