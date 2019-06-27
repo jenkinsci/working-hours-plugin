@@ -1,6 +1,6 @@
 import { range } from "lodash";
 import React from "react";
-import { DATE_TYPE, getTimezones, PERIODS } from "../constants";
+import { DATE_TYPE, PERIODS } from "../constants";
 import TimezonePicker from '../../common/timezonePicker'
 export function RepeatCount() {
   return <div className={"form-row"}>
@@ -71,7 +71,8 @@ export function NameInput() {
 export function TimezoneInput() {
   const handleTimezoneChange = (e) => {
     this.setState({
-      timezone: e
+      timezone: e.name,
+      utcOffset:e.offset*60,
     });
   };
   return <div className={"form-row"}>

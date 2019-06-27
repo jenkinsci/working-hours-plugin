@@ -8,10 +8,7 @@
             <div id="container-excluded-dates"></div>
 
             <!--Data container to retrieve and save-->
-            <script type="text/javascript" src="${resURL}/plugin/working-hours/js/main.chunk.js"></script>
-            <script type="text/javascript" src="${resURL}/plugin/working-hours/js/runtime~main.js"></script>
-            <script type="text/javascript" src="${resURL}/plugin/working-hours/js/vendor.chunk.js"></script>
-
+            <script type="text/javascript" src="${resURL}/plugin/working-hours/js/main.js"></script>
         </l:main-panel>
     </l:layout>
 </j:jelly>

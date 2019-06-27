@@ -138,7 +138,7 @@ class TimezonePicker extends React.Component {
   };
 
   handleChangeZone = zone => {
-    this.props.onChange(zone.name);
+    this.props.onChange(zone);
 
     this.input.blur();
   };

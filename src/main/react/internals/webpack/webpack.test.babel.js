@@ -8,7 +8,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 module.exports = require('./webpack.base.babel')({
-  mode: 'production',
+  mode: 'development',
 
   // In production, we skip all hot-reloading stuff
   entry: [
@@ -23,56 +23,13 @@ module.exports = require('./webpack.base.babel')({
   },
 
   optimization: {
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          warnings: false,
-          compress: {
-            comparisons: false,
-          },
-          parse: {},
-          mangle: true,
-          output: {
-            comments: false,
-            ascii_only: true,
-          },
-        },
-        parallel: true,
-        cache: true,
-        sourceMap: true,
-      }),
-    ],
     nodeEnv: 'production',
-    sideEffects: true,
-    concatenateModules: true,
-    runtimeChunk: false,
   },
 
   plugins: [
-    // Minify and optimize the index.html
-    new HtmlWebpackPlugin({
-      template: 'app/index.html',
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      },
-      inject: 'body',
-    }),
-
     // Put it in the end to capture all the HtmlWebpackPlugin's
     // assets manipulations and do leak its manipulations to HtmlWebpackPlugin
-    new CopyWebpackPlugin([
-      {from:'build/main.js',to:'../../webapp/js/'}
-    ])
+
   ],
 
   performance: {
