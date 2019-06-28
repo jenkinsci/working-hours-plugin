@@ -23,6 +23,7 @@
  */
 package org.jenkinsci.plugins.workinghours;
 
+import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
 import org.jenkinsci.plugins.workinghours.actions.EnforceBuildScheduleAction;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
@@ -80,9 +81,13 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
             Run workflowRun = ((ExecutorStepExecution.PlaceholderTask)item.task).run();
             EnforceScheduleJobProperty prop = workflowJob.getProperty(EnforceScheduleJobProperty.class);
             if (prop != null) {
-                if (!canRunNow(workflowRun, item)) {
-                    log(Level.INFO, "Blocking item %d", item.getId());
-                    return CauseOfBlockage.fromMessage(Messages._WorkingHoursQueueTaskDispatcher_Offline());
+                if (prop.getBranches() == null || prop.getBranches().size() == 0
+                        || !(workflowJob.getParent() instanceof WorkflowMultiBranchProject)
+                        || prop.getBranches().contains(workflowJob.getDisplayName())) {
+                    if (!canRunNow(workflowRun, item)) {
+                        log(Level.INFO, "Blocking item %d", item.getId());
+                        return CauseOfBlockage.fromMessage(Messages._WorkingHoursQueueTaskDispatcher_Offline());
+                    }
                 }
             }
         }

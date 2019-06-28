@@ -28,18 +28,46 @@ import jenkins.model.OptionalJobProperty;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
-/**
+import java.util.ArrayList;
+
+    /**
  * Job property which is used to opt in to build schedules
  * @author jxpearce@godaddy.com
  */
 public class EnforceScheduleJobProperty extends OptionalJobProperty<WorkflowJob> {
 
+    private ArrayList<String> branches;
+
+    public ArrayList<String> getBranches() {
+        return branches;
+    }
+
+    @DataBoundSetter
+    public void setBranches(ArrayList<String> branches) {
+        this.branches = branches;
+    }
+
     /**
+     * @deprecated Use {@link #EnforceScheduleJobProperty(ArrayList)} instead}
+     *
      * Constructor
      */
-    @DataBoundConstructor
+    @Deprecated
     public EnforceScheduleJobProperty() {
+        this(null);
+    }
+
+    /**
+     * Constructor
+     *
+     * @param branches List of branch names to trigger enforcement of working hours
+     *
+     */
+    @DataBoundConstructor
+    public EnforceScheduleJobProperty(ArrayList<String> branches) {
+        this.branches = branches;
     }
     
     /**
