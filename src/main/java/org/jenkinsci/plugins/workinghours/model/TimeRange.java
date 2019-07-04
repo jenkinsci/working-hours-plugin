@@ -23,18 +23,10 @@
  */
 package org.jenkinsci.plugins.workinghours.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import hudson.Extension;
-import hudson.model.AbstractDescribableImpl;
-import hudson.model.Descriptor;
-import hudson.util.FormValidation;
-import hudson.util.ListBoxModel;
-import java.text.DateFormatSymbols;
-import java.time.LocalTime;
 import java.util.Calendar;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
+
+import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.workinghours.ValidationResult;
 
 /**
  * Encapsulates a time range, which matches a times on a particular day of the
@@ -42,124 +34,65 @@ import org.kohsuke.stapler.QueryParameter;
  *
  * @author jxpearce@godaddy.com
  */
-public class TimeRange extends AbstractDescribableImpl<TimeRange> {
+public class TimeRange {
 
-    private TimeRangeDataContainer dataContainer = null;
-    private String jsonData = "";
-    private static Gson gson = null;
+    private static final String FIELD_START_TIME = "startTime";
+    private static final String FIELD_END_TIME = "endTime";
+    private static final String FIELD_DAY_OF_WEEK = "dayOfWeek";
 
-    /**
-     * Get the actual time range data.
-     * @return TimeRangeDataContainer
-     */
-    public TimeRangeDataContainer getDataContainer() {
-        return dataContainer;
+    public static ValidationResult validateTimeRange(JSONObject targetJson) {
+        if (!(targetJson.containsKey(FIELD_START_TIME))) {
+            return new ValidationResult(false, FIELD_START_TIME, "is needed");
+        } else if (!(targetJson.get(FIELD_START_TIME) instanceof Number)) {
+            return new ValidationResult(false, FIELD_START_TIME, "is not a number");
+        } else if (targetJson.getInt(FIELD_START_TIME) > 2400 || targetJson.getInt(FIELD_START_TIME) < 0) {
+            return new ValidationResult(false, FIELD_START_TIME, "should be between 0 and 2400");
+        }
+
+        if (!(targetJson.containsKey(FIELD_END_TIME))) {
+            return new ValidationResult(false, FIELD_END_TIME, "is needed");
+        } else if (!(targetJson.get(FIELD_END_TIME) instanceof Number)) {
+            return new ValidationResult(false, FIELD_END_TIME, "is not a number");
+        } else if (targetJson.getInt(FIELD_END_TIME) > 2400 || targetJson.getInt(FIELD_END_TIME) < 0) {
+            return new ValidationResult(false, FIELD_END_TIME, "should be between 0 and 2400");
+        } else if (targetJson.getInt(FIELD_END_TIME) < targetJson.getInt(FIELD_START_TIME)) {
+            return new ValidationResult(false, FIELD_END_TIME, "should be after start time");
+        }
+
+        if (!(targetJson.containsKey(FIELD_DAY_OF_WEEK))) {
+            return new ValidationResult(false, FIELD_DAY_OF_WEEK, "is needed");
+        } else if (!(targetJson.get(FIELD_DAY_OF_WEEK) instanceof Number)) {
+            return new ValidationResult(false, FIELD_DAY_OF_WEEK, "is not a number");
+        } else if (targetJson.getInt(FIELD_DAY_OF_WEEK) > Calendar.SATURDAY || targetJson.getInt(FIELD_DAY_OF_WEEK) < Calendar.SUNDAY) {
+            return new ValidationResult(false, FIELD_DAY_OF_WEEK, "should be between 1 and 7");
+        }
+
+        return ValidationResult.getSuccessValidation();
     }
 
-    /**
-     * Get the json data and could be passed to front end.
-     * @return The source json data.
-     */
-    public String getJsonData() {
-        return jsonData;
-    }
 
     /**
      * Constructs a TimeRange object.
      *
-     * @param jsonData The json that explains the time range.
+     * @param startTime The startTime of the time range.
+     * @param endTime   The endTime of the time range.
+     * @param dayOfWeek The day of the time range.
      */
-    @DataBoundConstructor
-    public TimeRange(String jsonData) {
-        if (gson == null) {
-            gson = new GsonBuilder().create();
-        }
-        this.jsonData = jsonData;
-        this.dataContainer = gson.fromJson(jsonData,TimeRangeDataContainer.class);
+    public TimeRange(int startTime, int endTime, int dayOfWeek) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.dayOfWeek = dayOfWeek;
     }
 
     /**
-     * Required descriptor class.
+     * Constructs a TimeRange object using JSON.
+     *
+     * @param sourceJSON The source json data that contains the fields.
      */
-    @Extension
-    public static class DescriptorImpl extends Descriptor<TimeRange> {
-
-        /**
-         * Gets human readable name.
-         *
-         * @return human readable name.
-         */
-        @Override
-        public String getDisplayName() {
-            return "TimeRange descriptor";
-        }
-
-        /**
-         * Validate the start time.
-         *
-         * @param value value to validation.
-         * @return FormValidation indicating whether value is a valid time
-         * string.
-         */
-        public FormValidation doCheckStartTime(
-                @QueryParameter String value) {
-            if (!value.equals("")) {
-                if (!DateTimeUtility.isValidTime(value)) {
-                    return FormValidation.error("Invalid start time");
-                }
-            }
-            return FormValidation.ok();
-        }
-
-        /**
-         * Validate the end time.
-         *
-         * @param value value to validation.
-         * @return FormValidation indicating whether value is a valid time
-         * string.
-         */
-        public FormValidation doCheckEndTime(
-                @QueryParameter String value) {
-            if (!value.equals("")) {
-                if (!DateTimeUtility.isValidTime(value)) {
-                    return FormValidation.error("Invalid end time");
-                }
-            }
-            return FormValidation.ok();
-        }
-
-        /**
-         * Called from form UI to fill the day select control.
-         *
-         * @return ListBoxModel describing valid options.
-         */
-        public ListBoxModel doFillDayOfWeekItems() {
-            ListBoxModel model = new ListBoxModel();
-            String[] dayNames = new DateFormatSymbols().getWeekdays();
-            model.add(
-                    dayNames[Calendar.MONDAY],
-                    String.valueOf(Calendar.MONDAY));
-            model.add(
-                    dayNames[Calendar.TUESDAY],
-                    String.valueOf(Calendar.TUESDAY));
-            model.add(
-                    dayNames[Calendar.WEDNESDAY],
-                    String.valueOf(Calendar.WEDNESDAY));
-            model.add(
-                    dayNames[Calendar.THURSDAY],
-                    String.valueOf(Calendar.THURSDAY));
-            model.add(
-                    dayNames[Calendar.FRIDAY],
-                    String.valueOf(Calendar.FRIDAY));
-            model.add(
-                    dayNames[Calendar.SATURDAY],
-                    String.valueOf(Calendar.SATURDAY));
-            model.add(
-                    dayNames[Calendar.SUNDAY],
-                    String.valueOf(Calendar.SUNDAY));
-
-            return model;
-        }
+    public TimeRange(JSONObject sourceJSON) {
+        this.startTime = sourceJSON.getInt(FIELD_START_TIME);
+        this.endTime = sourceJSON.getInt(FIELD_END_TIME);
+        this.dayOfWeek = sourceJSON.getInt(FIELD_DAY_OF_WEEK);
     }
 
 
@@ -187,15 +120,12 @@ public class TimeRange extends AbstractDescribableImpl<TimeRange> {
     }
 
 
-    public static class TimeRangeDataContainer {
+    /*The start time of the time range, in form of the number of the minutes from 00:00*/
+    public int startTime = 0;
 
-        /*The start time of the time range, like 00:00*/
-        public String startTime = "";
+    /*The end time of the time range, in form of the number of the minutes from 00:00*/
+    public int endTime = 0;
 
-        /*The end time of the time range, like 23:59*/
-        public String endTime = "";
-
-        /*The day of week*/
-        public int dayOfWeek = Calendar.SUNDAY;
-    }
+    /*The day of week*/
+    public int dayOfWeek = Calendar.SUNDAY;
 }

@@ -30,7 +30,7 @@ export default class App extends React.Component {
   render() {
     return (<div>
         <h3>
-          Working Hours Config
+          Configure Working Hours
         </h3>
         <TimeRangeContainer/>
         <ExcludedDateContainer/>

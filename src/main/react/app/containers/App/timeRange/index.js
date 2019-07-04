@@ -4,11 +4,9 @@ import {WEEKDAYS} from "../constants";
 import "../style/components.css";
 import "rc-time-picker/assets/index.css";
 import "rc-slider/assets/index.css";
-import Slider, {createSliderWithTooltip, Range, Handle} from "rc-slider";
 import {debounce} from "lodash";
 import {getTimeRanges, setTimeRanges} from "../../../api";
 import {LOADING_STATE, LoadingState} from "../../common/savingState";
-import ExcludedDateContainer from "../excludedDate";
 import TimeRange from "./timeRange";
 import only from "only";
 
@@ -60,14 +58,18 @@ export default class TimeRangeContainer extends React.Component {
       loadingState: LOADING_STATE.LOADING
     })
     setTimeRanges({
-      data: param.map(item => JSON.stringify(only(item, "dayOfWeek endTime startTime")))
+      data: param.map(item => only(item, "dayOfWeek endTime startTime"))
     }).then(res => {
       console.log("time ranges updated");
       this.setState({
         loadingState: LOADING_STATE.SUCCESS
       })
       this.debouncedClearLoading();
-    });
+    }).catch((err=>{
+      this.setState({
+        loadingState: LOADING_STATE.FAIL
+      })
+    }));
   }
 
 
@@ -120,12 +122,16 @@ export default class TimeRangeContainer extends React.Component {
     })
     getTimeRanges().then(res => {
       this.setState({
-        timeRanges: res.data.data.map(item => JSON.parse(item))
+        timeRanges: res.data.data
       });
       this.setState({
         loadingState: LOADING_STATE.SUCCESS
       })
       this.debouncedClearLoading();
+    }).catch(err=>{
+      this.setState({
+        loadingState: LOADING_STATE.FAIL
+      })
     });
   }
 

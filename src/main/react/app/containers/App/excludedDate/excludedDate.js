@@ -35,22 +35,17 @@ export default class ExcludeDate extends React.Component {
       startDate: {
         dynamic: false,
         date: new Date(),
-        dynamicDate: {
-          month: 1,
-          week: 1,
-          day: 1
-        }
+        dynamicMonth: 1,
+        dynamicWeek: 1,
+        dynamicWeekday: 1
       },
       endDate: {
         dynamic: false,
         date: new Date(),
-        dynamicDate: {
-          month: 1,
-          week: 1,
-          day: 1
-        }
-      },
-      timezones: [],
+        dynamicMonth: 1,
+        dynamicWeek: 1,
+        dynamicWeekday: 1
+    },
       noEnd: true, //No end in repeat
       repeat: true,
       repeatCount: -1,
@@ -176,7 +171,6 @@ export default class ExcludeDate extends React.Component {
               </div>
             </div>}
 
-
             {repeat && !noEnd && DateInput.call(this,
               {
                 field: "endDate",
@@ -190,7 +184,6 @@ export default class ExcludeDate extends React.Component {
               <input type='checkbox' checked={this.state.noEnd}
                      onChange={this.handleNoEndChange}/>
             </div>}
-
 
             <div className={"form-row"}>
               <div className={"form-item-label"}/>

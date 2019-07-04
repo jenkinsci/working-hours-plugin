@@ -30,8 +30,7 @@ export default function DateInput(props) {
     return function(e) {
       let changedState = {};
       changedState[field] = { ...self.state[field] };
-      changedState[field]["dynamicDate"] = { ...self.state[field]["dynamicDate"] };
-      changedState[field]["dynamicDate"][subField] = e.target.value;
+      changedState[field][subField] = e.target.value;
       self.setState(changedState);
     };
   }
@@ -62,8 +61,8 @@ export default function DateInput(props) {
         <div className={"custom-control custom-control-inline"} style={{ paddingLeft: 0, marginRight: 0 }}>
           The
           <select className={"input input-select"} style={{ width: 120, marginLeft: 10 }}
-                  value={dateObject.dynamicDate.week}
-                  onChange={updateDynamicDateData("week")}>
+                  value={dateObject.dynamicWeek}
+                  onChange={updateDynamicDateData("dynamicWeek")}>
             {Object.keys(ORDERS).map(key => <option value={ORDERS[key]} key={key}>{key}</option>
             )}
           </select>
@@ -73,8 +72,8 @@ export default function DateInput(props) {
         <div className={"custom-control custom-control-inline"} style={{ paddingLeft: 0, marginRight: 0 }}>
           {repeatPeriod === PERIODS.Week && <div className={"hint"}>Each</div>}
           <select className={"input input-select"} style={{ width: 120, marginLeft: 10 }}
-                  value={dateObject.dynamicDate.day}
-                  onChange={updateDynamicDateData("day")}>
+                  value={dateObject.dynamicWeekday}
+                  onChange={updateDynamicDateData("dynamicWeekday")}>
             {Object.keys(WEEKDAYS).map(key => <option value={WEEKDAYS[key]} key={key}>{key}</option>)}
           </select></div>
         }
@@ -82,9 +81,9 @@ export default function DateInput(props) {
         {(repeatPeriod >= PERIODS.Year || !repeat) &&
         <div style={{ paddingLeft: 0, marginRight: 0 }} className={"custom-control custom-control-inline"}>Of
           <select className={"input input-select"} style={{ width: 120, marginLeft: 10 }}
-                  value={dateObject.dynamicDate.month}
-                  onChange={updateDynamicDateData("month")}>
-            {Object.keys(MONTHS).map(key => <option value={ORDERS[key]} key={key}>{key}</option>)}
+                  value={dateObject.dynamicMonth}
+                  onChange={updateDynamicDateData("dynamicMonth")}>
+            {Object.keys(MONTHS).map(key => <option value={MONTHS[key]} key={key}>{key}</option>)}
           </select></div>
         }
 
@@ -93,8 +92,8 @@ export default function DateInput(props) {
         <div className={"form-row"} style={{ marginTop: "20px" }}>
           <label className={"form-item-label"}>Next Occurrence</label>
           <div className={"text-highlight"}>{repeatPeriod === PERIODS.Year ?
-            format(nextOccurrenceByYear(dateObject.dynamicDate.month, dateObject.dynamicDate.week, dateObject.dynamicDate.day)) :
-            format(nextOccurrenceByMonth(dateObject.dynamicDate.week, dateObject.dynamicDate.day))}</div>
+            format(nextOccurrenceByYear(dateObject.dynamicMonth, dateObject.dynamicWeek, dateObject.dynamicWeekday)) :
+            format(nextOccurrenceByMonth(dateObject.dynamicWeek, dateObject.dynamicWeekday))}</div>
         </div>
       )}
     </div>}

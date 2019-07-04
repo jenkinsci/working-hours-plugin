@@ -173,7 +173,7 @@ export default class TimeRange extends React.Component {
 
         <div className={["time-range"]}>
           <div className={"label-weekday"}>
-            {Object.keys(WEEKDAYS)[this.state.dayOfWeek]}
+            {Object.keys(WEEKDAYS)[this.state.dayOfWeek-1]}
             {this.state.isNew && <div className={"is-new"}/>}
           </div>
 

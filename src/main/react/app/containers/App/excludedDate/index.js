@@ -4,6 +4,8 @@ import {DATE_TYPE, getDatePresets, PERIODS} from "../constants";
 import ExcludedDate from './excludedDate'
 import {getExcludedDates, setExcludedDates} from "../../../api";
 import only from "only";
+import {LOADING_STATE, LoadingState} from "../../common/savingState";
+import {debounce} from "lodash";
 
 export default class ExcludeDateContainer extends React.Component {
   constructor() {
@@ -11,8 +13,17 @@ export default class ExcludeDateContainer extends React.Component {
     this.state = {
       excludedDates: [],
       openIndex: -1,
+      loadingState: LOADING_STATE.WAITING,
     };
   }
+
+  /*A debounced function used to clear loading state.
+* */
+  debouncedClearLoading = debounce(() => {
+    this.setState({
+      loadingState: LOADING_STATE.WAITING
+    })
+  }, 1000)
 
   /**
    * Handler for changing a excluded date
@@ -56,9 +67,12 @@ export default class ExcludeDateContainer extends React.Component {
   };
 
   uploadDates(param) {
+    this.setState({
+      loadingState: LOADING_STATE.LOADING
+    })
     setExcludedDates({
       data: param
-        .map(item => JSON.stringify(only(item, [
+        .map(item => only(item, [
           "name",
           "type",
           "timezone",
@@ -69,9 +83,16 @@ export default class ExcludeDateContainer extends React.Component {
           "repeat",
           "repeatCount",
           "repeatInterval",
-          "repeatPeriod"].join(" "))))
+          "repeatPeriod"].join(" ")))
     }).then(res => {
-      console.log("excluded dates updated");
+      this.setState({
+        loadingState: LOADING_STATE.SUCCESS
+      })
+      this.debouncedClearLoading()
+    }).catch(err => {
+      this.setState({
+        loadingState: LOADING_STATE.FAIL
+      })
     });
   }
 
@@ -88,11 +109,20 @@ export default class ExcludeDateContainer extends React.Component {
   };
 
   componentDidMount() {
+    this.setState({
+      loadingState: LOADING_STATE.LOADING
+    })
     getExcludedDates().then(res => {
       this.setState({
-        excludedDates: res.data.data.map(item => JSON.parse(item))
+        excludedDates: res.data.data,
+        loadingState: LOADING_STATE.SUCCESS
       });
-    });
+    }).catch(err => {
+      console.log(err)
+      this.setState({
+        loadingState: LOADING_STATE.FAIL
+      })
+    })
   }
 
 
@@ -102,6 +132,7 @@ export default class ExcludeDateContainer extends React.Component {
     return (
       <div>
         Excluded Dates
+        <LoadingState loadingState={this.state.loadingState}/>
         <div>
           {this.state.excludedDates.length <= 0 ?
             <div className={"config-item"}>There's no excluded
