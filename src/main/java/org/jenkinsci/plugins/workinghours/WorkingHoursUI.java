@@ -78,7 +78,7 @@ public class WorkingHoursUI {
         for (int i = 0; i < timeRangesJson.size(); i++) {
             ValidationResult result = TimeRange.validateTimeRange((JSONObject) timeRangesJson.get(i));
             if (!result.isValid) {
-                return new JsonHttpResponse(result.toJSON(), 400);
+                return HttpResponses.errorJSON(result.toErrorMessage());
             } else {
                 newTimeRanges.add(new TimeRange((JSONObject) timeRangesJson.get(i)));
             }

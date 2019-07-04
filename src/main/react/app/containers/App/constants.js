@@ -51,6 +51,7 @@ export const getDatePresets = (type) => {
   }
 };
 
+export const PLACEHOLDER_PRESET_NOT_SELECTED = "Empty"
 
 export const GREGORIAN_DATE_PRESETS = [
   {

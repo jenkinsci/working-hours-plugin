@@ -1,12 +1,13 @@
-import { range } from "lodash";
+import {range} from "lodash";
 import React from "react";
-import { DATE_TYPE, PERIODS } from "../constants";
+import {DATE_TYPE, PERIODS, PLACEHOLDER_PRESET_NOT_SELECTED} from "../constants";
 import TimezonePicker from '../../common/timezonePicker'
+
 export function RepeatCount() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Count</label>
     <div><select className={"input input-select"} value={this.state.repeatCount}
-                 style={{ width: 120, marginRight: 10 }}
+                 style={{width: 120, marginRight: 10}}
                  onChange={this.handleCountChange}>
       <option value={-1}>No End</option>
       {range(1, 11).map(item =>
@@ -41,7 +42,7 @@ export function RepeatInterval() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Interval</label>
     <div>Each <select className={"input input-select"} value={this.state.repeatInterval}
-                      style={{ width: 70, marginRight: 10 }}
+                      style={{width: 70, marginRight: 10}}
                       onChange={this.handleIntervalChange}>
       {range(1, 6).map(item =>
         <option key={item} value={item}>{item}</option>
@@ -62,7 +63,7 @@ export function NameInput() {
     <label className={"form-item-label"}>Name</label>
     <input placeholder={"Enter a name"} value={this.state.name}
            className={"input input-text"}
-           style={{ width: 200 }}
+           style={{width: 200}}
            onChange={handleNameChange}/>
   </div>;
 }
@@ -72,7 +73,7 @@ export function TimezoneInput() {
   const handleTimezoneChange = (e) => {
     this.setState({
       timezone: e.name,
-      utcOffset:e.offset*60,
+      utcOffset: e.offset * 60,
     });
   };
   return <div className={"form-row"}>
@@ -87,7 +88,7 @@ export function PresetSelect() {
     <select className={"input input-select"}
             value={this.state.selectedDateType}
             onChange={this.handleDateTypeChange}
-            style={{ width: 150, marginRight: 10 }}
+            style={{width: 150, marginRight: 10}}
             placeholder="select preset date"
     >
       {Object.keys(DATE_TYPE).map((key, index) =>
@@ -98,15 +99,15 @@ export function PresetSelect() {
             value={this.state.selectedPreset}
             defaultValue=""
             onChange={this.handlePresetChange}
-            style={{ width: 300 }}
+            style={{width: 300}}
             placeholder="select preset date"
     >
+      <option key={"unselected"} value={-1}>{PLACEHOLDER_PRESET_NOT_SELECTED}</option>
       {this.getDatePresets().map((item, index) =>
         <option key={index} value={index}>{item.name}</option>
       )}
     </select>
-    <button type="button" className={"btn btn-gray"} onClick={this.applyPreset}>Apply</button>
-
+    <button type="button" disabled={this.state.selectedPreset === -1} className={"btn btn-gray"} onClick={this.applyPreset}>Apply</button>
   </div>;
 }
 

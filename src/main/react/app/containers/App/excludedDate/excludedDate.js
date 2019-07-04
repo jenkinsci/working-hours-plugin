@@ -1,6 +1,6 @@
 import React from "react";
 import DateInput from "./dateInput";
-import {DATE_TYPE, getDatePresets, PERIODS} from "../constants";
+import {DATE_TYPE, getDatePresets, PERIODS, PLACEHOLDER_PRESET_NOT_SELECTED} from "../constants";
 import {
   formatDate,
   nextOccurrenceChineseLunar
@@ -45,7 +45,7 @@ export default class ExcludeDate extends React.Component {
         dynamicMonth: 1,
         dynamicWeek: 1,
         dynamicWeekday: 1
-    },
+      },
       noEnd: true, //No end in repeat
       repeat: true,
       repeatCount: -1,
@@ -107,13 +107,15 @@ export default class ExcludeDate extends React.Component {
     this.setState({
       selectedDateType: e.target.value,
       /*Set the default index of the selected preset*/
-      selectedPreset: 0
+      selectedPreset: -1
     });
   };
 
 
   /*For the selected date type, get its presets.*/
   getDatePresets() {
+    let presets = [...getDatePresets(this.state.selectedDateType)]
+    presets.unshift({...PLACEHOLDER_PRESET_NOT_SELECTED, type: this.state.selectedDateType})
     return getDatePresets(this.state.selectedDateType);
   }
 

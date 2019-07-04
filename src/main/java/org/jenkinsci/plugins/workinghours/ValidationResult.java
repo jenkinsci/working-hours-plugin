@@ -18,8 +18,12 @@ public class ValidationResult {
     }
 
     public JSONObject toJSON() {
-        return new JSONObject().accumulate("valid", true)
-            .accumulate("field",this.fieldName)
-            .accumulate("errorMessage",this.errorMessage);
+        return new JSONObject().accumulate("valid", false)
+            .accumulate("field", this.fieldName)
+            .accumulate("errorMessage", this.errorMessage);
+    }
+
+    public String toErrorMessage() {
+        return this.fieldName + " " + this.errorMessage;
     }
 }
