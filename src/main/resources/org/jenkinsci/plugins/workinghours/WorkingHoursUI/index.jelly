@@ -7,6 +7,7 @@
             <script>
                 function resizeIframe(obj) {
                     let originHeight = obj.contentWindow.document.body.scrollHeight;
+                    obj.style.height = (originHeight + 100) + 'px';
                     console.log('originHeight ' + originHeight)
                     setInterval(() => {
                         let curHeight = obj.contentWindow.document.body.scrollHeight;
@@ -18,7 +19,9 @@
                     }, 100)
                 }
             </script>
-            <iframe id="container-excluded-dates" width="100%" src="${resURL}/plugin/working-hours/js/index.html"
+            <iframe style="
+    border: none;
+" id="container-excluded-dates" width="100%" src="${resURL}/plugin/working-hours/js/index.html"
                     onload="resizeIframe(this)"></iframe>
         </l:main-panel>
     </l:layout>
