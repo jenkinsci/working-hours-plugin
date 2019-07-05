@@ -1,5 +1,4 @@
 import React from "react";
-import {DATE_TYPE, getDatePresets, PERIODS} from "../constants";
 
 import ExcludedDate from './excludedDate'
 import {getExcludedDates, setExcludedDates} from "../../../api";
@@ -131,8 +130,13 @@ export default class ExcludeDateContainer extends React.Component {
   render() {
     return (
       <div>
-        Excluded Dates
-        <LoadingState loadingState={this.state.loadingState}/>
+        <div className={"config-header"}>
+          <div className={'config-title'}>Excluded Dates</div>
+          <div className={'config-loading-status'}>
+            <LoadingState loadingState={this.state.loadingState}/>
+          </div>
+          <div className={'config-count'}>Total:{this.state.excludedDates.length}</div>
+        </div>
         <div>
           {this.state.excludedDates.length <= 0 ?
             <div className={"config-item"}>There's no excluded

@@ -26,6 +26,22 @@
     background: #f9f9f9;
 }
 
+.config-count{
+    flex: 0 1 auto;
+}
+
+.config-header{
+    display: flex;
+}
+
+.config-title{
+    flex:0 1 auto;
+}
+
+.config-loading-status{
+    flex:1 1 auto;
+}
+
 .excluded-date {
 
 }

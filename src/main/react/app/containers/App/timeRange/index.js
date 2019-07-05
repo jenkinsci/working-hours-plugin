@@ -24,11 +24,11 @@ export default class TimeRangeContainer extends React.Component {
 
   /*A debounced function used to clear loading state.
   * */
-  debouncedClearLoading = debounce(()=>{
+  debouncedClearLoading = debounce(() => {
     this.setState({
-      loadingState:LOADING_STATE.WAITING
+      loadingState: LOADING_STATE.WAITING
     })
-  },1000)
+  }, 1000)
 
   /**
    * Handler for changing a excluded date
@@ -65,7 +65,7 @@ export default class TimeRangeContainer extends React.Component {
         loadingState: LOADING_STATE.SUCCESS
       })
       this.debouncedClearLoading();
-    }).catch((err=>{
+    }).catch((err => {
       this.setState({
         loadingState: LOADING_STATE.FAIL
       })
@@ -128,7 +128,7 @@ export default class TimeRangeContainer extends React.Component {
         loadingState: LOADING_STATE.SUCCESS
       })
       this.debouncedClearLoading();
-    }).catch(err=>{
+    }).catch(err => {
       this.setState({
         loadingState: LOADING_STATE.FAIL
       })
@@ -138,8 +138,13 @@ export default class TimeRangeContainer extends React.Component {
   render() {
     return (
       <div>
-        Time Range
-        <LoadingState loadingState={this.state.loadingState}/>
+        <div className={"config-header"}>
+          <div className={'config-title'}>Time Range</div>
+          <div className={'config-loading-status'}>
+            <LoadingState loadingState={this.state.loadingState}/>
+          </div>
+          <div className={'config-count'}>Total:{this.state.timeRanges.length}</div>
+        </div>
         <div className={"config-item"}>
           {this.state.timeRanges.length <= 0 ?
             <div>Time range is not
