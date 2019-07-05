@@ -3,6 +3,11 @@ import React from "react";
 import {DATE_TYPE, PERIODS, PLACEHOLDER_PRESET_NOT_SELECTED} from "../constants";
 import TimezonePicker from '../../common/timezonePicker'
 
+/**
+ * Functional render for select repeat count.
+ * @returns {*} render content
+ * @constructor
+ */
 export function RepeatCount() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Count</label>
@@ -18,6 +23,11 @@ export function RepeatCount() {
   </div>;
 }
 
+/**
+ * Functional render for select repeat period.
+ * @returns {*} render content
+ * @constructor
+ */
 export function RepeatPeriod() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Period</label>
@@ -38,6 +48,11 @@ export function RepeatPeriod() {
   </div>;
 }
 
+/**
+ * Functional render for select repeat interval.
+ * @returns {*} render content
+ * @constructor
+ */
 export function RepeatInterval() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Interval</label>
@@ -53,6 +68,11 @@ export function RepeatInterval() {
   </div>;
 }
 
+/**
+ * Functional render for input date name.
+ * @returns {*} render content
+ * @constructor
+ */
 export function NameInput() {
   const handleNameChange = (e) => {
     this.setState({
@@ -68,7 +88,11 @@ export function NameInput() {
   </div>;
 }
 
-
+/**
+ * Functional render for select timezone.
+ * @returns {*} render content
+ * @constructor
+ */
 export function TimezoneInput() {
   const handleTimezoneChange = (e) => {
     this.setState({
@@ -82,6 +106,11 @@ export function TimezoneInput() {
   </div>;
 }
 
+/**
+ * Functional render for select preset.
+ * @returns {*} render content
+ * @constructor
+ */
 export function PresetSelect() {
   return <div>
     <label className={"form-item-label"}>Preset</label>
@@ -111,6 +140,11 @@ export function PresetSelect() {
   </div>;
 }
 
+/**
+ * Functional render for switch preset config.
+ * @returns {*} render content
+ * @constructor
+ */
 export function RepeatCheckbox() {
   return <div className={"form-row"}
   >
