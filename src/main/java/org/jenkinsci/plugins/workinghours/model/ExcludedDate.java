@@ -227,7 +227,7 @@ public class ExcludedDate {
         }
 
         /**
-         * The month in the
+         * The month in the year
          * Ranging from 1 to 12, indicating from January to December.
          */
         private int dynamicMonth;
