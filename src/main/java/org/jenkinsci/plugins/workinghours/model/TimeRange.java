@@ -23,10 +23,10 @@
  */
 package org.jenkinsci.plugins.workinghours.model;
 
-import java.util.Calendar;
-
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
+
+import java.util.Calendar;
 
 /**
  * Encapsulates a time range, which matches a times on a particular day of the
@@ -121,11 +121,23 @@ public class TimeRange {
 
 
     /*The start time of the time range, in form of the number of the minutes from 00:00*/
-    public int startTime = 0;
+    private int startTime = 0;
 
     /*The end time of the time range, in form of the number of the minutes from 00:00*/
-    public int endTime = 0;
+    private int endTime = 0;
 
     /*The day of week*/
-    public int dayOfWeek = Calendar.SUNDAY;
+    private int dayOfWeek = Calendar.SUNDAY;
+
+    public int getStartTime() {
+        return startTime;
+    }
+
+    public int getEndTime() {
+        return endTime;
+    }
+
+    public int getDayOfWeek() {
+        return dayOfWeek;
+    }
 }
