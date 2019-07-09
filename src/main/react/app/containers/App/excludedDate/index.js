@@ -43,7 +43,10 @@ export default class ExcludeDateContainer extends React.Component {
       excludedDates: list
     });
 
-    this.uploadDates(list);
+    /*Save items if it's click on closed and save.*/
+    if(!show){
+      this.uploadDates(list)
+    }
   };
 
   /**
@@ -100,11 +103,12 @@ export default class ExcludeDateContainer extends React.Component {
    */
   addExcludedDate = () => {
     let list = this.state.excludedDates;
-    list.push({});
+    list.push({
+      isNew:true,
+    });
     this.setState({
       excludedDates: list
     });
-    this.uploadDates(list);
   };
 
   componentDidMount() {
@@ -116,6 +120,7 @@ export default class ExcludeDateContainer extends React.Component {
         excludedDates: res.data.data,
         loadingState: LOADING_STATE.SUCCESS
       });
+      this.debouncedClearLoading()
     }).catch(err => {
       console.log(err)
       this.setState({

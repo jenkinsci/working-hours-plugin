@@ -23,15 +23,9 @@
  */
 package org.jenkinsci.plugins.workinghours.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import hudson.Extension;
-import hudson.model.AbstractDescribableImpl;
-import hudson.model.Descriptor;
-import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.workinghours.ValidationResult;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
 
 import java.util.Calendar;
 
@@ -47,13 +41,24 @@ public class ExcludedDate {
     private static final String FIELD_TYPE = "type";
     private static final String FIELD_NAME = "name";
     private static final String FIELD_START_DATE = "startDate";
-    private static final String FIELD_END_DATE = "endData";
-    private static final String FIELD_NO_END = "noENd";
+    private static final String FIELD_END_DATE = "endDate";
+    private static final String FIELD_NO_END = "noEnd";
     private static final String FIELD_REPEAT = "repeat";
     private static final String FIELD_REPEAT_COUNT = "repeatCount";
     private static final String FIELD_REPEAT_PERIOD = "repeatPeriod";
     private static final String FIELD_REPEAT_INTERVAL = "repeatInterval";
 
+    /*The required fields of the class*/
+    private static final String[] REQUIRED_FIELDS = {FIELD_UTC_OFFSET,
+        FIELD_TIMEZONE,
+        FIELD_TYPE,
+        FIELD_NAME,
+        FIELD_START_DATE,
+        FIELD_NO_END,
+        FIELD_REPEAT,
+        FIELD_REPEAT_COUNT,
+        FIELD_REPEAT_PERIOD,
+        FIELD_REPEAT_INTERVAL};
 
     /**
      * Constructs an ExcludedDate object using json.
@@ -73,6 +78,39 @@ public class ExcludedDate {
         this.repeatCount = sourceJSON.getInt(FIELD_REPEAT_COUNT);
         this.repeatPeriod = sourceJSON.getInt(FIELD_REPEAT_PERIOD);
         this.repeatInterval = sourceJSON.getInt(FIELD_REPEAT_INTERVAL);
+    }
+
+    private ExcludedDate(){
+
+    }
+
+
+    public static ValidationResult validateExcludedDate(JSONObject targetJson) {
+        for (String requiredField : REQUIRED_FIELDS) {
+            if (!targetJson.containsKey(requiredField)) {
+                return new ValidationResult(false, requiredField, "is required");
+            }
+        }
+
+        if (!(targetJson.get(FIELD_UTC_OFFSET) instanceof Number)) {
+            return new ValidationResult(false, FIELD_UTC_OFFSET, "is not a number");
+        } else if (targetJson.getInt(FIELD_UTC_OFFSET) > 720 || targetJson.getInt(FIELD_UTC_OFFSET) < -720) {
+            return new ValidationResult(false, FIELD_UTC_OFFSET, "should be between 720 and -720");
+        }
+
+        final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE));
+        if(!startDateValidationResult.isValid()){
+            return startDateValidationResult;
+        }
+
+        if(targetJson.containsKey(FIELD_END_DATE)){
+            final ValidationResult endDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_END_DATE));
+            if(!endDateValidationResult.isValid()){
+                return startDateValidationResult;
+            }
+        }
+
+        return ValidationResult.getSuccessValidation();
     }
 
     public Boolean shouldExclude(Calendar date) {
@@ -101,7 +139,7 @@ public class ExcludedDate {
     /**
      * A type that indicates whether
      */
-    private String type = DateType.TYPE_GREGORIAN;
+    private DateType type = DateType.TYPE_GREGORIAN;
 
     /**
      * The display name of this rule.
@@ -145,7 +183,7 @@ public class ExcludedDate {
     }
 
     public String getType() {
-        return type;
+        return String.valueOf(type);
     }
 
     public String getName() {
@@ -192,6 +230,8 @@ public class ExcludedDate {
         private static final String FIELD_DYNAMIC_WEEK = "dynamicWeek";
         private static final String FIELD_DYNAMIC_WEEKDAY = "dynamicWeekday";
 
+        private static final String[] REQUIRED_FIELDS_FOR_DYNAMIC = {FIELD_DYNAMIC_MONTH, FIELD_DYNAMIC_WEEK, FIELD_DYNAMIC_WEEKDAY};
+
         public Date(JSONObject jsonObject) {
             this.dynamic = jsonObject.getBoolean(FIELD_DYNAMIC);
             this.date = jsonObject.getString(FIELD_DATE);
@@ -204,17 +244,54 @@ public class ExcludedDate {
             return dynamic;
         }
 
+        public static ValidationResult validateDate(JSONObject targetObject) {
+            if (!targetObject.containsKey(FIELD_DYNAMIC)) {
+                return new ValidationResult(false, FIELD_DYNAMIC, "is required");
+            } else {
+                if (!(targetObject.get(FIELD_DYNAMIC) instanceof Boolean)) {
+                    return new ValidationResult(false, FIELD_DYNAMIC, "should be bool");
+                } else {
+                    boolean dynamic = targetObject.getBoolean(FIELD_DYNAMIC);
+                    if (dynamic) {
+                        for (String field : REQUIRED_FIELDS_FOR_DYNAMIC) {
+                            if (!targetObject.containsKey(field)) {
+                                return new ValidationResult(false, field, "is required");
+                            }
+                        }
+                        if (!(targetObject.get(FIELD_DYNAMIC_WEEKDAY) instanceof Integer)) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_WEEKDAY, "should be int");
+                        } else if (targetObject.getInt(FIELD_DYNAMIC_WEEKDAY) > 7 || targetObject.getInt(FIELD_DYNAMIC_WEEKDAY) < 1) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_WEEKDAY, "should be between 1 and 7");
+                        }
+
+                        if (!(targetObject.get(FIELD_DYNAMIC_WEEK) instanceof Integer)) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_WEEK, "should be int");
+                        } else if (targetObject.getInt(FIELD_DYNAMIC_WEEK) > 4 || targetObject.getInt(FIELD_DYNAMIC_WEEK) < 1) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_WEEK, "should be between 1 and 4");
+                        }
+
+                        if (!(targetObject.get(FIELD_DYNAMIC_MONTH) instanceof Integer)) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_MONTH, "should be int");
+                        } else if (targetObject.getInt(FIELD_DYNAMIC_MONTH) > 12 || targetObject.getInt(FIELD_DYNAMIC_MONTH) < 1) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_MONTH, "should be between 1 and 12");
+                        }
+                    } else {
+                        if (!targetObject.containsKey(FIELD_DATE)) {
+                            return new ValidationResult(false, FIELD_DATE, "is required");
+                        } else if (!(targetObject.get(FIELD_DATE) instanceof String)) {
+                            return new ValidationResult(false, FIELD_DATE, "should be string");
+                        }
+                    }
+                }
+                return ValidationResult.getSuccessValidation();
+            }
+        }
+
         /**
          * Indicates whether the date is dynamic,
          * dynamic date would depend on week and vary every year
          */
         private boolean dynamic;
-
-        /**
-         * This field is in order to describe some date which
-         * is not static but depend on the occurrence of weekday,
-         * like Mother's Day (the second sunday of May).
-         */
 
         /**
          * If static, the actual date(timestamp) of this excluded date.

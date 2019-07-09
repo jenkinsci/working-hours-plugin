@@ -15,26 +15,28 @@ import "./style/index.css";
 import ExcludedDateContainer from "./excludedDate/index";
 import TimeRangeContainer from "./timeRange/index";
 
+import {PluginContext} from "../context/context";
 
 export default class App extends React.Component {
   constructor() {
     super();
-    this.state = {
-    };
+    this.state = {};
   }
-
-  componentDidMount() {
-  }
-
 
   render() {
-    return (<div>
-        <h3>
-          Configure Working Hours
-        </h3>
-        <TimeRangeContainer/>
-        <ExcludedDateContainer/>
-      </div>
+    const initialPluginContext = {
+      datesLoaded: false,
+      rangesLoaded: false,
+    }
+    return (<PluginContext.Provider value={initialPluginContext}>
+        <div>
+          <h3>
+            Configure Working Hours
+          </h3>
+          <TimeRangeContainer/>
+          <ExcludedDateContainer/>
+        </div>
+      </PluginContext.Provider>
     );
   }
 }

@@ -4,8 +4,10 @@ import {WEEKDAYS} from "../constants";
 import "../style/components.css";
 import "rc-time-picker/assets/index.css";
 import "rc-slider/assets/index.css";
-import Slider, {createSliderWithTooltip, Range, Handle} from "rc-slider";
+import {Range} from "rc-slider";
 import {debounce} from "lodash";
+
+import {PluginContext} from "../../context/context";
 
 const timeRegExp = /^(^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])|^(24:00))$/;
 
@@ -16,6 +18,12 @@ const timeMarks = {
   1080: "18:00",
   1440: "24:00"
 };
+
+export const INITIAL_TIME_RANGE_STATE = {
+  dayOfWeek: WEEKDAYS.Sunday,
+  startTime: 8 * 60,
+  endTime: 18 * 60,
+}
 
 /**
  * Convert number of minutes to string like '00:00'.
@@ -41,12 +49,12 @@ function timeStringToMinutes(timeString) {
 }
 
 export default class TimeRange extends React.Component {
+  static contextType = PluginContext;
+
   constructor(props) {
     super(props);
     this.state = {
-      dayOfWeek: WEEKDAYS.Sunday,
-      startTime: 8 * 60,
-      endTime: 18 * 60,
+      ...INITIAL_TIME_RANGE_STATE,
 
       /*Strings used for store temp times, which would be checked on blur.*/
       tempStartTime: "08:00",
@@ -67,7 +75,11 @@ export default class TimeRange extends React.Component {
    * @type {debounce} The debounce function provided by @lodash.
    */
   debouncedSave = debounce(() => {
-    this.props.onEdit(this.props.index, this.state);
+    if (this.validate()) {
+      this.props.onEdit(this.props.index, this.state);
+    } else {
+      return
+    }
     this.setState({
       isNew: false,
     })
@@ -151,18 +163,24 @@ export default class TimeRange extends React.Component {
 
       startTime: range[0],
       endTime: range[1],
-      isNew: true, // Set the symbol to @true so the indicator could be available.
+    }, () => {
+      if (this.validate()) {
+        this.setState({
+          isNew: true, // Set the symbol to @true so the indicator could be available.
+        })
+        this.debouncedSave()
+      }
     });
-
-    this.debouncedSave()
   };
 
   /**
    * Set the initial data passed in (currently with just weekday)
    */
   componentDidMount() {
-    this.setState(this.props.range, () => {
-      this.debouncedSave()
+    this.setState(this.props.range,()=>{
+      if(this.state.isNew){
+        this.debouncedSave()
+      }
     });
   }
 
@@ -173,7 +191,7 @@ export default class TimeRange extends React.Component {
 
         <div className={["time-range"]}>
           <div className={"label-weekday"}>
-            {Object.keys(WEEKDAYS)[this.state.dayOfWeek-1]}
+            {Object.keys(WEEKDAYS)[this.state.dayOfWeek - 1]}
             {this.state.isNew && <div className={"is-new"}/>}
           </div>
 

@@ -1,20 +1,17 @@
 import React from "react";
 import DateInput from "./dateInput";
 import {DATE_TYPE, getDatePresets, PERIODS, PLACEHOLDER_PRESET_NOT_SELECTED} from "../constants";
-import {
-  formatDate,
-  nextOccurrenceChineseLunar
-} from "../../../utils/date";
+import {formatDate, nextOccurrenceChineseLunar} from "../../../utils/date";
 import {getBrief} from "../../../utils";
 import moment from "moment";
 import {
+  NameInput,
+  PresetSelect,
+  RepeatCheckbox,
   RepeatCount,
   RepeatInterval,
   RepeatPeriod,
-  NameInput,
-  TimezoneInput,
-  PresetSelect,
-  RepeatCheckbox
+  TimezoneInput
 } from "./formItems";
 
 
@@ -27,7 +24,7 @@ export default class ExcludeDate extends React.Component {
       nextOccurrence: undefined,
 
       name: "",
-      type: "",
+      type: DATE_TYPE.TYPE_GREGORIAN,
 
       utcOffset: moment().utcOffset(),
       timezone: "",
@@ -50,7 +47,9 @@ export default class ExcludeDate extends React.Component {
       repeat: true,
       repeatCount: -1,
       repeatInterval: 1,
-      repeatPeriod: PERIODS.Year
+      repeatPeriod: PERIODS.Year,
+
+      isNew: false,
     };
   }
 
@@ -82,7 +81,21 @@ export default class ExcludeDate extends React.Component {
   };
 
   handleNoEndChange = (event) => {
-    this.setState({noEnd: event.target.checked});
+    this.setState({
+      noEnd: event.target.checked,
+    });
+    /*If it's null or undefined or empty, give it the initial value.*/
+    if (!this.state.endDate) {
+      this.setState({
+        endDate: {
+          dynamic: false,
+          date: new Date(),
+          dynamicMonth: 1,
+          dynamicWeek: 1,
+          dynamicWeekday: 1
+        }
+      })
+    }
   };
 
   handleIntervalChange = (e) => {
@@ -139,7 +152,10 @@ export default class ExcludeDate extends React.Component {
 
   componentDidMount() {
     this.setState(this.props.date, () => {
-      this.props.onEdit(this.props.index, true, this.state);
+      /*If the date is new, submit it.*/
+      if (this.props.date.isNew) {
+        this.props.onEdit(this.props.index, true, this.state);
+      }
     });
   }
 

@@ -114,21 +114,19 @@ export function TimezoneInput() {
 export function PresetSelect() {
   return <div>
     <label className={"form-item-label"}>Preset</label>
-    <select className={"input input-select"}
+    <select className={"input input-select select-preset-type"}
             value={this.state.selectedDateType}
             onChange={this.handleDateTypeChange}
-            style={{width: 150, marginRight: 10}}
             placeholder="select preset date"
     >
       {Object.keys(DATE_TYPE).map((key, index) =>
         <option key={index} value={DATE_TYPE[key]}>{DATE_TYPE[key]}</option>
       )}
     </select>
-    <select className={"input input-select"}
+    <select className={"input input-select select-preset-item"}
             value={this.state.selectedPreset}
             defaultValue=""
             onChange={this.handlePresetChange}
-            style={{width: 300}}
             placeholder="select preset date"
     >
       <option key={"unselected"} value={-1}>{PLACEHOLDER_PRESET_NOT_SELECTED}</option>
@@ -136,7 +134,7 @@ export function PresetSelect() {
         <option key={index} value={index}>{item.name}</option>
       )}
     </select>
-    <button type="button" disabled={this.state.selectedPreset === -1} className={"btn btn-gray"} onClick={this.applyPreset}>Apply</button>
+    <button type="button" disabled={this.state.selectedPreset === -1} className={"btn btn-gray"}  onClick={this.applyPreset}>Apply</button>
   </div>;
 }
 

@@ -12,11 +12,8 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.json.JsonHttpResponse;
 
 import java.io.IOException;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class WorkingHoursUI {
     private WorkingHoursPlugin config;
@@ -77,7 +74,7 @@ public class WorkingHoursUI {
 
         for (int i = 0; i < timeRangesJson.size(); i++) {
             ValidationResult result = TimeRange.validateTimeRange((JSONObject) timeRangesJson.get(i));
-            if (!result.isValid) {
+            if (!result.isValid()) {
                 return HttpResponses.errorJSON(result.toErrorMessage());
             } else {
                 newTimeRanges.add(new TimeRange((JSONObject) timeRangesJson.get(i)));
@@ -93,8 +90,14 @@ public class WorkingHoursUI {
         List<ExcludedDate> newExcludedDates = new ArrayList();
 
         JSONArray excludedDatesJson = (JSONArray) getRequestBody(request).get("data");
-        for (Object o : excludedDatesJson) {
-            newExcludedDates.add(new ExcludedDate((JSONObject) o));
+
+        for (int i = 0; i < excludedDatesJson.size(); i++) {
+            ValidationResult result = ExcludedDate.validateExcludedDate((JSONObject) excludedDatesJson.get(i));
+            if (!result.isValid()) {
+                return HttpResponses.errorJSON(result.toErrorMessage());
+            } else {
+                newExcludedDates.add(new ExcludedDate((JSONObject) excludedDatesJson.get(i)));
+            }
         }
 
         config.setExcludedDates(newExcludedDates);

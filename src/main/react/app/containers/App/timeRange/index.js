@@ -10,6 +10,7 @@ import {LOADING_STATE, LoadingState} from "../../common/savingState";
 import TimeRange from "./timeRange";
 import only from "only";
 
+
 /**
  * Container for time ranges. In charge of data fetch/submit, loading state control.
  */
@@ -100,7 +101,7 @@ export default class TimeRangeContainer extends React.Component {
     this.setState({
       timeRanges: list
     });
-    this.uploadTimes(list);
+    // this.uploadTimes(list);
   };
 
   weekdayList = () => {
