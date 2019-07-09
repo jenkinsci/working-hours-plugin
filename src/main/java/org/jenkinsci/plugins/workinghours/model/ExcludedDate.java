@@ -23,14 +23,9 @@
  */
 package org.jenkinsci.plugins.workinghours.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import hudson.Extension;
-import hudson.model.AbstractDescribableImpl;
-import hudson.model.Descriptor;
-import hudson.util.FormValidation;
+import net.sf.json.JSONObject;
+import org.jenkinsci.plugins.workinghours.ValidationResult;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
 
 import java.util.Calendar;
 
@@ -39,74 +34,83 @@ import java.util.Calendar;
  *
  * @author jxpearce@godaddy.com
  */
-public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
+public class ExcludedDate {
 
-    private DataContainer dataContainer;
-    private String jsonData;
-    private static Gson gson = null;
+    private static final String FIELD_UTC_OFFSET = "utcOffset";
+    private static final String FIELD_TIMEZONE = "timezone";
+    private static final String FIELD_TYPE = "type";
+    private static final String FIELD_NAME = "name";
+    private static final String FIELD_START_DATE = "startDate";
+    private static final String FIELD_END_DATE = "endDate";
+    private static final String FIELD_NO_END = "noEnd";
+    private static final String FIELD_REPEAT = "repeat";
+    private static final String FIELD_REPEAT_COUNT = "repeatCount";
+    private static final String FIELD_REPEAT_PERIOD = "repeatPeriod";
+    private static final String FIELD_REPEAT_INTERVAL = "repeatInterval";
 
-    /**
-     * Set or update the fields with a json string.
-     * This json would be stored and return to the front app.
-     */
-    public void setJsonData(String inputData) {
-        this.jsonData = inputData;
-        this.dataContainer = gson.fromJson(inputData, DataContainer.class);
-    }
-
-    public String getJsonData() {
-        return jsonData;
-    }
-
+    /*The required fields of the class*/
+    private static final String[] REQUIRED_FIELDS = {FIELD_UTC_OFFSET,
+        FIELD_TIMEZONE,
+        FIELD_TYPE,
+        FIELD_NAME,
+        FIELD_START_DATE,
+        FIELD_NO_END,
+        FIELD_REPEAT,
+        FIELD_REPEAT_COUNT,
+        FIELD_REPEAT_PERIOD,
+        FIELD_REPEAT_INTERVAL};
 
     /**
      * Constructs an ExcludedDate object using json.
      *
-     * @param jsonData Json data to deserialize to an ExcludedDate object.
+     * @param sourceJSON Json data to deserialize to an ExcludedDate object.
      */
     @DataBoundConstructor
-    public ExcludedDate(String jsonData) {
-        if (gson == null) {
-            gson = new GsonBuilder().create();
+    public ExcludedDate(JSONObject sourceJSON) {
+        this.utcOffset = sourceJSON.getInt(FIELD_UTC_OFFSET);
+        this.timezone = sourceJSON.getString(FIELD_TIMEZONE);
+        this.startDate = new Date(sourceJSON.getJSONObject(FIELD_START_DATE));
+        if (!sourceJSON.getJSONObject(FIELD_END_DATE).isEmpty()) {
+            this.endDate = new Date(sourceJSON.getJSONObject(FIELD_END_DATE));
         }
-        this.dataContainer = gson.fromJson(jsonData, DataContainer.class);
-        this.jsonData = jsonData;
+        this.name = sourceJSON.getString(FIELD_NAME);
+        this.repeat = sourceJSON.getBoolean(FIELD_REPEAT);
+        this.repeatCount = sourceJSON.getInt(FIELD_REPEAT_COUNT);
+        this.repeatPeriod = sourceJSON.getInt(FIELD_REPEAT_PERIOD);
+        this.repeatInterval = sourceJSON.getInt(FIELD_REPEAT_INTERVAL);
     }
 
-    public DataContainer getDataContainer() {
-        return dataContainer;
+    private ExcludedDate(){
+
     }
 
 
-    /**
-     * Descriptor class required for the UI.
-     */
-    @Extension
-    public static class DescriptorImpl extends Descriptor<ExcludedDate> {
-
-        /**
-         * Gets human readable name.
-         *
-         * @return human readable name.
-         */
-        @Override
-        public final String getDisplayName() {
-            return "ExcludedDate descriptor";
-        }
-
-        /**
-         * Validate the date.
-         *
-         * @param value value to validate.
-         * @return FormValidation indicating whether date is valid.
-         */
-        public final FormValidation doCheckDate(
-                @QueryParameter final String value) {
-            if (!value.isEmpty() && !DateTimeUtility.isValidDate(value)) {
-                return FormValidation.error("Invalid date");
+    public static ValidationResult validateExcludedDate(JSONObject targetJson) {
+        for (String requiredField : REQUIRED_FIELDS) {
+            if (!targetJson.containsKey(requiredField)) {
+                return new ValidationResult(false, requiredField, "is required");
             }
-            return FormValidation.ok();
         }
+
+        if (!(targetJson.get(FIELD_UTC_OFFSET) instanceof Number)) {
+            return new ValidationResult(false, FIELD_UTC_OFFSET, "is not a number");
+        } else if (targetJson.getInt(FIELD_UTC_OFFSET) > 720 || targetJson.getInt(FIELD_UTC_OFFSET) < -720) {
+            return new ValidationResult(false, FIELD_UTC_OFFSET, "should be between 720 and -720");
+        }
+
+        final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE));
+        if(!startDateValidationResult.isValid()){
+            return startDateValidationResult;
+        }
+
+        if(targetJson.containsKey(FIELD_END_DATE)){
+            final ValidationResult endDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_END_DATE));
+            if(!endDateValidationResult.isValid()){
+                return startDateValidationResult;
+            }
+        }
+
+        return ValidationResult.getSuccessValidation();
     }
 
     public Boolean shouldExclude(Calendar date) {
@@ -121,177 +125,212 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
         return false;
     }
 
-    public static class DataContainer {
+    /**
+     * Minutes offset to the UTC time, indicates the base timezone of the excluded date.
+     * Default to UTC(UTC+0).
+     */
+    private int utcOffset = 0;
 
-        /**
-         * Minutes offset to the UTC time, indicates the base timezone of the excluded date.
-         * Default to UTC(UTC+0).
-         */
-        public int utcOffset = 0;
+    /**
+     * Name of the selected timezone.
+     */
+    private String timezone;
 
-        /**
-         * A type that indicates whether
-         */
-        public String type = DateType.TYPE_GREGORIAN;
+    /**
+     * A type that indicates whether
+     */
+    private DateType type = DateType.TYPE_GREGORIAN;
 
-        /**
-         * The display name of this rule.
-         */
-        public String name = "";
+    /**
+     * The display name of this rule.
+     */
+    private String name = "";
 
-        /**
-         * The start date for this rule.
-         */
-        public Date startDate = null;
+    /**
+     * The start date for this rule.
+     */
+    private Date startDate = null;
 
-        /**
-         * If this rule is repeat, the end date of the repeat rule.
-         */
-        public Date endDate = null;
+    /**
+     * If this rule is repeat, the end date of the repeat rule.
+     */
+    private Date endDate = null;
 
-        /**
-         * When repeat, whether this would end, if would, the end is the field "end date"
-         */
-        public boolean noEnd = true;
+    /**
+     * When repeat, whether this would end, if would, the end is the field "end date"
+     */
+    private boolean noEnd = true;
 
-        /**
-         * Whether the rule is repeat.
-         */
-        public boolean repeat = false;
+    /**
+     * Whether the rule is repeat.
+     */
+    private boolean repeat = false;
 
-        /**
-         * How many times this would repeat.
-         */
-        public int repeatCount = -1;
+    /**
+     * How many times this would repeat.
+     */
+    private int repeatCount = -1;
 
-        /**
-         *
-         */
-        public int repeatPeriod = 1;
+    /**
+     *
+     */
+    private int repeatPeriod = 1;
 
-        public int repeatInterval = 1;
+    private int repeatInterval = 1;
 
-        public int getUtcOffset() {
-            return utcOffset;
-        }
+    public int getUtcOffset() {
+        return utcOffset;
+    }
 
-        public String getType() {
-            return type;
-        }
+    public String getType() {
+        return String.valueOf(type);
+    }
 
-        public String getName() {
-            return name;
-        }
+    public String getName() {
+        return name;
+    }
 
-        public Date getStartDate() {
-            return startDate;
-        }
+    public Date getStartDate() {
+        return startDate;
+    }
 
-        public Date getEndDate() {
-            return endDate;
-        }
+    public Date getEndDate() {
+        return endDate;
+    }
 
-        public boolean isNoEnd() {
-            return noEnd;
-        }
+    public boolean isNoEnd() {
+        return noEnd;
+    }
 
-        public boolean isRepeat() {
-            return repeat;
-        }
+    public boolean isRepeat() {
+        return repeat;
+    }
 
-        public int getRepeatCount() {
-            return repeatCount;
-        }
+    public int getRepeatCount() {
+        return repeatCount;
+    }
 
-        public int getRepeatPeriod() {
-            return repeatPeriod;
-        }
+    public int getRepeatPeriod() {
+        return repeatPeriod;
+    }
 
-        public int getRepeatInterval() {
-            return repeatInterval;
-        }
+    public int getRepeatInterval() {
+        return repeatInterval;
+    }
+
+    public String getTimezone() {
+        return timezone;
     }
 
     public static class Date {
 
+        private static final String FIELD_DYNAMIC = "dynamic";
+        private static final String FIELD_DATE = "date";
+        private static final String FIELD_DYNAMIC_MONTH = "dynamicMonth";
+        private static final String FIELD_DYNAMIC_WEEK = "dynamicWeek";
+        private static final String FIELD_DYNAMIC_WEEKDAY = "dynamicWeekday";
+
+        private static final String[] REQUIRED_FIELDS_FOR_DYNAMIC = {FIELD_DYNAMIC_MONTH, FIELD_DYNAMIC_WEEK, FIELD_DYNAMIC_WEEKDAY};
+
+        public Date(JSONObject jsonObject) {
+            this.dynamic = jsonObject.getBoolean(FIELD_DYNAMIC);
+            this.date = jsonObject.getString(FIELD_DATE);
+            this.dynamicMonth = jsonObject.getInt(FIELD_DYNAMIC_MONTH);
+            this.dynamicWeek = jsonObject.getInt(FIELD_DYNAMIC_WEEK);
+            this.dynamicWeekday = jsonObject.getInt(FIELD_DYNAMIC_WEEKDAY);
+        }
+
         public boolean isDynamic() {
             return dynamic;
+        }
+
+        public static ValidationResult validateDate(JSONObject targetObject) {
+            if (!targetObject.containsKey(FIELD_DYNAMIC)) {
+                return new ValidationResult(false, FIELD_DYNAMIC, "is required");
+            } else {
+                if (!(targetObject.get(FIELD_DYNAMIC) instanceof Boolean)) {
+                    return new ValidationResult(false, FIELD_DYNAMIC, "should be bool");
+                } else {
+                    boolean dynamic = targetObject.getBoolean(FIELD_DYNAMIC);
+                    if (dynamic) {
+                        for (String field : REQUIRED_FIELDS_FOR_DYNAMIC) {
+                            if (!targetObject.containsKey(field)) {
+                                return new ValidationResult(false, field, "is required");
+                            }
+                        }
+                        if (!(targetObject.get(FIELD_DYNAMIC_WEEKDAY) instanceof Integer)) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_WEEKDAY, "should be int");
+                        } else if (targetObject.getInt(FIELD_DYNAMIC_WEEKDAY) > 7 || targetObject.getInt(FIELD_DYNAMIC_WEEKDAY) < 1) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_WEEKDAY, "should be between 1 and 7");
+                        }
+
+                        if (!(targetObject.get(FIELD_DYNAMIC_WEEK) instanceof Integer)) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_WEEK, "should be int");
+                        } else if (targetObject.getInt(FIELD_DYNAMIC_WEEK) > 4 || targetObject.getInt(FIELD_DYNAMIC_WEEK) < 1) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_WEEK, "should be between 1 and 4");
+                        }
+
+                        if (!(targetObject.get(FIELD_DYNAMIC_MONTH) instanceof Integer)) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_MONTH, "should be int");
+                        } else if (targetObject.getInt(FIELD_DYNAMIC_MONTH) > 12 || targetObject.getInt(FIELD_DYNAMIC_MONTH) < 1) {
+                            return new ValidationResult(false, FIELD_DYNAMIC_MONTH, "should be between 1 and 12");
+                        }
+                    } else {
+                        if (!targetObject.containsKey(FIELD_DATE)) {
+                            return new ValidationResult(false, FIELD_DATE, "is required");
+                        } else if (!(targetObject.get(FIELD_DATE) instanceof String)) {
+                            return new ValidationResult(false, FIELD_DATE, "should be string");
+                        }
+                    }
+                }
+                return ValidationResult.getSuccessValidation();
+            }
         }
 
         /**
          * Indicates whether the date is dynamic,
          * dynamic date would depend on week and vary every year
          */
-        public boolean dynamic;
-
-        /**
-         * This field is in order to describe some date which
-         * is not static but depend on the occurrence of weekday,
-         * like Mother's Day (the second sunday of May).
-         */
-        public DynamicDate dynamicDate;
+        private boolean dynamic;
 
         /**
          * If static, the actual date(timestamp) of this excluded date.
          */
-        public String date;
+        private String date;
 
-        public Date(boolean dynamic, DynamicDate dynamicDate, String date) {
-            this.dynamic = dynamic;
-            this.dynamicDate = dynamicDate;
-            this.date = date;
-        }
 
         public String getDate() {
             return date;
         }
 
-        public DynamicDate getDynamicDate() {
-            return dynamicDate;
-        }
-
-    }
-
-    public static class DynamicDate {
         /**
-         * The month in the
+         * The month in the year
          * Ranging from 1 to 12, indicating from January to December.
          */
-        public int month;
+        private int dynamicMonth;
 
         /**
          * The weekday content to describe a dynamic excluded date.
          * Ranging from 1 to 7, indicating from Monday to Sunday.
          */
-        public int weekday;
+        private int dynamicWeekday;
 
         /**
          * The nth time the weekday appear.
          * Ranging from 1 to 4, indicating the first, second, third and the fourth appearance.
          */
-        public int week;
+        private int dynamicWeek;
 
-        /**
-         * The constructor.
-         * For example, Mother's Day is on the second Sunday of May,
-         * In order to describe Mother's Day, set month to 5, week to 2 and weekday to 7.
-         */
-        public DynamicDate(int month, int week, int weekday) {
-            this.month = month;
-            this.week = week;
-            this.weekday = weekday;
+        public int getDynamicMonth() {
+            return dynamicMonth;
         }
 
-        public int getMonth() {
-            return month;
+        public int getDynamicWeekday() {
+            return dynamicWeekday;
         }
 
-        public int getWeekday() {
-            return weekday;
-        }
-
-        public int getWeek() {
-            return week;
+        public int getDynamicWeek() {
+            return dynamicWeek;
         }
     }
 }

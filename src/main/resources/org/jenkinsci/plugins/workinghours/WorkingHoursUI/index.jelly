@@ -4,11 +4,25 @@
     <l:layout permission="${app.ADMINISTER}" norefresh="true">
         <st:include it="${app}" page="sidepanel.jelly"/>
         <l:main-panel>
-            <!--React component mount point-->
-            <div id="container-excluded-dates"></div>
-
-            <!--Data container to retrieve and save-->
-            <script type="text/javascript" src="${resURL}/plugin/working-hours/js/main.js"></script>
+            <script>
+                function resizeIframe(obj) {
+                    let originHeight = obj.contentWindow.document.body.scrollHeight;
+                    obj.style.height = (originHeight + 100) + 'px';
+                    console.log('originHeight ' + originHeight)
+                    setInterval(() => {
+                        let curHeight = obj.contentWindow.document.body.scrollHeight;
+                        console.log('curHeight' + curHeight)
+                        console.log('originHeight ' + originHeight)
+                        if (originHeight !== curHeight) {
+                            obj.style.height = (curHeight + 100) + 'px';
+                        }
+                    }, 100)
+                }
+            </script>
+            <iframe style="
+    border: none;
+" id="container-excluded-dates" width="100%" src="${resURL}/plugin/working-hours/js/index.html"
+                    onload="resizeIframe(this)"></iframe>
         </l:main-panel>
     </l:layout>
 </j:jelly>

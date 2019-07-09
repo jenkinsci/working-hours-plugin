@@ -13,9 +13,7 @@ import org.kohsuke.stapler.json.JsonHttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class WorkingHoursUI {
     private WorkingHoursPlugin config;
@@ -73,8 +71,14 @@ public class WorkingHoursUI {
         List<TimeRange> newTimeRanges = new ArrayList();
 
         JSONArray timeRangesJson = (JSONArray) getRequestBody(request).get("data");
-        for (Object o : timeRangesJson) {
-            newTimeRanges.add(new TimeRange((String) o));
+
+        for (int i = 0; i < timeRangesJson.size(); i++) {
+            ValidationResult result = TimeRange.validateTimeRange((JSONObject) timeRangesJson.get(i));
+            if (!result.isValid()) {
+                return HttpResponses.errorJSON(result.toErrorMessage());
+            } else {
+                newTimeRanges.add(new TimeRange((JSONObject) timeRangesJson.get(i)));
+            }
         }
 
         config.setBuildTimeMatrix(newTimeRanges);
@@ -86,8 +90,14 @@ public class WorkingHoursUI {
         List<ExcludedDate> newExcludedDates = new ArrayList();
 
         JSONArray excludedDatesJson = (JSONArray) getRequestBody(request).get("data");
-        for (Object o : excludedDatesJson) {
-            newExcludedDates.add(new ExcludedDate((String) o));
+
+        for (int i = 0; i < excludedDatesJson.size(); i++) {
+            ValidationResult result = ExcludedDate.validateExcludedDate((JSONObject) excludedDatesJson.get(i));
+            if (!result.isValid()) {
+                return HttpResponses.errorJSON(result.toErrorMessage());
+            } else {
+                newExcludedDates.add(new ExcludedDate((JSONObject) excludedDatesJson.get(i)));
+            }
         }
 
         config.setExcludedDates(newExcludedDates);
@@ -101,11 +111,7 @@ public class WorkingHoursUI {
      * @return An array of serialized excluded dates.
      */
     private JSONArray serializeExcludedDates() {
-        JSONArray excludedDates = new JSONArray();
-        config.getExcludedDates().forEach(item -> {
-            excludedDates.add(item.getJsonData());
-        });
-        return excludedDates;
+        return JSONArray.fromObject(config.getExcludedDates());
     }
 
     /**
@@ -114,11 +120,7 @@ public class WorkingHoursUI {
      * @return JSONArray that contains a list of serialized time range data.
      */
     private JSONArray serializeTimeRanges() {
-        JSONArray timeRanges = new JSONArray();
-        config.getBuildTimeMatrix().forEach(item -> {
-            timeRanges.add(item.getJsonData());
-        });
-        return timeRanges;
+        return JSONArray.fromObject(config.getBuildTimeMatrix());
     }
 
 

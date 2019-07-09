@@ -1,6 +1,14 @@
 import moment from "moment";
 import ChineseLunarCalendar from "./chineseLunar";
 
+/**
+ * Get next occurrence yearly for a given rule like the first sunday of May.
+ *
+ * @param month The month for the rule.
+ * @param week The nth week of the rule.
+ * @param day The weekday of the rule.
+ * @returns {moment.Moment} The occurrence in moment of the target date.
+ */
 export function nextOccurrenceByYear(month, week, day) {
   let next = moment().hour(0).second(0).minute(0);
   let today = moment().hour(0).second(0).minute(0);
@@ -30,6 +38,13 @@ export function nextOccurrenceByYear(month, week, day) {
   return next;
 }
 
+/**
+ * Get next occurrence each month for a given rule like the first sunday.
+ *
+ * @param week The nth week of the rule.
+ * @param day The weekday of the rule.
+ * @returns {moment.Moment} The occurrence in moment of the target date.
+ */
 export function nextOccurrenceByMonth(week, day) {
   let next = moment().hour(0).second(0).minute(0);
   let today = moment().hour(0).second(0).minute(0);

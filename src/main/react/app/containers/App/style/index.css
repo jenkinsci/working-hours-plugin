@@ -6,6 +6,11 @@
     font-weight: lighter;
 }
 
+.form-item-label-sub{
+    width: auto;
+    height: 12px;
+}
+
 .form-row {
     margin: 17px 0;
     height: 25px;
@@ -23,7 +28,28 @@
     padding: 20px;
     margin: 10px;
     border: 1px solid #cccccc;
+    border-radius: 6px;
     background: #f9f9f9;
+}
+
+.config-count{
+    flex: 0 1 auto;
+    align-self: flex-end;
+}
+
+.config-header{
+    margin: 0 10px;
+    display: flex;
+}
+
+.config-title{
+    flex:0 1 auto;
+    font-size: 25px;
+}
+
+.config-loading-status{
+    flex:1 1 auto;
+    align-self: flex-end;
 }
 
 .excluded-date {
@@ -33,7 +59,6 @@
 .time-range {
     margin: 5px;
     display: flex;
-    width: 775px;
 }
 
 .time-range-invalid {
@@ -51,6 +76,10 @@
 
     font-weight: bold;
     margin-left: 10px;
+}
+
+.btn:disabled{
+    cursor: not-allowed;
 }
 
 .btn-dropdown {
@@ -131,6 +160,26 @@ input[type='checkbox'] {
 
 .input-select {
     padding: 2px;
+}
+
+.select-preset-type{
+    width: 150px;
+    margin-right: 10px
+}
+
+.select-preset-item{
+    width: 300px;
+}
+
+.select-dynamic-item{
+    width: 120px;
+    margin-left: 10px;
+    height: 35px;
+}
+
+.date-control-item{
+    display: inline-flex;
+    margin-left: 5px;
 }
 
 .input-text {

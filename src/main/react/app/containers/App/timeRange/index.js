@@ -4,13 +4,12 @@ import {WEEKDAYS} from "../constants";
 import "../style/components.css";
 import "rc-time-picker/assets/index.css";
 import "rc-slider/assets/index.css";
-import Slider, {createSliderWithTooltip, Range, Handle} from "rc-slider";
 import {debounce} from "lodash";
 import {getTimeRanges, setTimeRanges} from "../../../api";
 import {LOADING_STATE, LoadingState} from "../../common/savingState";
-import ExcludedDateContainer from "../excludedDate";
 import TimeRange from "./timeRange";
 import only from "only";
+
 
 /**
  * Container for time ranges. In charge of data fetch/submit, loading state control.
@@ -26,11 +25,11 @@ export default class TimeRangeContainer extends React.Component {
 
   /*A debounced function used to clear loading state.
   * */
-  debouncedClearLoading = debounce(()=>{
+  debouncedClearLoading = debounce(() => {
     this.setState({
-      loadingState:LOADING_STATE.WAITING
+      loadingState: LOADING_STATE.WAITING
     })
-  },1000)
+  }, 1000)
 
   /**
    * Handler for changing a excluded date
@@ -60,14 +59,18 @@ export default class TimeRangeContainer extends React.Component {
       loadingState: LOADING_STATE.LOADING
     })
     setTimeRanges({
-      data: param.map(item => JSON.stringify(only(item, "dayOfWeek endTime startTime")))
+      data: param.map(item => only(item, "dayOfWeek endTime startTime"))
     }).then(res => {
       console.log("time ranges updated");
       this.setState({
         loadingState: LOADING_STATE.SUCCESS
       })
       this.debouncedClearLoading();
-    });
+    }).catch((err => {
+      this.setState({
+        loadingState: LOADING_STATE.FAIL
+      })
+    }));
   }
 
 
@@ -98,7 +101,7 @@ export default class TimeRangeContainer extends React.Component {
     this.setState({
       timeRanges: list
     });
-    this.uploadTimes(list);
+    // this.uploadTimes(list);
   };
 
   weekdayList = () => {
@@ -120,20 +123,29 @@ export default class TimeRangeContainer extends React.Component {
     })
     getTimeRanges().then(res => {
       this.setState({
-        timeRanges: res.data.data.map(item => JSON.parse(item))
+        timeRanges: res.data.data
       });
       this.setState({
         loadingState: LOADING_STATE.SUCCESS
       })
       this.debouncedClearLoading();
+    }).catch(err => {
+      this.setState({
+        loadingState: LOADING_STATE.FAIL
+      })
     });
   }
 
   render() {
     return (
       <div>
-        Time Range
-        <LoadingState loadingState={this.state.loadingState}/>
+        <div className={"config-header"}>
+          <div className={'config-title'}>Time Range</div>
+          <div className={'config-loading-status'}>
+            <LoadingState loadingState={this.state.loadingState}/>
+          </div>
+          <div className={'config-count'}>Total:{this.state.timeRanges.length}</div>
+        </div>
         <div className={"config-item"}>
           {this.state.timeRanges.length <= 0 ?
             <div>Time range is not

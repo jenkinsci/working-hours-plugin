@@ -1,12 +1,18 @@
-import { range } from "lodash";
+import {range} from "lodash";
 import React from "react";
-import { DATE_TYPE, PERIODS } from "../constants";
+import {DATE_TYPE, PERIODS, PLACEHOLDER_PRESET_NOT_SELECTED} from "../constants";
 import TimezonePicker from '../../common/timezonePicker'
+
+/**
+ * Functional render for select repeat count.
+ * @returns {*} render content
+ * @constructor
+ */
 export function RepeatCount() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Count</label>
     <div><select className={"input input-select"} value={this.state.repeatCount}
-                 style={{ width: 120, marginRight: 10 }}
+                 style={{width: 120, marginRight: 10}}
                  onChange={this.handleCountChange}>
       <option value={-1}>No End</option>
       {range(1, 11).map(item =>
@@ -17,6 +23,11 @@ export function RepeatCount() {
   </div>;
 }
 
+/**
+ * Functional render for select repeat period.
+ * @returns {*} render content
+ * @constructor
+ */
 export function RepeatPeriod() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Period</label>
@@ -37,11 +48,16 @@ export function RepeatPeriod() {
   </div>;
 }
 
+/**
+ * Functional render for select repeat interval.
+ * @returns {*} render content
+ * @constructor
+ */
 export function RepeatInterval() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Interval</label>
     <div>Each <select className={"input input-select"} value={this.state.repeatInterval}
-                      style={{ width: 70, marginRight: 10 }}
+                      style={{width: 70, marginRight: 10}}
                       onChange={this.handleIntervalChange}>
       {range(1, 6).map(item =>
         <option key={item} value={item}>{item}</option>
@@ -52,6 +68,11 @@ export function RepeatInterval() {
   </div>;
 }
 
+/**
+ * Functional render for input date name.
+ * @returns {*} render content
+ * @constructor
+ */
 export function NameInput() {
   const handleNameChange = (e) => {
     this.setState({
@@ -62,17 +83,21 @@ export function NameInput() {
     <label className={"form-item-label"}>Name</label>
     <input placeholder={"Enter a name"} value={this.state.name}
            className={"input input-text"}
-           style={{ width: 200 }}
+           style={{width: 200}}
            onChange={handleNameChange}/>
   </div>;
 }
 
-
+/**
+ * Functional render for select timezone.
+ * @returns {*} render content
+ * @constructor
+ */
 export function TimezoneInput() {
   const handleTimezoneChange = (e) => {
     this.setState({
       timezone: e.name,
-      utcOffset:e.offset*60,
+      utcOffset: e.offset * 60,
     });
   };
   return <div className={"form-row"}>
@@ -81,35 +106,43 @@ export function TimezoneInput() {
   </div>;
 }
 
+/**
+ * Functional render for select preset.
+ * @returns {*} render content
+ * @constructor
+ */
 export function PresetSelect() {
   return <div>
     <label className={"form-item-label"}>Preset</label>
-    <select className={"input input-select"}
+    <select className={"input input-select select-preset-type"}
             value={this.state.selectedDateType}
             onChange={this.handleDateTypeChange}
-            style={{ width: 150, marginRight: 10 }}
             placeholder="select preset date"
     >
       {Object.keys(DATE_TYPE).map((key, index) =>
         <option key={index} value={DATE_TYPE[key]}>{DATE_TYPE[key]}</option>
       )}
     </select>
-    <select className={"input input-select"}
+    <select className={"input input-select select-preset-item"}
             value={this.state.selectedPreset}
             defaultValue=""
             onChange={this.handlePresetChange}
-            style={{ width: 300 }}
             placeholder="select preset date"
     >
+      <option key={"unselected"} value={-1}>{PLACEHOLDER_PRESET_NOT_SELECTED}</option>
       {this.getDatePresets().map((item, index) =>
         <option key={index} value={index}>{item.name}</option>
       )}
     </select>
-    <button type="button" className={"btn btn-gray"} onClick={this.applyPreset}>Apply</button>
-
+    <button type="button" disabled={this.state.selectedPreset === -1} className={"btn btn-gray"}  onClick={this.applyPreset}>Apply</button>
   </div>;
 }
 
+/**
+ * Functional render for switch preset config.
+ * @returns {*} render content
+ * @constructor
+ */
 export function RepeatCheckbox() {
   return <div className={"form-row"}
   >

@@ -1,13 +1,11 @@
-import { fetchTimezones } from "../../api";
-
 export const WEEKDAYS = {
-  Sunday: 0,
-  Monday: 1,
-  Tuesday: 2,
-  Wednesday: 3,
-  Thursday: 4,
-  Friday: 5,
-  Saturday: 6
+  Sunday: 1,
+  Monday: 2,
+  Tuesday: 3,
+  Wednesday: 4,
+  Thursday: 5,
+  Friday: 6,
+  Saturday: 7
 };
 
 export const PERIODS = {
@@ -16,7 +14,9 @@ export const PERIODS = {
   Year: 3
 };
 
-export const ORDERS = { first: 1, second: 2, third: 3, fourth: 4 };
+
+
+export const ORDERS = {first: 1, second: 2, third: 3, fourth: 4};
 
 export const MONTHS = {
   January: 1,
@@ -51,17 +51,18 @@ export const getDatePresets = (type) => {
   }
 };
 
+export const PLACEHOLDER_PRESET_NOT_SELECTED = "Empty"
 
 export const GREGORIAN_DATE_PRESETS = [
   {
     type: DATE_TYPE.TYPE_GREGORIAN, name: "Thanksgiving Day", repeat: true, startDate: {
-      dynamic: true, dynamicDate: { month: 11, week: 4, day: 4 }
+      dynamic: true, dynamicMonth: 11, dynamicWeek: 4, dynamicWeekday: 4
     }, repeatPeriod: PERIODS.Year
   },
   {
     type: DATE_TYPE.TYPE_GREGORIAN,
     name: "Mother's Day", repeat: true, startDate: {
-      dynamic: true, dynamicDate: { month: 5, week: 2, day: 7 }
+      dynamic: true, dynamicMonth: 5, dynamicWeek: 2, dynamicWeekday: 7
     }, repeatPeriod: PERIODS.Year
   }
 ];
