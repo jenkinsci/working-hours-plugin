@@ -26,6 +26,7 @@ package org.jenkinsci.plugins.workinghours.model;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
 
+import java.time.LocalTime;
 import java.util.Calendar;
 
 /**
@@ -104,19 +105,18 @@ public class TimeRange {
      */
     public Boolean includesTime(Calendar date) {
         // TODO: 12/6/2019 Implement include judge
-//        LocalTime allowedStartTime = DateTimeUtility.localTime(getStartTime());
-//        LocalTime allowedEndTime = DateTimeUtility.localTime(getEndTime());
-//
-//        LocalTime checkTime = LocalTime.of(
-//                date.get(Calendar.HOUR_OF_DAY),
-//                date.get(Calendar.MINUTE));
-//
-//        return date.get(Calendar.DAY_OF_WEEK) == getDayOfWeek()
-//                && (checkTime.equals(allowedStartTime)
-//                || checkTime.isAfter(allowedStartTime))
-//                && (checkTime.equals(allowedEndTime)
-//                || checkTime.isBefore(allowedEndTime));
-        return true;
+        LocalTime allowedStartTime = DateTimeUtility.localTime(getStartTime());
+        LocalTime allowedEndTime = DateTimeUtility.localTime(getEndTime());
+
+        LocalTime checkTime = LocalTime.of(
+                date.get(Calendar.HOUR_OF_DAY),
+                date.get(Calendar.MINUTE));
+
+        return date.get(Calendar.DAY_OF_WEEK) == this.getDayOfWeek()
+                && (checkTime.equals(allowedStartTime)
+                || checkTime.isAfter(allowedStartTime))
+                && (checkTime.equals(allowedEndTime)
+                || checkTime.isBefore(allowedEndTime));
     }
 
 
@@ -127,7 +127,7 @@ public class TimeRange {
     private int endTime = 0;
 
     /*The day of week*/
-    private int dayOfWeek = Calendar.SUNDAY;
+    private int dayOfWeek;
 
     public int getStartTime() {
         return startTime;
