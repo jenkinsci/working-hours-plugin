@@ -70,7 +70,7 @@ public final class DateTimeUtility {
         return null;
     }
 
-    public static LocalTime localTime(final int minutes) {
+    public static LocalTime localTimeFromMinutes(final int minutes) {
         return LocalTime.of(minutes / 60, minutes % 60);
     }
 

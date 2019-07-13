@@ -105,8 +105,8 @@ public class TimeRange {
      */
     public Boolean includesTime(Calendar date) {
         // TODO: 12/6/2019 Implement include judge
-        LocalTime allowedStartTime = DateTimeUtility.localTime(getStartTime());
-        LocalTime allowedEndTime = DateTimeUtility.localTime(getEndTime());
+        LocalTime allowedStartTime = DateTimeUtility.localTimeFromMinutes(getStartTime());
+        LocalTime allowedEndTime = DateTimeUtility.localTimeFromMinutes(getEndTime());
 
         LocalTime checkTime = LocalTime.of(
                 date.get(Calendar.HOUR_OF_DAY),
