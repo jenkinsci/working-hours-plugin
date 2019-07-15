@@ -70,6 +70,10 @@ public final class DateTimeUtility {
         return null;
     }
 
+    public static LocalTime localTimeFromMinutes(final int minutes) {
+        return LocalTime.of(minutes / 60, minutes % 60);
+    }
+
     /**
      * Checks whether a string is a valid time string.
      *
