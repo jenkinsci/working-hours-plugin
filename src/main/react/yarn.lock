@@ -5456,7 +5456,7 @@ hoist-non-react-statics@3.0.1:
   dependencies:
     react-is "^16.3.2"
 
-hoist-non-react-statics@^2.5.0, hoist-non-react-statics@^2.5.5:
+hoist-non-react-statics@^2.5.5:
   version "2.5.5"
   resolved "http://npm.6tiantian.com:4873/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
   integrity sha1-xZA89AnA39kI84jmGdhrnBF0y0c=
@@ -5902,7 +5902,7 @@ into-stream@^3.1.0:
     from2 "^2.1.1"
     p-is-promise "^1.1.0"
 
-invariant@2.2.4, invariant@^2.0.0, invariant@^2.1.1, invariant@^2.2.2, invariant@^2.2.4:
+invariant@2.2.4, invariant@^2.1.1, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "http://npm.6tiantian.com:4873/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   integrity sha1-YQ88ksk1nOHbYW5TgAjSP/NRWOY=
@@ -7321,11 +7321,6 @@ locate-path@^3.0.0:
   dependencies:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
-
-lodash-es@^4.17.5:
-  version "4.17.14"
-  resolved "http://npm.6tiantian.com:4873/lodash-es/-/lodash-es-4.17.14.tgz#12a95a963cc5955683cee3b74e85458954f37ecc"
-  integrity sha1-EqlaljzFlVaDzuO3ToVFiVTzfsw=
 
 lodash._basecopy@^3.0.0:
   version "3.0.1"
@@ -9802,18 +9797,6 @@ react-popper@^1.0.2:
     prop-types "^15.6.1"
     typed-styles "^0.0.7"
     warning "^4.0.2"
-
-react-redux@5.0.7:
-  version "5.0.7"
-  resolved "http://npm.6tiantian.com:4873/react-redux/-/react-redux-5.0.7.tgz#0dc1076d9afb4670f993ffaef44b8f8c1155a4c8"
-  integrity sha1-DcEHbZr7RnD5k/+u9EuPjBFVpMg=
-  dependencies:
-    hoist-non-react-statics "^2.5.0"
-    invariant "^2.0.0"
-    lodash "^4.17.5"
-    lodash-es "^4.17.5"
-    loose-envify "^1.1.0"
-    prop-types "^15.6.0"
 
 react-router-redux@^4.0.0:
   version "4.0.8"

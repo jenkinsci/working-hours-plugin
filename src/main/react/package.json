@@ -89,7 +89,6 @@
         "react-dom": "16.6.0",
         "react-helmet": "5.2.0",
         "react-intl": "2.7.2",
-        "react-redux": "5.0.7",
         "reselect": "4.0.0",
         "sanitize.css": "4.1.0",
         "styled-components": "4.0.2",

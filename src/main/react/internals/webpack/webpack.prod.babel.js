@@ -1,6 +1,5 @@
 // Important modules this config uses
-import webpack from "webpack";
-
+const webpack = require('webpack')
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
