@@ -1359,11 +1359,6 @@ astral-regex@^1.0.0:
   resolved "http://npm.6tiantian.com:4873/astral-regex/-/astral-regex-1.0.0.tgz#6c8c3fb827dd43ee3918f27b82782ab7658a6fd9"
   integrity sha1-bIw/uCfdQ+45GPJ7gngqt2WKb9k=
 
-astronomia@^2.0.1:
-  version "2.0.3"
-  resolved "http://npm.6tiantian.com:4873/astronomia/-/astronomia-2.0.3.tgz#fb803c9f65e0529def9f29e09c553762aefe0ac3"
-  integrity sha1-+4A8n2XgUp3vnyngnFU3Yq7+CsM=
-
 async-each-series@^1.1.0:
   version "1.1.0"
   resolved "http://npm.6tiantian.com:4873/async-each-series/-/async-each-series-1.1.0.tgz#f42fd8155d38f21a5b8ea07c28e063ed1700b138"
@@ -2140,13 +2135,6 @@ cacheable-request@^2.1.1:
     lowercase-keys "1.0.0"
     normalize-url "2.0.1"
     responselike "1.0.2"
-
-caldate@^1.0.3:
-  version "1.0.3"
-  resolved "http://npm.6tiantian.com:4873/caldate/-/caldate-1.0.3.tgz#1db4c8e2353c0a4a0b5c6c841425c365618a7cf8"
-  integrity sha1-HbTI4jU8CkoLXGyEFCXDZWGKfPg=
-  dependencies:
-    moment-timezone "^0.5.23"
 
 call-me-maybe@^1.0.1:
   version "1.0.1"
@@ -3120,23 +3108,6 @@ data-urls@^1.0.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
-date-bengali-revised@^1.0.1:
-  version "1.0.1"
-  resolved "http://npm.6tiantian.com:4873/date-bengali-revised/-/date-bengali-revised-1.0.1.tgz#7c5624f341b10ceeacaa711a71434b8362145b1a"
-  integrity sha1-fFYk80GxDO6sqnEacUNLg2IUWxo=
-
-date-chinese@^1.0.6:
-  version "1.0.6"
-  resolved "http://npm.6tiantian.com:4873/date-chinese/-/date-chinese-1.0.6.tgz#e06c9ea6d55195213ff3634017992ada2438fc8b"
-  integrity sha1-4GyeptVRlSE/82NAF5kq2iQ4/Is=
-  dependencies:
-    astronomia "^2.0.1"
-
-date-easter@^0.2.4:
-  version "0.2.4"
-  resolved "http://npm.6tiantian.com:4873/date-easter/-/date-easter-0.2.4.tgz#744b7751490c4869a221f9b0461f3a2f81e788cc"
-  integrity sha1-dEt3UUkMSGmiIfmwRh86L4HniMw=
-
 date-fns@^1.27.2:
   version "1.30.1"
   resolved "http://npm.6tiantian.com:4873/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
@@ -3146,33 +3117,6 @@ date-fns@^v2.0.0-beta.1:
   version "2.0.0-beta.2"
   resolved "http://npm.6tiantian.com:4873/date-fns/-/date-fns-2.0.0-beta.2.tgz#ccd556df832ef761baa88c600f53d2e829245999"
   integrity sha1-zNVW34Mu92G6qIxgD1PS6CkkWZk=
-
-date-holidays-parser@^1.4.0:
-  version "1.4.0"
-  resolved "http://npm.6tiantian.com:4873/date-holidays-parser/-/date-holidays-parser-1.4.0.tgz#c9d2f3a167cf5c92aa1598514d301e9f84c12b53"
-  integrity sha1-ydLzoWfPXJKqFZhRTTAen4TBK1M=
-  dependencies:
-    astronomia "^2.0.1"
-    caldate "^1.0.3"
-    date-bengali-revised "^1.0.1"
-    date-chinese "^1.0.6"
-    date-easter "^0.2.4"
-    lodash.get "^4.4.2"
-    lodash.merge "^4.6.1"
-    lodash.omit "^4.5.0"
-    lodash.set "^4.3.2"
-    moment-timezone "^0.5.23"
-
-date-holidays@^1.4.0:
-  version "1.4.0"
-  resolved "http://npm.6tiantian.com:4873/date-holidays/-/date-holidays-1.4.0.tgz#c380f16ce9c652520927868fc32de2303b66cf81"
-  integrity sha1-w4DxbOnGUlIJJ4aPwy3iMDtmz4E=
-  dependencies:
-    date-holidays-parser "^1.4.0"
-    js-yaml "^3.13.1"
-    lodash.omit "^4.5.0"
-    lodash.pick "^4.4.0"
-    prepin "^1.0.1"
 
 date-now@^0.1.4:
   version "0.1.4"
@@ -7479,30 +7423,10 @@ lodash.keys@^3.0.0, lodash.keys@^3.1.2:
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
 
-lodash.merge@^4.6.1:
-  version "4.6.2"
-  resolved "http://npm.6tiantian.com:4873/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
-  integrity sha1-VYqlO0O2YeGSWgr9+japoQhf5Xo=
-
-lodash.omit@^4.5.0:
-  version "4.5.0"
-  resolved "http://npm.6tiantian.com:4873/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
-  integrity sha1-brGa5aHuHdnfC5aeZs4Lf6MLXmA=
-
-lodash.pick@^4.4.0:
-  version "4.4.0"
-  resolved "http://npm.6tiantian.com:4873/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
-  integrity sha1-UvBWEP/53tQiYRRB7R/BI6AwAbM=
-
 lodash.restparam@^3.0.0:
   version "3.6.1"
   resolved "http://npm.6tiantian.com:4873/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
   integrity sha1-k2pOMJ7zMKdkXtQUWYbIWuWyCAU=
-
-lodash.set@^4.3.2:
-  version "4.3.2"
-  resolved "http://npm.6tiantian.com:4873/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
-  integrity sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -8053,19 +7977,12 @@ mkpath@^0.1.0:
   resolved "http://npm.6tiantian.com:4873/mkpath/-/mkpath-0.1.0.tgz#7554a6f8d871834cc97b5462b122c4c124d6de91"
   integrity sha1-dVSm+Nhxg0zJe1RisSLEwSTW3pE=
 
-moment-timezone@^0.5.23, moment-timezone@~0.5.13:
-  version "0.5.26"
-  resolved "http://npm.6tiantian.com:4873/moment-timezone/-/moment-timezone-0.5.26.tgz#c0267ca09ae84631aa3dc33f65bedbe6e8e0d772"
-  integrity sha1-wCZ8oJroRjGqPcM/Zb7b5ujg13I=
-  dependencies:
-    moment ">= 2.9.0"
-
 moment@2.18.1:
   version "2.18.1"
   resolved "http://npm.6tiantian.com:4873/moment/-/moment-2.18.1.tgz#c36193dd3ce1c2eed2adb7c802dbbc77a81b1c0f"
   integrity sha1-w2GT3Tzhwu7SrbfIAtu8d6gbHA8=
 
-moment@2.x, "moment@>= 2.9.0":
+moment@2.x:
   version "2.24.0"
   resolved "http://npm.6tiantian.com:4873/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
@@ -9413,11 +9330,6 @@ prepend-http@^2.0.0:
   version "2.0.0"
   resolved "http://npm.6tiantian.com:4873/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
-
-prepin@^1.0.1:
-  version "1.0.3"
-  resolved "http://npm.6tiantian.com:4873/prepin/-/prepin-1.0.3.tgz#6996d34f1f8bf0de0bacf525e3037da79b7df91b"
-  integrity sha1-aZbTTx+L8N4LrPUl4wN9p5t9+Rs=
 
 preserve@^0.2.0:
   version "0.2.0"
