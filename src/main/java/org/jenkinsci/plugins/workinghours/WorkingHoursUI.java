@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.workinghours;
 
+import de.jollyday.HolidayCalendar;
+import de.jollyday.HolidayManager;
 import hudson.ExtensionList;
 import hudson.util.HttpResponses;
 import net.sf.json.JSONArray;
@@ -13,7 +15,9 @@ import org.kohsuke.stapler.json.JsonHttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 public class WorkingHoursUI {
     private WorkingHoursPlugin config;
@@ -55,6 +59,12 @@ public class WorkingHoursUI {
                 return listTimeRanges(request);
             case "set-time-ranges":
                 return setTimeRanges(request);
+            case "regions":
+                if (params.size() > 1) {
+                    return getRegionHolidays(params);
+                } else {
+                    return getRegions();
+                }
         }
 
         // TODO: 30/5/2019 Implement or find a detailed error response Object
@@ -62,9 +72,21 @@ public class WorkingHoursUI {
 
     }
 
+    private HttpResponse getRegions() {
+        List<String> calendars = new ArrayList<>();
+        for (HolidayCalendar calendar : HolidayCalendar.values()) {
+            calendars.add(calendar.getId());
+        }
+        return HttpResponses.okJSON(JSONArray.fromObject(calendars));
+    }
+
+    private HttpResponse getRegionHolidays(List<String> params) {
+        Set result = HolidayManager.getInstance(params.get(1)).getHolidays(Calendar.getInstance().get(Calendar.YEAR));
+        return HttpResponses.okJSON(JSONArray.fromObject(result));
+    }
+
     private HttpResponse listTimeRanges(StaplerRequest request) {
         return HttpResponses.okJSON(serializeTimeRanges());
-
     }
 
     private HttpResponse setTimeRanges(StaplerRequest request) {

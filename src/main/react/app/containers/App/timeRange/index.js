@@ -2,8 +2,6 @@ import React from "react";
 import {WEEKDAYS} from "../constants";
 
 import "../style/components.css";
-import "rc-time-picker/assets/index.css";
-import "rc-slider/assets/index.css";
 import {debounce} from "lodash";
 import {getTimeRanges, setTimeRanges} from "../../../api";
 import {LOADING_STATE, LoadingState} from "../../common/savingState";

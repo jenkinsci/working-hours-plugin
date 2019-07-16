@@ -4,6 +4,7 @@ import {DATE_TYPE, getDatePresets, PERIODS, PLACEHOLDER_PRESET_NOT_SELECTED} fro
 import {formatDate, nextOccurrenceChineseLunar} from "../../../utils/date";
 import {getBrief} from "../../../utils";
 import moment from "moment";
+import Alert from '../../common/presetAlert'
 import {
   NameInput,
   PresetSelect,
@@ -55,6 +56,12 @@ export default class ExcludeDate extends React.Component {
 
   /*Apply the selected preset.*/
   applyPreset = () => {
+    Alert.open({
+      alertTip:"这是一个测试弹框",
+      closeAlert:function(){
+        console.log("关闭了...");
+      }
+    });
     /*According to the selected date type, use different algorithms.*/
     switch (this.state.selectedDateType) {
       case DATE_TYPE.TYPE_GREGORIAN:

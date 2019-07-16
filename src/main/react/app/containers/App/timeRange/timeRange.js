@@ -2,7 +2,6 @@ import React from "react";
 import {WEEKDAYS} from "../constants";
 
 import "../style/components.css";
-import "rc-time-picker/assets/index.css";
 import "rc-slider/assets/index.css";
 import {Range} from "rc-slider";
 import {debounce} from "lodash";

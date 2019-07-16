@@ -1,4 +1,6 @@
 // Important modules this config uses
+import webpack from "webpack";
+
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
@@ -50,6 +52,11 @@ module.exports = require('./webpack.base.babel')({
   },
 
   plugins: [
+    // ---- do not bundle moment locales
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    // ---- do not bundle astronomia vsop planet data
+    new webpack.IgnorePlugin(/^\.\/vsop87B.*$/),
+
     // Minify and optimize the index.html
     new HtmlWebpackPlugin({
       template: 'app/index.html',
@@ -68,11 +75,13 @@ module.exports = require('./webpack.base.babel')({
       inject: 'body',
     }),
 
+
     // Put it in the end to capture all the HtmlWebpackPlugin's
     // assets manipulations and do leak its manipulations to HtmlWebpackPlugin
     new CopyWebpackPlugin([
       {from:'build/main.js',to:'../../webapp/js/'},
       {from:'build/index.html',to:'../../webapp/js/'},
+
     ])
   ],
 

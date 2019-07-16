@@ -1,6 +1,6 @@
 import {range} from "lodash";
 import React from "react";
-import {DATE_TYPE, PERIODS, PLACEHOLDER_PRESET_NOT_SELECTED} from "../constants";
+import {PERIODS} from "../constants";
 import TimezonePicker from '../../common/timezonePicker'
 
 /**
@@ -85,6 +85,9 @@ export function NameInput() {
            className={"input input-text"}
            style={{width: 200}}
            onChange={handleNameChange}/>
+    <button type="button" className={"btn btn-gray"}
+            onClick={this.applyPreset}>Select Preset
+    </button>
   </div>;
 }
 
@@ -113,28 +116,31 @@ export function TimezoneInput() {
  */
 export function PresetSelect() {
   return <div>
-    <label className={"form-item-label"}>Preset</label>
-    <select className={"input input-select select-preset-type"}
-            value={this.state.selectedDateType}
-            onChange={this.handleDateTypeChange}
-            placeholder="select preset date"
-    >
-      {Object.keys(DATE_TYPE).map((key, index) =>
-        <option key={index} value={DATE_TYPE[key]}>{DATE_TYPE[key]}</option>
-      )}
-    </select>
-    <select className={"input input-select select-preset-item"}
-            value={this.state.selectedPreset}
-            defaultValue=""
-            onChange={this.handlePresetChange}
-            placeholder="select preset date"
-    >
-      <option key={"unselected"} value={-1}>{PLACEHOLDER_PRESET_NOT_SELECTED}</option>
-      {this.getDatePresets().map((item, index) =>
-        <option key={index} value={index}>{item.name}</option>
-      )}
-    </select>
-    <button type="button" disabled={this.state.selectedPreset === -1} className={"btn btn-gray"}  onClick={this.applyPreset}>Apply</button>
+
+    {/*<label className={"form-item-label"}>Preset</label>*/}
+    {/*<select className={"input input-select select-preset-type"}*/}
+    {/*        value={this.state.selectedDateType}*/}
+    {/*        onChange={this.handleDateTypeChange}*/}
+    {/*        placeholder="select preset date"*/}
+    {/*>*/}
+    {/*  {Object.keys(DATE_TYPE).map((key, index) =>*/}
+    {/*    <option key={index} value={DATE_TYPE[key]}>{DATE_TYPE[key]}</option>*/}
+    {/*  )}*/}
+    {/*</select>*/}
+    {/*<select className={"input input-select select-preset-item"}*/}
+    {/*        value={this.state.selectedPreset}*/}
+    {/*        defaultValue=""*/}
+    {/*        onChange={this.handlePresetChange}*/}
+    {/*        placeholder="select preset date"*/}
+    {/*>*/}
+    {/*  <option key={"unselected"} value={-1}>{PLACEHOLDER_PRESET_NOT_SELECTED}</option>*/}
+    {/*  {this.getDatePresets().map((item, index) =>*/}
+    {/*    <option key={index} value={index}>{item.name}</option>*/}
+    {/*  )}*/}
+    {/*</select>*/}
+    {/*<button type="button" disabled={this.state.selectedPreset === -1} className={"btn btn-gray"}*/}
+    {/*        onClick={this.applyPreset}>Apply*/}
+    {/*</button>*/}
   </div>;
 }
 
