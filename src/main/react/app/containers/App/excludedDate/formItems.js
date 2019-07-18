@@ -115,32 +115,12 @@ export function TimezoneInput() {
  * @constructor
  */
 export function PresetSelect() {
-  return <div>
-
-    {/*<label className={"form-item-label"}>Preset</label>*/}
-    {/*<select className={"input input-select select-preset-type"}*/}
-    {/*        value={this.state.selectedDateType}*/}
-    {/*        onChange={this.handleDateTypeChange}*/}
-    {/*        placeholder="select preset date"*/}
-    {/*>*/}
-    {/*  {Object.keys(DATE_TYPE).map((key, index) =>*/}
-    {/*    <option key={index} value={DATE_TYPE[key]}>{DATE_TYPE[key]}</option>*/}
-    {/*  )}*/}
-    {/*</select>*/}
-    {/*<select className={"input input-select select-preset-item"}*/}
-    {/*        value={this.state.selectedPreset}*/}
-    {/*        defaultValue=""*/}
-    {/*        onChange={this.handlePresetChange}*/}
-    {/*        placeholder="select preset date"*/}
-    {/*>*/}
-    {/*  <option key={"unselected"} value={-1}>{PLACEHOLDER_PRESET_NOT_SELECTED}</option>*/}
-    {/*  {this.getDatePresets().map((item, index) =>*/}
-    {/*    <option key={index} value={index}>{item.name}</option>*/}
-    {/*  )}*/}
-    {/*</select>*/}
-    {/*<button type="button" disabled={this.state.selectedPreset === -1} className={"btn btn-gray"}*/}
-    {/*        onClick={this.applyPreset}>Apply*/}
-    {/*</button>*/}
+  return <div className="form-row">
+    <label className={"form-item-label"}>Using Preset</label>
+    <p><strong>{this.state.selectedHoliday.description}</strong></p>
+    <button type="button" className={"btn"}
+            onClick={this.removePreset}>X
+    </button>
   </div>;
 }
 

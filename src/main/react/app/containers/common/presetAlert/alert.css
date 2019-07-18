@@ -7,37 +7,57 @@
     background: rgba(0, 0, 0, 0.3);
     z-index: 11;
 }
+
 .alert-context {
-    position:relative;
+    position: relative;
     background-color: #fff;
     border-radius: 6px;
-    height: 200px;
+    height: 350px;
     width: 80%;
-    margin: 40% auto 0;
+    margin: 100px auto;
+    padding: 24px;
 }
+
 .alert-context .alert-content-detail {
     text-align: center;
     color: #333;
-    font-size: 24px;
-    height: 150px;
-    line-height: 150px;
 }
-.alert-context .confirm {
-    position: absolute;
+
+.alert-context .btn-confirm {
     right: 10px;
+}
+
+.alert-context .btn-alert {
+    position: absolute;
     bottom: 10px;
 }
+
+.alert-context .btn-cancel {
+    right: 80px;
+}
+
 .alert-enter {
     opacity: 0;
 }
+
 .alert-enter.alert-enter-active {
     transition: all 300ms;
     opacity: 1;
 }
+
 .alert-leave {
     opacity: 1;
 }
+
 .alert-leave.alert-leave-active {
     transition: all 300ms;
     opacity: 0;
+}
+
+.select-region {
+    margin-top: 15px;
+}
+
+.select-holiday {
+    margin-top: 15px;
 }

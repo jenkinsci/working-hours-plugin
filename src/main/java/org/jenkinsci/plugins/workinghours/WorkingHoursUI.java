@@ -81,8 +81,17 @@ public class WorkingHoursUI {
     }
 
     private HttpResponse getRegionHolidays(List<String> params) {
-        Set result = HolidayManager.getInstance(params.get(1)).getHolidays(Calendar.getInstance().get(Calendar.YEAR));
-        return HttpResponses.okJSON(JSONArray.fromObject(result));
+        Thread t = Thread.currentThread();
+        ClassLoader orig = t.getContextClassLoader();
+        t.setContextClassLoader(HolidayManager.class.getClassLoader());
+        try {
+            Set result;
+            result = HolidayManager.getInstance(params.get(1)).getHolidays(Calendar.getInstance().get(Calendar.YEAR));
+            return HttpResponses.okJSON(JSONArray.fromObject(result));
+        } finally {
+            t.setContextClassLoader(orig);
+        }
+
     }
 
     private HttpResponse listTimeRanges(StaplerRequest request) {

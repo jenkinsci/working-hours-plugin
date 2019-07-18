@@ -42,6 +42,8 @@ public class ExcludedDate {
     private static final String FIELD_NAME = "name";
     private static final String FIELD_START_DATE = "startDate";
     private static final String FIELD_END_DATE = "endDate";
+    private static final String FIELD_HOLIDAY_REGION = "holidayRegion";
+    private static final String FIELD_HOLIDAY_ID = "holidayId";
     private static final String FIELD_NO_END = "noEnd";
     private static final String FIELD_REPEAT = "repeat";
     private static final String FIELD_REPEAT_COUNT = "repeatCount";
@@ -53,7 +55,6 @@ public class ExcludedDate {
         FIELD_TIMEZONE,
         FIELD_TYPE,
         FIELD_NAME,
-        FIELD_START_DATE,
         FIELD_NO_END,
         FIELD_REPEAT,
         FIELD_REPEAT_COUNT,
@@ -73,6 +74,12 @@ public class ExcludedDate {
         if (!sourceJSON.getJSONObject(FIELD_END_DATE).isEmpty()) {
             this.endDate = new Date(sourceJSON.getJSONObject(FIELD_END_DATE));
         }
+        int type = sourceJSON.getInt(FIELD_TYPE);
+        this.type = type == 1 ? DateType.TYPE_CUSTOM : DateType.TYPE_HOLIDAY;
+        if (this.type == DateType.TYPE_HOLIDAY) {
+            this.holidayId = sourceJSON.getString(FIELD_HOLIDAY_ID);
+            this.holidayRegion = sourceJSON.getString(FIELD_HOLIDAY_REGION);
+        }
         this.name = sourceJSON.getString(FIELD_NAME);
         this.repeat = sourceJSON.getBoolean(FIELD_REPEAT);
         this.repeatCount = sourceJSON.getInt(FIELD_REPEAT_COUNT);
@@ -80,10 +87,9 @@ public class ExcludedDate {
         this.repeatInterval = sourceJSON.getInt(FIELD_REPEAT_INTERVAL);
     }
 
-    private ExcludedDate(){
+    private ExcludedDate() {
 
     }
-
 
     public static ValidationResult validateExcludedDate(JSONObject targetJson) {
         for (String requiredField : REQUIRED_FIELDS) {
@@ -99,13 +105,13 @@ public class ExcludedDate {
         }
 
         final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE));
-        if(!startDateValidationResult.isValid()){
+        if (!startDateValidationResult.isValid()) {
             return startDateValidationResult;
         }
 
-        if(targetJson.containsKey(FIELD_END_DATE)){
+        if (targetJson.containsKey(FIELD_END_DATE)) {
             final ValidationResult endDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_END_DATE));
-            if(!endDateValidationResult.isValid()){
+            if (!endDateValidationResult.isValid()) {
                 return startDateValidationResult;
             }
         }
@@ -139,7 +145,7 @@ public class ExcludedDate {
     /**
      * A type that indicates whether
      */
-    private DateType type = DateType.TYPE_GREGORIAN;
+    private DateType type = DateType.TYPE_CUSTOM;
 
     /**
      * The display name of this rule.
@@ -170,6 +176,16 @@ public class ExcludedDate {
      * How many times this would repeat.
      */
     private int repeatCount = -1;
+
+    /**
+     * Id of the selected holiday\.
+     */
+    private String holidayId;
+
+    /**
+     * Region Code of which the holiday belong to.
+     */
+    private String holidayRegion;
 
     /**
      *
@@ -220,6 +236,14 @@ public class ExcludedDate {
 
     public String getTimezone() {
         return timezone;
+    }
+
+    public String getHolidayRegion() {
+        return holidayRegion;
+    }
+
+    public void setHolidayRegion(String holidayRegion) {
+        this.holidayRegion = holidayRegion;
     }
 
     public static class Date {

@@ -38,3 +38,7 @@ export const getTimeRanges = () => {
 export const setTimeRanges = (params) => {
   return axiosInstance.post("/set-time-ranges", params);
 };
+
+export function fetchRegionalHolidays(regionCode) {
+  return axiosInstance.post(`/regions/${regionCode}`)
+}
