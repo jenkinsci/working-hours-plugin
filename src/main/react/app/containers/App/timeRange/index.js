@@ -2,8 +2,6 @@ import React from "react";
 import {WEEKDAYS} from "../constants";
 
 import "../style/components.css";
-import "rc-time-picker/assets/index.css";
-import "rc-slider/assets/index.css";
 import {debounce} from "lodash";
 import {getTimeRanges, setTimeRanges} from "../../../api";
 import {LOADING_STATE, LoadingState} from "../../common/savingState";
@@ -61,7 +59,6 @@ export default class TimeRangeContainer extends React.Component {
     setTimeRanges({
       data: param.map(item => only(item, "dayOfWeek endTime startTime"))
     }).then(res => {
-      console.log("time ranges updated");
       this.setState({
         loadingState: LOADING_STATE.SUCCESS
       })
@@ -79,7 +76,6 @@ export default class TimeRangeContainer extends React.Component {
    * @param index
    */
   handleTimeRangeDelete = (index) => {
-    console.log(index);
     let list = this.state.timeRanges;
     list.splice(index, 1);
     this.setState({

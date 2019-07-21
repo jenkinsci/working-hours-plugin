@@ -11,7 +11,6 @@ import "sanitize.css/sanitize.css";
 // Import root app
 import App from "containers/App";
 
-
 const MOUNT_NODE = document.getElementById("container-excluded-dates");
 const render = () => {
   ReactDOM.render(
@@ -19,6 +18,7 @@ const render = () => {
     MOUNT_NODE
   );
 };
+
 
 if (module.hot) {
   // Hot reloadable React components and translation json files

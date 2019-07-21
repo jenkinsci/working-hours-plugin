@@ -4,9 +4,9 @@ import {MONTHS, ORDERS, PERIODS, WEEKDAYS} from "../constants";
 import {format, nextOccurrenceByMonth, nextOccurrenceByYear} from "../../../utils/date";
 
 export default function DateInput(props) {
-  let {field, name} = props;
-  let self = this;
-  let {repeatPeriod, repeat} = self.state;
+  const {field, name,endDate} = props;
+  const self = this;
+  const {repeatPeriod, repeat} = self.state;
 
   function updateCheckbox(subField) {
     return function (e) {
@@ -35,14 +35,14 @@ export default function DateInput(props) {
     };
   }
 
-  let dateObject = self.state[field];
+  const dateObject = self.state[field];
 
   return <div>
     <hr/>
     <div className={"form-row"}>
       <div className={"form-item-label"}>{name}</div>
 
-      {repeat && <div className={"form-item-label form-item-label-sub"}>
+      {!endDate && repeat && <div className={"form-item-label form-item-label-sub"}>
         <input type='checkbox' checked={dateObject.dynamic}
                onChange={updateCheckbox("dynamic")}/>
         <label>Dynamic</label>
@@ -57,7 +57,7 @@ export default function DateInput(props) {
                   onChange={updateDate()}/>
     </div>
     }
-    {repeat && dateObject.dynamic && <div>
+    {!endDate && repeat && dateObject.dynamic && <div>
       <div className={"form-row form-row-indent"} style={{display: "flex", flexDirection: "row", lineHeight: "40px"}}>
 
         {(repeatPeriod >= PERIODS.Month || !repeat) &&

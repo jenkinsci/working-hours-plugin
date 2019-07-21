@@ -2,7 +2,6 @@ import React from "react";
 import {WEEKDAYS} from "../constants";
 
 import "../style/components.css";
-import "rc-time-picker/assets/index.css";
 import "rc-slider/assets/index.css";
 import {Range} from "rc-slider";
 import {debounce} from "lodash";
@@ -178,6 +177,10 @@ export default class TimeRange extends React.Component {
    */
   componentDidMount() {
     this.setState(this.props.range,()=>{
+      this.setState({
+        tempStartTime:timeFormatter(this.state.startTime),
+        tempEndTime:timeFormatter(this.state.endTime),
+      })
       if(this.state.isNew){
         this.debouncedSave()
       }

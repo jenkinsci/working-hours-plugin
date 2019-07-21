@@ -15,7 +15,6 @@ export const PERIODS = {
 };
 
 
-
 export const ORDERS = {first: 1, second: 2, third: 3, fourth: 4};
 
 export const MONTHS = {
@@ -35,49 +34,79 @@ export const MONTHS = {
 
 
 export const DATE_TYPE = {
-  TYPE_GREGORIAN: "Gregorian",
-  TYPE_CHINESE_LUNAR: "Chinese Lunar"
+  TYPE_CUSTOM: "custom",
+  TYPE_HOLIDAY: "holiday"
 };
 
+const REGIONS = {
+  AL: "Albania",
+  AR: "Argentina",
+  AT: "Austria",
+  AU: "Australia",
+  BA: "Bosnia and Herzegovina",
+  BE: "Belgium",
+  BG: "Bulgaria",
+  BO: "Bolivia",
+  BR: "Brazil",
+  BY: "Belarus",
+  CA: "Canada",
+  CL: "Chile",
+  CO: "Colombia",
+  CR: "Costa Rica",
+  HR: "Croatia",
+  CZ: "Czech Republic",
+  DK: "Denmark",
+  EC: "Ecuador",
+  EE: "Estonia",
+  ET: "Ethiopia",
+  FI: "Finland",
+  FR: "France",
+  DE: "Germany",
+  GR: "Greece",
+  HU: "Hungary",
+  IS: "Iceland",
+  IE: "Ireland",
+  IT: "Italy",
+  JP: "Japan",
+  KZ: "Kazakhstan",
+  LV: "Latvia",
+  LI: "Liechtenstein",
+  LT: "Lithuania",
+  LU: "Luxembourg",
+  MK: "Macedonia",
+  MT: "Malta",
+  MX: "Mexico",
+  MD: "Moldova",
+  ME: "Montenegro",
+  NL: "Netherlands",
+  NI: "Nicaragua",
+  NG: "Nigeria",
+  NO: "Norway",
+  PA: "Panama",
+  PY: "Paraguay",
+  PE: "Peru",
+  PL: "Poland",
+  PT: "Portugal",
+  RO: "Romania",
+  RU: "Russia",
+  RS: "Serbia",
+  SK: "Slovakia",
+  SI: "Slovenia",
+  ZA: "South Africa",
+  ES: "Spain",
+  SE: "Sweden",
+  CH: "Switzerland",
+  // TARGET: "",
+  UA: "Ukraine",
+  US: "United States",
+  UK: "United Kingdom",
+  UY: "Uruguay",
+  VE: "Venezuela",
+  // NYSE: ""
+}
 
-export const getDatePresets = (type) => {
-  switch (type) {
-    case DATE_TYPE.TYPE_GREGORIAN:
-      return GREGORIAN_DATE_PRESETS;
-    case DATE_TYPE.TYPE_CHINESE_LUNAR:
-      return CHINESE_LUNAR_DATE_PRESETS;
-    default:
-      return GREGORIAN_DATE_PRESETS;
-  }
-};
+export function getRegions(){
+  return REGIONS
+}
 
 export const PLACEHOLDER_PRESET_NOT_SELECTED = "Empty"
-
-export const GREGORIAN_DATE_PRESETS = [
-  {
-    type: DATE_TYPE.TYPE_GREGORIAN, name: "Thanksgiving Day", repeat: true, startDate: {
-      dynamic: true, dynamicMonth: 11, dynamicWeek: 4, dynamicWeekday: 4
-    }, repeatPeriod: PERIODS.Year
-  },
-  {
-    type: DATE_TYPE.TYPE_GREGORIAN,
-    name: "Mother's Day", repeat: true, startDate: {
-      dynamic: true, dynamicMonth: 5, dynamicWeek: 2, dynamicWeekday: 7
-    }, repeatPeriod: PERIODS.Year
-  }
-];
-
-/*Temporarily use a constant here, maybe later we could use some standalone Api or some files.*/
-export const CHINESE_LUNAR_DATE_PRESETS = [
-  {
-    type: DATE_TYPE.TYPE_CHINESE_LUNAR,
-    name: "Chinese New Year", repeat: true,
-    params: "1,1"
-  },
-  {
-    type: DATE_TYPE.TYPE_CHINESE_LUNAR,
-    name: "Dragon Boat Festival", repeat: true,
-    params: "5,5"
-  }
-
-];

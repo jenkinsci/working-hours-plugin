@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.workinghours;
 
+import de.jollyday.HolidayCalendar;
+import de.jollyday.HolidayManager;
 import hudson.ExtensionList;
 import hudson.util.HttpResponses;
 import net.sf.json.JSONArray;
@@ -13,7 +15,9 @@ import org.kohsuke.stapler.json.JsonHttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 public class WorkingHoursUI {
     private WorkingHoursPlugin config;
@@ -55,6 +59,13 @@ public class WorkingHoursUI {
                 return listTimeRanges(request);
             case "set-time-ranges":
                 return setTimeRanges(request);
+            case "regions":
+                /*If there are more than 1 param, the second should be the region's code.*/
+                if (params.size() > 1) {
+                    return getRegionHolidays(params);
+                } else {
+                    return getRegions();
+                }
         }
 
         // TODO: 30/5/2019 Implement or find a detailed error response Object
@@ -62,9 +73,43 @@ public class WorkingHoursUI {
 
     }
 
+    /**
+     * Stapler's handler for getting the list of region's code.
+     * @return {@link HttpResponse} Response with data.
+     */
+    private HttpResponse getRegions() {
+        List<String> calendars = new ArrayList<>();
+        for (HolidayCalendar calendar : HolidayCalendar.values()) {
+            calendars.add(calendar.getId());
+        }
+        return HttpResponses.okJSON(JSONArray.fromObject(calendars));
+    }
+
+    /**
+     * Handler for getting the passed region's holidays.
+     * @param params The params in the url. For here, it should be like ['regions','us']
+     * @return {@link HttpResponse} Response with the region's holidays.
+     */
+    private HttpResponse getRegionHolidays(List<String> params) {
+        Thread t = Thread.currentThread();
+        ClassLoader orig = t.getContextClassLoader();
+        t.setContextClassLoader(HolidayManager.class.getClassLoader());
+        try {
+            Set result;
+            result = HolidayManager.getInstance(params.get(1)).getHolidays(Calendar.getInstance().get(Calendar.YEAR));
+            return HttpResponses.okJSON(JSONArray.fromObject(result));
+        } finally {
+            t.setContextClassLoader(orig);
+        }
+    }
+
+    /**
+     * Handler for return stored time ranges.
+     * @param request The http request passed in.
+     * @return {@link HttpResponse} Response with time ranges.
+     */
     private HttpResponse listTimeRanges(StaplerRequest request) {
         return HttpResponses.okJSON(serializeTimeRanges());
-
     }
 
     private HttpResponse setTimeRanges(StaplerRequest request) {

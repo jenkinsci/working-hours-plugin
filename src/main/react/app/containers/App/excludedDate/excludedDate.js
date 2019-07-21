@@ -1,9 +1,10 @@
 import React from "react";
 import DateInput from "./dateInput";
-import {DATE_TYPE, getDatePresets, PERIODS, PLACEHOLDER_PRESET_NOT_SELECTED} from "../constants";
-import {formatDate, nextOccurrenceChineseLunar} from "../../../utils/date";
+import {DATE_TYPE, PERIODS} from "../constants";
+import {formatDate} from "../../../utils/date";
 import {getBrief} from "../../../utils";
 import moment from "moment";
+import Alert from '../../common/presetAlert'
 import {
   NameInput,
   PresetSelect,
@@ -19,12 +20,12 @@ export default class ExcludeDate extends React.Component {
   constructor() {
     super();
     this.state = {
-      selectedDateType: DATE_TYPE.TYPE_GREGORIAN,
-      selectedPreset: -1,
       nextOccurrence: undefined,
 
+      selectedHoliday: undefined,
+
       name: "",
-      type: DATE_TYPE.TYPE_GREGORIAN,
+      type: DATE_TYPE.TYPE_CUSTOM,
 
       utcOffset: moment().utcOffset(),
       timezone: "",
@@ -53,24 +54,31 @@ export default class ExcludeDate extends React.Component {
     };
   }
 
+  isHoliday = () => {
+    return this.state.type === DATE_TYPE.TYPE_HOLIDAY
+  }
+
   /*Apply the selected preset.*/
   applyPreset = () => {
-    /*According to the selected date type, use different algorithms.*/
-    switch (this.state.selectedDateType) {
-      case DATE_TYPE.TYPE_GREGORIAN:
-        this.setState(this.getDatePresets()[this.state.selectedPreset]);
-        break;
-      case DATE_TYPE.TYPE_CHINESE_LUNAR:
-        let preset = this.getDatePresets()[this.state.selectedPreset];
-        this.setState(preset);
-
-        /*For types that are not gregorian, we calculate its occurrence
-        * using its corresponding algorithm.*/
-        this.setState({
-          nextOccurrence: nextOccurrenceChineseLunar(preset.params)
-        });
-    }
+    Alert.open({
+      onApply: (result) => {
+        if (this.state.type === DATE_TYPE.TYPE_CUSTOM) {
+          this.setState({
+            type: DATE_TYPE.TYPE_HOLIDAY,
+            selectedHoliday: result.selectedHoliday
+          })
+        }
+      }
+    });
   };
+
+  removePreset = () => {
+    this.setState({
+      selectedHoliday: undefined,
+      type: DATE_TYPE.TYPE_CUSTOM,
+    })
+  }
+
 
   handleRepeatChange = (event) => {
     this.setState({repeat: event.target.checked});
@@ -109,33 +117,20 @@ export default class ExcludeDate extends React.Component {
     this.setState({repeatCount: e.target.value});
   };
 
-  handlePresetChange = (e) => {
-    this.setState({
-      /*Set the preset index for later apply.*/
-      selectedPreset: parseInt(e.target.value)
-    });
-  };
-
-  handleDateTypeChange = (e) => {
-    this.setState({
-      selectedDateType: e.target.value,
-      /*Set the default index of the selected preset*/
-      selectedPreset: -1
-    });
-  };
-
-
-  /*For the selected date type, get its presets.*/
-  getDatePresets() {
-    let presets = [...getDatePresets(this.state.selectedDateType)]
-    presets.unshift({...PLACEHOLDER_PRESET_NOT_SELECTED, type: this.state.selectedDateType})
-    return getDatePresets(this.state.selectedDateType);
-  }
 
   /*Tell the parent that this child want to be toggle open state.*/
   toggleEdit = () => {
     /*Call onEdit, also emit data to parent(for serializing use).*/
-    this.props.onEdit(this.props.index, !this.props.opened, this.state);
+    if (this.isHoliday()) {
+      this.setState({
+        holidayId: this.state.selectedHoliday.propertiesKey,
+        holidayRegion: this.state.selectedHoliday.region,
+      }, () => {
+        this.props.onEdit(this.props.index, !this.props.opened, this.state);
+      })
+    } else {
+      this.props.onEdit(this.props.index, !this.props.opened, this.state);
+    }
   };
 
   deleteDate = () => {
@@ -160,21 +155,21 @@ export default class ExcludeDate extends React.Component {
   }
 
   render() {
-    const {repeat, noEnd} = this.state;
+    const {repeat, noEnd, type, selectedHoliday, startDate} = this.state;
     return (
       <div className={"config-item"}>
         {/*Allow each date item to open or close, need help of the parent component.*/}
         {this.props.opened ? <div>
             {NameInput.call(this)}
+            {type === DATE_TYPE.TYPE_HOLIDAY && PresetSelect.call(this)}
             {TimezoneInput.call(this)}
-            {PresetSelect.call(this)}
             {RepeatCheckbox.call(this)}
             {repeat && <div>
               {RepeatPeriod.call(this)}
               {RepeatInterval.call(this)}
               {RepeatCount.call(this)}
             </div>}
-            {this.isGregorian() && DateInput.call(this,
+            {DateInput.call(this,
               {
                 field: "startDate",
                 name: "Start Date"
@@ -182,17 +177,29 @@ export default class ExcludeDate extends React.Component {
             )}
 
             {/*Show next occurrence when it's a regional date.*/}
-            {!this.isGregorian() && <div className={"form-row"} style={{marginTop: "20px"}}>
+            {type === DATE_TYPE.TYPE_CUSTOM && !startDate.dynamic &&
+            <div className={"form-row"} style={{marginTop: "20px"}}>
               <label className={"form-item-label"}>Next Occurrence</label>
-              <div className={"text-highlight"}>{
-                formatDate(this.state.nextOccurrence)}
+              <div className={"text-highlight"}>
+                {formatDate(startDate.date)}
+              </div>
+            </div>}
+
+            {type === DATE_TYPE.TYPE_HOLIDAY && <div className={"form-row"} style={{marginTop: "20px"}}>
+              <label className={"form-item-label"}>Next Occurrence</label>
+              <div className={"text-highlight"}>
+                {formatDate(moment([
+                  selectedHoliday.date.values[0],
+                  selectedHoliday.date.values[1] - 1,
+                  selectedHoliday.date.values[2]]))}
               </div>
             </div>}
 
             {repeat && !noEnd && DateInput.call(this,
               {
                 field: "endDate",
-                name: "End Date"
+                name: "End Date",
+                endDate: true,
               })
             }
 

@@ -104,7 +104,6 @@ public class TimeRange {
      * @return true if date is inside of configured rule.
      */
     public Boolean includesTime(Calendar date) {
-        // TODO: 12/6/2019 Implement include judge
         LocalTime allowedStartTime = DateTimeUtility.localTimeFromMinutes(getStartTime());
         LocalTime allowedEndTime = DateTimeUtility.localTimeFromMinutes(getEndTime());
 
