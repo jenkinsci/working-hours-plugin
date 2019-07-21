@@ -60,6 +60,8 @@ public class ExcludedDate {
         FIELD_REPEAT_COUNT,
         FIELD_REPEAT_PERIOD,
         FIELD_REPEAT_INTERVAL};
+    private static final int MAX_TIME_OFFSET = 720;
+    private static final int MIN_TIME_OFFSET = -720;
 
     /**
      * Constructs an ExcludedDate object using json.
@@ -74,8 +76,7 @@ public class ExcludedDate {
         if (!sourceJSON.getJSONObject(FIELD_END_DATE).isEmpty()) {
             this.endDate = new Date(sourceJSON.getJSONObject(FIELD_END_DATE));
         }
-        int type = sourceJSON.getInt(FIELD_TYPE);
-        this.type = type == 1 ? DateType.TYPE_CUSTOM : DateType.TYPE_HOLIDAY;
+        this.type = DateType.valueOf(sourceJSON.getInt(FIELD_TYPE));
         if (this.type == DateType.TYPE_HOLIDAY) {
             this.holidayId = sourceJSON.getString(FIELD_HOLIDAY_ID);
             this.holidayRegion = sourceJSON.getString(FIELD_HOLIDAY_REGION);
@@ -100,8 +101,8 @@ public class ExcludedDate {
 
         if (!(targetJson.get(FIELD_UTC_OFFSET) instanceof Number)) {
             return new ValidationResult(false, FIELD_UTC_OFFSET, "is not a number");
-        } else if (targetJson.getInt(FIELD_UTC_OFFSET) > 720 || targetJson.getInt(FIELD_UTC_OFFSET) < -720) {
-            return new ValidationResult(false, FIELD_UTC_OFFSET, "should be between 720 and -720");
+        } else if (targetJson.getInt(FIELD_UTC_OFFSET) > MAX_TIME_OFFSET || targetJson.getInt(FIELD_UTC_OFFSET) < -MIN_TIME_OFFSET) {
+            return new ValidationResult(false, FIELD_UTC_OFFSET, "should be between max:720 and min:-720");
         }
 
         final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE));
@@ -178,7 +179,7 @@ public class ExcludedDate {
     private int repeatCount = -1;
 
     /**
-     * Id of the selected holiday\.
+     * Id of the selected holiday.
      */
     private String holidayId;
 
@@ -244,6 +245,14 @@ public class ExcludedDate {
 
     public void setHolidayRegion(String holidayRegion) {
         this.holidayRegion = holidayRegion;
+    }
+
+    public String getHolidayId() {
+        return holidayId;
+    }
+
+    public void setHolidayId(String holidayId) {
+        this.holidayId = holidayId;
     }
 
     public static class Date {

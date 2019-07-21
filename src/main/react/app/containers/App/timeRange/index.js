@@ -59,7 +59,6 @@ export default class TimeRangeContainer extends React.Component {
     setTimeRanges({
       data: param.map(item => only(item, "dayOfWeek endTime startTime"))
     }).then(res => {
-      console.log("time ranges updated");
       this.setState({
         loadingState: LOADING_STATE.SUCCESS
       })
@@ -77,7 +76,6 @@ export default class TimeRangeContainer extends React.Component {
    * @param index
    */
   handleTimeRangeDelete = (index) => {
-    console.log(index);
     let list = this.state.timeRanges;
     list.splice(index, 1);
     this.setState({

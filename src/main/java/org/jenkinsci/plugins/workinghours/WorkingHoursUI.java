@@ -60,6 +60,7 @@ public class WorkingHoursUI {
             case "set-time-ranges":
                 return setTimeRanges(request);
             case "regions":
+                /*If there are more than 1 param, the second should be the region's code.*/
                 if (params.size() > 1) {
                     return getRegionHolidays(params);
                 } else {
@@ -72,6 +73,10 @@ public class WorkingHoursUI {
 
     }
 
+    /**
+     * Stapler's handler for getting the list of region's code.
+     * @return {@link HttpResponse} Response with data.
+     */
     private HttpResponse getRegions() {
         List<String> calendars = new ArrayList<>();
         for (HolidayCalendar calendar : HolidayCalendar.values()) {
@@ -80,6 +85,11 @@ public class WorkingHoursUI {
         return HttpResponses.okJSON(JSONArray.fromObject(calendars));
     }
 
+    /**
+     * Handler for getting the passed region's holidays.
+     * @param params The params in the url. For here, it should be like ['regions','us']
+     * @return {@link HttpResponse} Response with the region's holidays.
+     */
     private HttpResponse getRegionHolidays(List<String> params) {
         Thread t = Thread.currentThread();
         ClassLoader orig = t.getContextClassLoader();
@@ -91,9 +101,13 @@ public class WorkingHoursUI {
         } finally {
             t.setContextClassLoader(orig);
         }
-
     }
 
+    /**
+     * Handler for return stored time ranges.
+     * @param request The http request passed in.
+     * @return {@link HttpResponse} Response with time ranges.
+     */
     private HttpResponse listTimeRanges(StaplerRequest request) {
         return HttpResponses.okJSON(serializeTimeRanges());
     }

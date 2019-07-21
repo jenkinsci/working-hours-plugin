@@ -68,7 +68,6 @@ export default class ExcludeDate extends React.Component {
             selectedHoliday: result.selectedHoliday
           })
         }
-        console.log(result)
       }
     });
   };

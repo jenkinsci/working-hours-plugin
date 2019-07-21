@@ -90,16 +90,7 @@ export function nextOccurrenceChineseLunar(param) {
 
     /*This year's target day in solar calendar.*/
     let solarResult = ChineseLunarCalendar.lunar2solar(now.year(), splitParam[0], splitParam[1]);
-    console.log(moment({
-      year: solarResult.cYear,
-      month: solarResult.cMonth - 1,
-      date: solarResult.cDay
-    }));
-    console.log(moment({
-      year: now.year(),
-      month: now.month(),
-      date: now.date()
-    }));
+
     if (moment({
       year: solarResult.cYear,
       month: solarResult.cMonth - 1,

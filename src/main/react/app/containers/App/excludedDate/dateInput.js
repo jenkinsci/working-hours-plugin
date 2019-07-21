@@ -4,9 +4,9 @@ import {MONTHS, ORDERS, PERIODS, WEEKDAYS} from "../constants";
 import {format, nextOccurrenceByMonth, nextOccurrenceByYear} from "../../../utils/date";
 
 export default function DateInput(props) {
-  let {field, name,endDate} = props;
-  let self = this;
-  let {repeatPeriod, repeat} = self.state;
+  const {field, name,endDate} = props;
+  const self = this;
+  const {repeatPeriod, repeat} = self.state;
 
   function updateCheckbox(subField) {
     return function (e) {
@@ -35,7 +35,7 @@ export default function DateInput(props) {
     };
   }
 
-  let dateObject = self.state[field];
+  const dateObject = self.state[field];
 
   return <div>
     <hr/>

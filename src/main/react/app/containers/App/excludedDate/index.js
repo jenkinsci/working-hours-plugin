@@ -124,7 +124,6 @@ export default class ExcludeDateContainer extends React.Component {
       });
       this.debouncedClearLoading()
     }).catch(err => {
-      console.log(err)
       this.setState({
         loadingState: LOADING_STATE.FAIL
       })

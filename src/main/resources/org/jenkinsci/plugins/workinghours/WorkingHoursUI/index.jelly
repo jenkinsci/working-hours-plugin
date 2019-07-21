@@ -1,6 +1,6 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:l="/lib/layout"
+>
     <l:layout permission="${app.ADMINISTER}" norefresh="true">
         <st:include it="${app}" page="sidepanel.jelly"/>
         <l:main-panel>
@@ -8,11 +8,8 @@
                 function resizeIframe(obj) {
                     let originHeight = obj.contentWindow.document.body.scrollHeight;
                     obj.style.height = (originHeight + 100) + 'px';
-                    console.log('originHeight ' + originHeight)
                     setInterval(() => {
                         let curHeight = obj.contentWindow.document.body.scrollHeight;
-                        console.log('curHeight' + curHeight)
-                        console.log('originHeight ' + originHeight)
                         if (originHeight !== curHeight) {
                             obj.style.height = (curHeight + 100) + 'px';
                         }

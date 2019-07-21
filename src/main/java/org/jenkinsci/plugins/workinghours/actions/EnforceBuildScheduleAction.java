@@ -56,7 +56,7 @@ public class EnforceBuildScheduleAction extends InvisibleAction {
 
     /**
      * Determine whether the build this action refers to has been released.
-     *      * @return true if released; false otherwise.
+     * @return true if released; false otherwise.
      */
     public boolean isReleased() {
         return !this.enforcingBuildSchedule;
