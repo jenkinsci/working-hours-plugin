@@ -32,14 +32,14 @@ export default class ExcludeDate extends React.Component {
 
       startDate: {
         dynamic: false,
-        date: new Date(),
+        date: new Date().toISOString(),
         dynamicMonth: 1,
         dynamicWeek: 1,
         dynamicWeekday: 1
       },
       endDate: {
         dynamic: false,
-        date: new Date(),
+        date: new Date().toISOString(),
         dynamicMonth: 1,
         dynamicWeek: 1,
         dynamicWeekday: 1
@@ -62,12 +62,10 @@ export default class ExcludeDate extends React.Component {
   applyPreset = () => {
     Alert.open({
       onApply: (result) => {
-        if (this.state.type === DATE_TYPE.TYPE_CUSTOM) {
-          this.setState({
-            type: DATE_TYPE.TYPE_HOLIDAY,
-            selectedHoliday: result.selectedHoliday
-          })
-        }
+        this.setState({
+          type: DATE_TYPE.TYPE_HOLIDAY,
+          selectedHoliday: result.selectedHoliday
+        })
       }
     });
   };
@@ -138,11 +136,6 @@ export default class ExcludeDate extends React.Component {
     ) {
       this.props.onDelete(this.props.index);
     }
-  };
-
-  /*Helper function to judge whether the day is based on gregorian calendar*/
-  isGregorian = () => {
-    return this.state.type === DATE_TYPE.TYPE_GREGORIAN;
   };
 
   componentDidMount() {

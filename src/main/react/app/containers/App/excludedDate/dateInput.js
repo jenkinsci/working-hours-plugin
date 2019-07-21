@@ -53,7 +53,7 @@ export default function DateInput(props) {
     {(!dateObject.dynamic || !repeat) &&
     <div className={"form-row form-row-indent"}>
       <label style={{marginRight: 10}}>Date</label>
-      <DatePicker className={"input input-text"} selected={dateObject.date} placeholder="select"
+      <DatePicker className={"input input-text"} selected={new Date(dateObject.date)} placeholder="select"
                   onChange={updateDate()}/>
     </div>
     }

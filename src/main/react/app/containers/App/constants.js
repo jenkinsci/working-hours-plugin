@@ -34,8 +34,8 @@ export const MONTHS = {
 
 
 export const DATE_TYPE = {
-  TYPE_CUSTOM: "custom",
-  TYPE_HOLIDAY: "holiday"
+  TYPE_CUSTOM: 1,
+  TYPE_HOLIDAY: 2
 };
 
 const REGIONS = {

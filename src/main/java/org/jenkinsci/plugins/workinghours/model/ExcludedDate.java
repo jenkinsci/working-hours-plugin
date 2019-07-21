@@ -23,10 +23,13 @@
  */
 package org.jenkinsci.plugins.workinghours.model;
 
+import de.jollyday.Holiday;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 /**
@@ -84,7 +87,7 @@ public class ExcludedDate {
         this.name = sourceJSON.getString(FIELD_NAME);
         this.repeat = sourceJSON.getBoolean(FIELD_REPEAT);
         this.repeatCount = sourceJSON.getInt(FIELD_REPEAT_COUNT);
-        this.repeatPeriod = sourceJSON.getInt(FIELD_REPEAT_PERIOD);
+        this.repeatPeriod = RepeatPeriod.valueOf(sourceJSON.getInt(FIELD_REPEAT_PERIOD));
         this.repeatInterval = sourceJSON.getInt(FIELD_REPEAT_INTERVAL);
     }
 
@@ -120,16 +123,44 @@ public class ExcludedDate {
         return ValidationResult.getSuccessValidation();
     }
 
+    /**
+     * Judge whether today should be excluded according to this excluded date item.
+     *
+     * @param date {@link Calendar} Today.
+     * @return {@link Boolean} Whether should be excluded.
+     */
     public Boolean shouldExclude(Calendar date) {
-//        LocalDate localDate = DateTimeUtility.localDate(getDate());
 
-//        LocalDate checkTime = LocalDate.of(
-//                date.get(Calendar.YEAR),
-//                date.get(Calendar.MONTH) + 1,
-//                date.get(Calendar.DAY_OF_MONTH));
-//
-//        return localDate.equals(checkTime);
-        return false;
+        LocalDate checkTime = LocalDate.of(
+            date.get(Calendar.YEAR),
+            date.get(Calendar.MONTH) + 1,
+            date.get(Calendar.DAY_OF_MONTH));
+
+        if (this.isHoliday()) {
+            /*Judge by holiday*/
+            Holiday holidayThisYear = HolidayUtil.getHolidayThisYear(this.getHolidayRegion(), this.getHolidayId());
+            return checkTime.equals(holidayThisYear.getDate());
+        } else if (this.startDate.isDynamic()) {
+            /*Judge by dynamic date */
+            final Date startDate = this.getStartDate();
+            switch (this.getRepeatPeriod()) {
+                case REPEAT_BY_WEEK:
+                    return checkTime.getDayOfWeek().getValue() == startDate.getDynamicWeekday();
+                case REPEAT_BY_MONTH:
+                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday()).isEqual(checkTime);
+                case REPEAT_BY_YEAR:
+                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicMonth(), startDate.getDynamicWeekday()).isEqual(checkTime);
+                default:
+                    return false;
+            }
+        } else {
+            /*Judge by static date */
+            return this.getStartDate().getLocalDate().equals(checkTime);
+        }
+    }
+
+    private boolean isHoliday() {
+        return this.type == DateType.TYPE_HOLIDAY;
     }
 
     /**
@@ -191,7 +222,7 @@ public class ExcludedDate {
     /**
      *
      */
-    private int repeatPeriod = 1;
+    private RepeatPeriod repeatPeriod;
 
     private int repeatInterval = 1;
 
@@ -227,7 +258,7 @@ public class ExcludedDate {
         return repeatCount;
     }
 
-    public int getRepeatPeriod() {
+    public RepeatPeriod getRepeatPeriod() {
         return repeatPeriod;
     }
 
@@ -271,6 +302,10 @@ public class ExcludedDate {
             this.dynamicMonth = jsonObject.getInt(FIELD_DYNAMIC_MONTH);
             this.dynamicWeek = jsonObject.getInt(FIELD_DYNAMIC_WEEK);
             this.dynamicWeekday = jsonObject.getInt(FIELD_DYNAMIC_WEEKDAY);
+        }
+
+        public LocalDate getLocalDate() {
+            return LocalDate.parse(this.getDate(), DateTimeFormatter.ISO_DATE_TIME);
         }
 
         public boolean isDynamic() {

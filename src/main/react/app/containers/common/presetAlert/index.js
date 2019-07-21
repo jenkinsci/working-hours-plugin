@@ -17,9 +17,6 @@ let defaultState = {
   regionalHolidays: [],
   selectedHolidayId: undefined,
   selectedHoliday: undefined,
-  onApply: function () {
-
-  }
 }
 
 class Alert extends Component {
@@ -80,7 +77,6 @@ class Alert extends Component {
     options = options || {};
     options.alertStatus = true;
     this.setState({
-      ...defaultState,
       ...options
     })
   }
