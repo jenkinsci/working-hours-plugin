@@ -4,7 +4,7 @@ package org.jenkinsci.plugins.workinghours.model;
 import java.time.LocalDate;
 
 public class DynamicDateUtil {
-    public static LocalDate nextOccurrenceByMonth(int weekOfMonth, int dayOfWeek) {
+    public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek) {
         LocalDate next = LocalDate.now();
         LocalDate today = LocalDate.now();
         LocalDate nextOccurrenceInThisMonth = LocalDate.of(today.getYear(), today.getMonth(), 1);
@@ -12,47 +12,83 @@ public class DynamicDateUtil {
         if (nextOccurrenceInThisMonth.getDayOfWeek().getValue() <= dayOfWeek) {
             tempWeekOfMonth = weekOfMonth - 1;
         }
-        nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfMonth()));
+        nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfMonth()));
         //If in same month but later
         if (nextOccurrenceInThisMonth.isEqual(today) ||
             nextOccurrenceInThisMonth.isAfter(today)
         ) {
             return nextOccurrenceInThisMonth;
         }
+
         //Add to next month
         next = next.plusMonths(1);
         //Also set the date to the start of the month.
-        next.withDayOfMonth(1);
+        next = next.withDayOfMonth(1);
         if (next.getDayOfWeek().getValue() <= dayOfWeek) {
-            tempWeekOfMonth = tempWeekOfMonth - 1;
+            tempWeekOfMonth = weekOfMonth - 1;
+        } else {
+            tempWeekOfMonth = weekOfMonth;
         }
-        next.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - next.getDayOfWeek().getValue()));
+        next = next.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - next.getDayOfWeek().getValue()));
         return next;
     }
 
     public static LocalDate nextOccurrenceByYear(int monthOfYear, int weekOfMonth, int dayOfWeek) {
         LocalDate next = LocalDate.now();
         LocalDate today = LocalDate.now();
-        LocalDate nextOccurrenceInThisMonth = LocalDate.of(today.getYear(), today.getMonth(), 1);
-        int tempWeekOfMonth = weekOfMonth;
-        if (nextOccurrenceInThisMonth.getDayOfWeek().getValue() <= dayOfWeek) {
-            tempWeekOfMonth = weekOfMonth - 1;
+        LocalDate nextOccurrenceInThisYear = LocalDate.of(today.getYear(), today.getMonth(), 1);
+        if (today.getMonth().getValue() > monthOfYear) {
+            /*If the month has been passed.*/
+
+            /*Reset to the begin of next year's target month.*/
+            next = next.plusYears(1).withMonth(monthOfYear).withDayOfMonth(1);
+
+            int tempWeekOfMonth = weekOfMonth;
+            if (next.getDayOfWeek().getValue() <= dayOfWeek) {
+                tempWeekOfMonth = weekOfMonth - 1;
+            }
+
+            next = next.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - next.getDayOfWeek().getValue()));
+            //If in same month but later
+            return next;
+        } else if (today.getMonth().getValue() == monthOfYear) {
+            /*If in this month*/
+            LocalDate nextOccurrenceInThisMonth = LocalDate.of(today.getYear(), today.getMonth(), 1);
+            int tempWeekOfMonth = weekOfMonth;
+            if (nextOccurrenceInThisMonth.getDayOfWeek().getValue() <= dayOfWeek) {
+                tempWeekOfMonth = weekOfMonth - 1;
+            }
+
+            nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfMonth()));
+            //If in same month but later
+            if (nextOccurrenceInThisMonth.isEqual(today) ||
+                nextOccurrenceInThisMonth.isAfter(today)
+            ) {
+                return nextOccurrenceInThisMonth;
+            } else {
+                /*Reset to the begin of next year's target month.*/
+                next = next.plusYears(1).withMonth(monthOfYear).withDayOfMonth(1);
+
+                tempWeekOfMonth = weekOfMonth;
+                if (next.getDayOfWeek().getValue() <= dayOfWeek) {
+                    tempWeekOfMonth = weekOfMonth - 1;
+                }
+
+                next = next.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - next.getDayOfWeek().getValue()));
+                //If in same month but later
+                return next;
+            }
+        } else {
+            next = next.withMonth(monthOfYear).withDayOfMonth(1);
+
+            int tempWeekOfMonth = weekOfMonth;
+            if (next.getDayOfWeek().getValue() <= dayOfWeek) {
+                tempWeekOfMonth = weekOfMonth - 1;
+            }
+
+            next = next.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - next.getDayOfWeek().getValue()));
+            //If in same month but later
+            return next;
         }
-        nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfMonth()));
-        //If in same month but later
-        if (nextOccurrenceInThisMonth.isEqual(today) ||
-            nextOccurrenceInThisMonth.isAfter(today)
-        ) {
-            return nextOccurrenceInThisMonth;
-        }
-        //Add to next month
-        next = next.plusMonths(1);
-        //Also set the date to the start of the month.
-        next.withDayOfMonth(1);
-        if (next.getDayOfWeek().getValue() <= dayOfWeek) {
-            tempWeekOfMonth = tempWeekOfMonth - 1;
-        }
-        next.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - next.getDayOfWeek().getValue()));
-        return next;
     }
 }
