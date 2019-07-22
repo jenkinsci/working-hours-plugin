@@ -49,7 +49,6 @@ public class DynamicDateUtil {
     public static LocalDate nextOccurrenceByYear(int monthOfYear, int weekOfMonth, int dayOfWeek) {
         LocalDate next = LocalDate.now();
         LocalDate today = LocalDate.now();
-        LocalDate nextOccurrenceInThisYear = LocalDate.of(today.getYear(), today.getMonth(), 1);
         if (today.getMonth().getValue() > monthOfYear) {
             /*If the month has been passed.*/
 

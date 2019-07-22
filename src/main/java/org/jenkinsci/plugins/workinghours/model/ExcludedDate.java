@@ -131,6 +131,7 @@ public class ExcludedDate {
      * @param date {@link Calendar} Today.
      * @return {@link Boolean} Whether should be excluded.
      */
+    @SuppressWarnings("EqualsBetweenInconvertibleTypes")
     public Boolean shouldExclude(Calendar date) {
 
         LocalDate checkTime = LocalDate.of(
