@@ -4,6 +4,12 @@ package org.jenkinsci.plugins.workinghours.model;
 import java.time.LocalDate;
 
 public class DynamicDateUtil {
+    /**
+     * Get next occurrence, by month.
+     * @param weekOfMonth Week of month.
+     * @param dayOfWeek Day of week.
+     * @return {@link LocalDate} Next occurrence.
+     */
     public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek) {
         LocalDate next = LocalDate.now();
         LocalDate today = LocalDate.now();
@@ -33,6 +39,13 @@ public class DynamicDateUtil {
         return next;
     }
 
+    /**
+     * Get next occurrence, based on year.
+     * @param monthOfYear Month of year.
+     * @param weekOfMonth Week of month.
+     * @param dayOfWeek Day of week.
+     * @return {@link LocalDate} Next occurrence.
+     */
     public static LocalDate nextOccurrenceByYear(int monthOfYear, int weekOfMonth, int dayOfWeek) {
         LocalDate next = LocalDate.now();
         LocalDate today = LocalDate.now();

@@ -104,7 +104,7 @@ public class ExcludedDate {
 
         if (!(targetJson.get(FIELD_UTC_OFFSET) instanceof Number)) {
             return new ValidationResult(false, FIELD_UTC_OFFSET, "is not a number");
-        } else if (targetJson.getInt(FIELD_UTC_OFFSET) > MAX_TIME_OFFSET || targetJson.getInt(FIELD_UTC_OFFSET) < -MIN_TIME_OFFSET) {
+        } else if (targetJson.getInt(FIELD_UTC_OFFSET) > MAX_TIME_OFFSET || targetJson.getInt(FIELD_UTC_OFFSET) < MIN_TIME_OFFSET) {
             return new ValidationResult(false, FIELD_UTC_OFFSET, "should be between max:720 and min:-720");
         }
 
@@ -155,7 +155,7 @@ public class ExcludedDate {
             }
         } else {
             /*Judge by static date */
-            return this.getStartDate().getLocalDate().equals(checkTime);
+            return this.getStartDate().getLocalDate().isEqual(checkTime);
         }
     }
 
