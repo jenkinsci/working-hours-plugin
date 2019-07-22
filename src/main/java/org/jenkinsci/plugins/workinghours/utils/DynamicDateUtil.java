@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.workinghours.model;
+package org.jenkinsci.plugins.workinghours.utils;
 
 
 import java.time.LocalDate;

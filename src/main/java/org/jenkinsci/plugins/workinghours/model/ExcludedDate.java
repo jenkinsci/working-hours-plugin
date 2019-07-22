@@ -26,6 +26,8 @@ package org.jenkinsci.plugins.workinghours.model;
 import de.jollyday.Holiday;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
+import org.jenkinsci.plugins.workinghours.utils.DynamicDateUtil;
+import org.jenkinsci.plugins.workinghours.utils.HolidayUtil;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.time.LocalDate;
@@ -75,9 +77,9 @@ public class ExcludedDate {
     public ExcludedDate(JSONObject sourceJSON) {
         this.utcOffset = sourceJSON.getInt(FIELD_UTC_OFFSET);
         this.timezone = sourceJSON.getString(FIELD_TIMEZONE);
-        this.startDate = new Date(sourceJSON.getJSONObject(FIELD_START_DATE));
+        this.startDate = new Date(sourceJSON.getJSONObject(FIELD_START_DATE), false);
         if (!sourceJSON.getJSONObject(FIELD_END_DATE).isEmpty()) {
-            this.endDate = new Date(sourceJSON.getJSONObject(FIELD_END_DATE));
+            this.endDate = new Date(sourceJSON.getJSONObject(FIELD_END_DATE),true);
         }
         this.type = DateType.valueOf(sourceJSON.getInt(FIELD_TYPE));
         if (this.type == DateType.TYPE_HOLIDAY) {
@@ -108,13 +110,13 @@ public class ExcludedDate {
             return new ValidationResult(false, FIELD_UTC_OFFSET, "should be between max:720 and min:-720");
         }
 
-        final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE));
+        final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE),false);
         if (!startDateValidationResult.isValid()) {
             return startDateValidationResult;
         }
 
         if (targetJson.containsKey(FIELD_END_DATE)) {
-            final ValidationResult endDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_END_DATE));
+            final ValidationResult endDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_END_DATE),true);
             if (!endDateValidationResult.isValid()) {
                 return startDateValidationResult;
             }
@@ -296,15 +298,18 @@ public class ExcludedDate {
 
         private static final String[] REQUIRED_FIELDS_FOR_DYNAMIC = {FIELD_DYNAMIC_MONTH, FIELD_DYNAMIC_WEEK, FIELD_DYNAMIC_WEEKDAY};
 
-        public Date(JSONObject jsonObject) {
-            this.dynamic = jsonObject.getBoolean(FIELD_DYNAMIC);
+        public Date(JSONObject jsonObject, boolean isEnd) {
             this.date = jsonObject.getString(FIELD_DATE);
+            if(isEnd){
+                return;
+            }
+            this.dynamic = jsonObject.getBoolean(FIELD_DYNAMIC);
             this.dynamicMonth = jsonObject.getInt(FIELD_DYNAMIC_MONTH);
             this.dynamicWeek = jsonObject.getInt(FIELD_DYNAMIC_WEEK);
             this.dynamicWeekday = jsonObject.getInt(FIELD_DYNAMIC_WEEKDAY);
         }
 
-        public LocalDate getLocalDate() {
+        LocalDate getLocalDate() {
             return LocalDate.parse(this.getDate(), DateTimeFormatter.ISO_DATE_TIME);
         }
 
@@ -312,10 +317,13 @@ public class ExcludedDate {
             return dynamic;
         }
 
-        public static ValidationResult validateDate(JSONObject targetObject) {
+        static ValidationResult validateDate(JSONObject targetObject, boolean isEndDate) {
             if (!targetObject.containsKey(FIELD_DYNAMIC)) {
                 return new ValidationResult(false, FIELD_DYNAMIC, "is required");
             } else {
+                if(isEndDate){
+                    return ValidationResult.getSuccessValidation();
+                }
                 if (!(targetObject.get(FIELD_DYNAMIC) instanceof Boolean)) {
                     return new ValidationResult(false, FIELD_DYNAMIC, "should be bool");
                 } else {

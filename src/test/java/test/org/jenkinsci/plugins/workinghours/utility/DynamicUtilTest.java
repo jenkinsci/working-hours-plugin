@@ -1,6 +1,6 @@
 package test.org.jenkinsci.plugins.workinghours.utility;
 
-import org.jenkinsci.plugins.workinghours.model.DynamicDateUtil;
+import org.jenkinsci.plugins.workinghours.utils.DynamicDateUtil;
 import org.junit.Test;
 
 import java.time.LocalDate;

@@ -23,15 +23,13 @@
  */
 package test.org.jenkinsci.plugins.workinghours.model;
 
+import org.jenkinsci.plugins.workinghours.utils.DateTimeUtility;
+import org.junit.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import org.jenkinsci.plugins.workinghours.model.DateTimeUtility;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class DateTimeUtilityTest {

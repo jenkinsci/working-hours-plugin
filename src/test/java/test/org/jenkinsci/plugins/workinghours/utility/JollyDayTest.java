@@ -3,7 +3,7 @@ package test.org.jenkinsci.plugins.workinghours.utility;
 import de.jollyday.HolidayCalendar;
 import de.jollyday.HolidayManager;
 import net.sf.json.JSONArray;
-import org.jenkinsci.plugins.workinghours.model.HolidayUtil;
+import org.jenkinsci.plugins.workinghours.utils.HolidayUtil;
 import org.junit.Test;
 
 import java.util.Arrays;

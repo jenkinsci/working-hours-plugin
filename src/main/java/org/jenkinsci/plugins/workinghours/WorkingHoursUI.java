@@ -9,15 +9,14 @@ import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
+import org.jenkinsci.plugins.workinghours.utils.HolidayUtil;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.json.JsonHttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 
 public class WorkingHoursUI {
     private WorkingHoursPlugin config;
@@ -96,10 +95,7 @@ public class WorkingHoursUI {
         ClassLoader orig = t.getContextClassLoader();
         t.setContextClassLoader(HolidayManager.class.getClassLoader());
         try {
-            Set resultThisYear = HolidayManager.getInstance(params.get(1)).getHolidays(Calendar.getInstance().get(Calendar.YEAR));
-            Set resultNextYear = HolidayManager.getInstance(params.get(1)).getHolidays(Calendar.getInstance().get(Calendar.YEAR)+1);
-            Set[] results = new Set[]{resultThisYear,resultNextYear};
-            return HttpResponses.okJSON(JSONArray.fromObject(results));
+            return HttpResponses.okJSON(JSONArray.fromObject(HolidayUtil.getTwoYearsHoliday(params.get(1))));
         } finally {
             t.setContextClassLoader(orig);
         }

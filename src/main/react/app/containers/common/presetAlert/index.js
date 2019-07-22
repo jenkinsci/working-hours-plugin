@@ -12,9 +12,10 @@ import moment from "moment";
 
 let defaultState = {
   alertStatus: false,
-  alertTip: "提示",
+  alertTip: "Select",
   regions: [],
-  regionalHolidays: [],
+  regionalHolidays: [],// regional holiday(This year).
+  regionalHolidaysNextYear: [],// next year's holiday.
   selectedHolidayId: undefined,
   selectedHoliday: undefined,
 }
@@ -33,11 +34,15 @@ class Alert extends Component {
   handleRegionChange = (e) => {
     fetchRegionalHolidays(e.value).then(res => {
       let holidays = res.data.data;
-      holidays.forEach(item=>{
+      holidays[0].forEach(item => {
+        item.region = e.value;
+      })
+      holidays[1].forEach(item => {
         item.region = e.value;
       })
       this.setState({
-        regionalHolidays: holidays
+        regionalHolidays: holidays[0],
+        regionalHolidaysNextYear: holidays[1]
       })
     })
   };

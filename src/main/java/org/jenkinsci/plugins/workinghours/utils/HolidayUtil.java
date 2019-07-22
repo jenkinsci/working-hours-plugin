@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.workinghours.model;
+package org.jenkinsci.plugins.workinghours.utils;
 
 import de.jollyday.Holiday;
 import de.jollyday.HolidayManager;
@@ -46,11 +46,21 @@ public class HolidayUtil {
 
     /**
      * Get a certain holiday this year.
+     *
      * @param regionCode The region's code of the holiday.
      * @param holidayKey Key of the target holiday.
      * @return {@link Holiday} The target holiday.
      */
     public static Holiday getHolidayThisYear(String regionCode, String holidayKey) {
-        return HolidayManager.getInstance(regionCode).getHolidays(Calendar.getInstance().get(Calendar.YEAR)).stream().filter(holiday -> holiday.getPropertiesKey().equals(holidayKey)).findFirst().get();
+        Thread t = Thread.currentThread();
+        ClassLoader orig = t.getContextClassLoader();
+        t.setContextClassLoader(HolidayManager.class.getClassLoader());
+        try {
+            return HolidayManager.getInstance(regionCode).getHolidays(Calendar.getInstance().get(Calendar.YEAR)).stream().filter(holiday -> holiday.getPropertiesKey().equals(holidayKey)).findFirst().get();
+        } finally {
+            t.setContextClassLoader(orig);
+        }
+
     }
 }
+

@@ -1,5 +1,5 @@
-import { MONTHS, ORDERS, PERIODS, WEEKDAYS } from "../containers/App/constants";
-import { formatDate } from "./date";
+import {MONTHS, ORDERS, PERIODS, WEEKDAYS} from "../containers/App/constants";
+import {formatDate} from "./date";
 
 /*Get a brief description of this excluded date.*/
 export function getBrief() {
@@ -13,7 +13,7 @@ export function getBrief() {
       if (this.state.repeatPeriod > PERIODS.Week) {
         words.push(Object.keys(ORDERS)[this.state.startDate.dynamicWeek - 1]);
       }
-      words.push(Object.keys(WEEKDAYS)[this.state.startDate.dynamicWeekday- 1]);
+      words.push(Object.keys(WEEKDAYS)[this.state.startDate.dynamicWeekday]);
       if (this.state.repeatPeriod > PERIODS.Month) {
         words.push("of");
         words.push(Object.keys(MONTHS)[this.state.startDate.dynamicMonth - 1]);
@@ -26,7 +26,7 @@ export function getBrief() {
       if (this.state.endDate.dynamic) {
         words.push("the");
         words.push(Object.keys(ORDERS)[this.state.endDate.dynamicWeek - 1]);
-        words.push(Object.keys(WEEKDAYS)[this.state.endDate.dynamicWeekday - 1]);
+        words.push(Object.keys(WEEKDAYS)[this.state.endDate.dynamicWeekday]);
         words.push("of");
         words.push(Object.keys(MONTHS)[this.state.endDate.dynamicMonth - 1]);
       } else {
@@ -42,7 +42,7 @@ export function getBrief() {
       if (this.state.repeatPeriod > PERIODS.Week) {
         words.push(Object.keys(ORDERS)[this.state.startDate.dynamicDate.week - 1]);
       }
-      words.push(Object.keys(WEEKDAYS)[this.state.startDate.dynamicDate.day - 1]);
+      words.push(Object.keys(WEEKDAYS)[this.state.startDate.dynamicDate.day]);
       if (this.state.repeatPeriod > PERIODS.Month) {
         words.push("of");
         words.push(Object.keys(MONTHS)[this.state.startDate.dynamicDate.month - 1]);

@@ -38,11 +38,7 @@ export default class ExcludeDate extends React.Component {
         dynamicWeekday: 1
       },
       endDate: {
-        dynamic: false,
         date: new Date().toISOString(),
-        dynamicMonth: 1,
-        dynamicWeek: 1,
-        dynamicWeekday: 1
       },
       noEnd: true, //No end in repeat
       repeat: true,
@@ -162,7 +158,7 @@ export default class ExcludeDate extends React.Component {
               {RepeatInterval.call(this)}
               {RepeatCount.call(this)}
             </div>}
-            {DateInput.call(this,
+            {!this.isHoliday()&&DateInput.call(this,
               {
                 field: "startDate",
                 name: "Start Date"
@@ -192,7 +188,7 @@ export default class ExcludeDate extends React.Component {
               {
                 field: "endDate",
                 name: "End Date",
-                endDate: true,
+                isEndDate: true,
               })
             }
 
