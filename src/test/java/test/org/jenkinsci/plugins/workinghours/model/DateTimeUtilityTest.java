@@ -90,32 +90,6 @@ public class DateTimeUtilityTest {
     }
 
     /**
-     * Verifies localTime can parse 12 hour time (AM).
-     */
-    @Test
-    public void testLocalTime12Am() {
-        LocalTime result = DateTimeUtility.localTime("09:30 AM");
-        assertEquals("09:30", result.toString());
-    }
-
-    /**
-     * Verifies localTime can parse 12 hour time (PM).
-     */
-    @Test
-    public void testLocalTime12Pm() {
-        LocalTime result = DateTimeUtility.localTime("10:15 PM");
-        assertEquals("22:15", result.toString());
-    }
-
-    /**
-     * Verifies isValidTime returns true for valid time.
-     */
-    @Test
-    public void testIsValidTimeTrue() {
-        assertTrue(DateTimeUtility.isValidTime("10:15 PM"));
-    }
-
-    /**
      * Verifies isValidTime returns true for valid time.
      */
     @Test

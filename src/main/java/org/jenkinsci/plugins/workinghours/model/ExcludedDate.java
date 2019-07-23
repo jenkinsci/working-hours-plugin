@@ -154,9 +154,9 @@ public class ExcludedDate {
                 case REPEAT_BY_WEEK:
                     return checkTime.getDayOfWeek().getValue() == startDate.getDynamicWeekday();
                 case REPEAT_BY_MONTH:
-                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday()).isEqual(checkTime);
+                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday(),checkTime).isEqual(checkTime);
                 case REPEAT_BY_YEAR:
-                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicMonth(), startDate.getDynamicWeekday()).isEqual(checkTime);
+                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicMonth(), startDate.getDynamicWeekday(),checkTime).isEqual(checkTime);
                 default:
                     return false;
             }

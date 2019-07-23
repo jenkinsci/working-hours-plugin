@@ -6,13 +6,21 @@ import java.time.LocalDate;
 public class DynamicDateUtil {
     /**
      * Get next occurrence, by month.
+     *
      * @param weekOfMonth Week of month.
-     * @param dayOfWeek Day of week.
+     * @param dayOfWeek   Day of week.
      * @return {@link LocalDate} Next occurrence.
      */
-    public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek) {
-        LocalDate next = LocalDate.now();
-        LocalDate today = LocalDate.now();
+    public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek,final LocalDate now) {
+        LocalDate next;
+        LocalDate today;
+        if (now != null) {
+            next = now;
+            today = now;
+        } else {
+            next = LocalDate.now();
+            today = LocalDate.now();
+        }
         LocalDate nextOccurrenceInThisMonth = LocalDate.of(today.getYear(), today.getMonth(), 1);
         int tempWeekOfMonth = weekOfMonth;
         if (nextOccurrenceInThisMonth.getDayOfWeek().getValue() <= dayOfWeek) {
@@ -41,14 +49,22 @@ public class DynamicDateUtil {
 
     /**
      * Get next occurrence, based on year.
+     *
      * @param monthOfYear Month of year.
      * @param weekOfMonth Week of month.
-     * @param dayOfWeek Day of week.
+     * @param dayOfWeek   Day of week.
      * @return {@link LocalDate} Next occurrence.
      */
-    public static LocalDate nextOccurrenceByYear(int monthOfYear, int weekOfMonth, int dayOfWeek) {
-        LocalDate next = LocalDate.now();
-        LocalDate today = LocalDate.now();
+    public static LocalDate nextOccurrenceByYear(final int monthOfYear, final int weekOfMonth, final int dayOfWeek, final LocalDate now) {
+        LocalDate next;
+        LocalDate today;
+        if (now != null) {
+            next = now;
+            today = now;
+        } else {
+            next = LocalDate.now();
+            today = LocalDate.now();
+        }
         if (today.getMonth().getValue() > monthOfYear) {
             /*If the month has been passed.*/
 
