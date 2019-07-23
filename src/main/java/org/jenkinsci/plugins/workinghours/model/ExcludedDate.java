@@ -142,7 +142,11 @@ public class ExcludedDate {
         if (this.isHoliday()) {
             /*Judge by holiday*/
             Holiday holidayThisYear = HolidayUtil.getHolidayThisYear(this.getHolidayRegion(), this.getHolidayId());
-            return checkTime.equals(holidayThisYear.getDate());
+
+            return checkTime.equals(LocalDate.of(
+                holidayThisYear.getDate().getYear(),
+                holidayThisYear.getDate().getMonthOfYear(),
+                holidayThisYear.getDate().getDayOfMonth()));
         } else if (this.startDate.isDynamic()) {
             /*Judge by dynamic date */
             final Date startDate = this.getStartDate();
