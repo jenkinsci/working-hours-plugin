@@ -9,6 +9,7 @@ public class DynamicDateUtil {
      *
      * @param weekOfMonth Week of month.
      * @param dayOfWeek   Day of week.
+     * @param now {@link LocalDate} Today.
      * @return {@link LocalDate} Next occurrence.
      */
     public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek,final LocalDate now) {
@@ -53,6 +54,7 @@ public class DynamicDateUtil {
      * @param monthOfYear Month of year.
      * @param weekOfMonth Week of month.
      * @param dayOfWeek   Day of week.
+     * @param now {@link LocalDate} Today.
      * @return {@link LocalDate} Next occurrence.
      */
     public static LocalDate nextOccurrenceByYear(final int monthOfYear, final int weekOfMonth, final int dayOfWeek, final LocalDate now) {
