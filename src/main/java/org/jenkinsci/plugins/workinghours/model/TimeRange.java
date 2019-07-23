@@ -25,6 +25,7 @@ package org.jenkinsci.plugins.workinghours.model;
 
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
+import org.jenkinsci.plugins.workinghours.utils.DateTimeUtility;
 
 import java.time.LocalTime;
 import java.util.Calendar;
@@ -64,7 +65,7 @@ public class TimeRange {
             return new ValidationResult(false, FIELD_DAY_OF_WEEK, "is needed");
         } else if (!(targetJson.get(FIELD_DAY_OF_WEEK) instanceof Number)) {
             return new ValidationResult(false, FIELD_DAY_OF_WEEK, "is not a number");
-        } else if (targetJson.getInt(FIELD_DAY_OF_WEEK) > Calendar.SATURDAY || targetJson.getInt(FIELD_DAY_OF_WEEK) < Calendar.SUNDAY) {
+        } else if (targetJson.getInt(FIELD_DAY_OF_WEEK) > Calendar.SATURDAY-1 || targetJson.getInt(FIELD_DAY_OF_WEEK) < Calendar.SUNDAY-1) {
             return new ValidationResult(false, FIELD_DAY_OF_WEEK, "should be between 1 and 7");
         }
 
@@ -111,7 +112,7 @@ public class TimeRange {
                 date.get(Calendar.HOUR_OF_DAY),
                 date.get(Calendar.MINUTE));
 
-        return date.get(Calendar.DAY_OF_WEEK) == this.getDayOfWeek()
+        return date.get(Calendar.DAY_OF_WEEK)-1 == this.getDayOfWeek()
                 && (checkTime.equals(allowedStartTime)
                 || checkTime.isAfter(allowedStartTime))
                 && (checkTime.equals(allowedEndTime)

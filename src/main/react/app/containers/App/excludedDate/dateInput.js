@@ -4,7 +4,7 @@ import {MONTHS, ORDERS, PERIODS, WEEKDAYS} from "../constants";
 import {format, nextOccurrenceByMonth, nextOccurrenceByYear} from "../../../utils/date";
 
 export default function DateInput(props) {
-  const {field, name,endDate} = props;
+  const {field, name,isEndDate} = props;
   const self = this;
   const {repeatPeriod, repeat} = self.state;
 
@@ -42,7 +42,7 @@ export default function DateInput(props) {
     <div className={"form-row"}>
       <div className={"form-item-label"}>{name}</div>
 
-      {!endDate && repeat && <div className={"form-item-label form-item-label-sub"}>
+      {!isEndDate && repeat && <div className={"form-item-label form-item-label-sub"}>
         <input type='checkbox' checked={dateObject.dynamic}
                onChange={updateCheckbox("dynamic")}/>
         <label>Dynamic</label>
@@ -53,11 +53,12 @@ export default function DateInput(props) {
     {(!dateObject.dynamic || !repeat) &&
     <div className={"form-row form-row-indent"}>
       <label style={{marginRight: 10}}>Date</label>
-      <DatePicker className={"input input-text"} selected={dateObject.date} placeholder="select"
+      <DatePicker className={"input input-text"} selected={new Date(dateObject.date)} placeholder="select"
                   onChange={updateDate()}/>
     </div>
     }
-    {!endDate && repeat && dateObject.dynamic && <div>
+
+    {!isEndDate && repeat && dateObject.dynamic && <div>
       <div className={"form-row form-row-indent"} style={{display: "flex", flexDirection: "row", lineHeight: "40px"}}>
 
         {(repeatPeriod >= PERIODS.Month || !repeat) &&

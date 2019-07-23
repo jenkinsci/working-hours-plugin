@@ -51,10 +51,6 @@ module.exports = require('./webpack.base.babel')({
   },
 
   plugins: [
-    // ---- do not bundle moment locales
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    // ---- do not bundle astronomia vsop planet data
-    new webpack.IgnorePlugin(/^\.\/vsop87B.*$/),
 
     // Minify and optimize the index.html
     new HtmlWebpackPlugin({

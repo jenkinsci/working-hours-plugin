@@ -9,15 +9,14 @@ import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
+import org.jenkinsci.plugins.workinghours.utils.HolidayUtil;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.json.JsonHttpResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 
 public class WorkingHoursUI {
     private WorkingHoursPlugin config;
@@ -86,7 +85,8 @@ public class WorkingHoursUI {
     }
 
     /**
-     * Handler for getting the passed region's holidays.
+     * Handler for getting the passed region's holidays, this year and next year,
+     * next year's data is for showing next occurrence.
      * @param params The params in the url. For here, it should be like ['regions','us']
      * @return {@link HttpResponse} Response with the region's holidays.
      */
@@ -95,9 +95,7 @@ public class WorkingHoursUI {
         ClassLoader orig = t.getContextClassLoader();
         t.setContextClassLoader(HolidayManager.class.getClassLoader());
         try {
-            Set result;
-            result = HolidayManager.getInstance(params.get(1)).getHolidays(Calendar.getInstance().get(Calendar.YEAR));
-            return HttpResponses.okJSON(JSONArray.fromObject(result));
+            return HttpResponses.okJSON(JSONArray.fromObject(HolidayUtil.getTwoYearsHoliday(params.get(1))));
         } finally {
             t.setContextClassLoader(orig);
         }

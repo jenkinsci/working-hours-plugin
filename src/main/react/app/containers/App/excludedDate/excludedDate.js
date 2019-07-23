@@ -32,17 +32,13 @@ export default class ExcludeDate extends React.Component {
 
       startDate: {
         dynamic: false,
-        date: new Date(),
+        date: new Date().toISOString(),
         dynamicMonth: 1,
         dynamicWeek: 1,
         dynamicWeekday: 1
       },
       endDate: {
-        dynamic: false,
-        date: new Date(),
-        dynamicMonth: 1,
-        dynamicWeek: 1,
-        dynamicWeekday: 1
+        date: new Date().toISOString(),
       },
       noEnd: true, //No end in repeat
       repeat: true,
@@ -62,12 +58,10 @@ export default class ExcludeDate extends React.Component {
   applyPreset = () => {
     Alert.open({
       onApply: (result) => {
-        if (this.state.type === DATE_TYPE.TYPE_CUSTOM) {
-          this.setState({
-            type: DATE_TYPE.TYPE_HOLIDAY,
-            selectedHoliday: result.selectedHoliday
-          })
-        }
+        this.setState({
+          type: DATE_TYPE.TYPE_HOLIDAY,
+          selectedHoliday: result.selectedHoliday
+        })
       }
     });
   };
@@ -140,11 +134,6 @@ export default class ExcludeDate extends React.Component {
     }
   };
 
-  /*Helper function to judge whether the day is based on gregorian calendar*/
-  isGregorian = () => {
-    return this.state.type === DATE_TYPE.TYPE_GREGORIAN;
-  };
-
   componentDidMount() {
     this.setState(this.props.date, () => {
       /*If the date is new, submit it.*/
@@ -169,7 +158,7 @@ export default class ExcludeDate extends React.Component {
               {RepeatInterval.call(this)}
               {RepeatCount.call(this)}
             </div>}
-            {DateInput.call(this,
+            {!this.isHoliday()&&DateInput.call(this,
               {
                 field: "startDate",
                 name: "Start Date"
@@ -199,7 +188,7 @@ export default class ExcludeDate extends React.Component {
               {
                 field: "endDate",
                 name: "End Date",
-                endDate: true,
+                isEndDate: true,
               })
             }
 

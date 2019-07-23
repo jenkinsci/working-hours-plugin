@@ -12,17 +12,17 @@ import ChineseLunarCalendar from "./chineseLunar";
 export function nextOccurrenceByYear(month, week, day) {
   let next = moment().hour(0).second(0).minute(0);
   let today = moment().hour(0).second(0).minute(0);
-  let nextOccurrenceInThisMonth = moment().hour(0).second(0).minute(0).date(1);
+  let nextOccurrenceInThisYear = moment().hour(0).second(0).minute(0).date(1);
   if (today.month() === month - 1) {
     let tempWeek = week;
-    if (nextOccurrenceInThisMonth.day() <= day) {
+    if (nextOccurrenceInThisYear.day() <= day) {
       tempWeek = week - 1;
     }
-    nextOccurrenceInThisMonth.date(1 + (tempWeek * 7) + (day - nextOccurrenceInThisMonth.day()));
+    nextOccurrenceInThisYear.date(1 + (tempWeek * 7) + (day - nextOccurrenceInThisYear.day()));
     //If in same month but earlier
-    if (nextOccurrenceInThisMonth.isSameOrAfter(today)) {
+    if (nextOccurrenceInThisYear.isSameOrAfter(today)) {
       //Add to next year
-      return nextOccurrenceInThisMonth;
+      return nextOccurrenceInThisYear;
     } else {
       next.add(1, "year");
     }

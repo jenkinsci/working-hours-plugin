@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jenkinsci.plugins.workinghours.model;
+package org.jenkinsci.plugins.workinghours.utils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
