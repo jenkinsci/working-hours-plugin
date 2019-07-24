@@ -10,11 +10,15 @@ export function stringifyQuery(args) {
   });
 }
 
+/**
+ * Get relative url from the parent page, because the plugin is running in iframe.
+ */
+function getApiBaseUrl(){
+  return window.parent.location.href
+}
 
-console.log("BASE_URL:"+process.env.BASE_URL);
-console.log("NODE_ENV:"+process.env.NODE_ENV);
 const AXIOS_DEFAULT_CONFIG = {
-  baseURL: process.env.BASE_URL||"working-hours/",
+  baseURL: process.env.BASE_URL||getApiBaseUrl(),
   timeout: 20000,
   maxContentLength: 2000,
   headers: {},
