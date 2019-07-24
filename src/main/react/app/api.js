@@ -10,8 +10,11 @@ export function stringifyQuery(args) {
   });
 }
 
+
+console.log("BASE_URL:"+process.env.BASE_URL);
+console.log("NODE_ENV:"+process.env.NODE_ENV);
 const AXIOS_DEFAULT_CONFIG = {
-  baseURL: "/jenkins/working-hours/",
+  baseURL: process.env.BASE_URL||"working-hours/",
   timeout: 20000,
   maxContentLength: 2000,
   headers: {},

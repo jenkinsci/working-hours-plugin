@@ -20,7 +20,7 @@
         "build:copy": "rimraf ../webapp/page && yarn run build && node internals/copy-paste.js",
         "build-test": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.test.babel.js --color -p --progress --hide-modules --display-optimization-bailout",
         "build:clean": "rimraf ./build",
-        "start": "cross-env NODE_ENV=development node server",
+        "start": "cross-env NODE_ENV=development BASE_URL=\"/jenkins/working-hours\" node server",
         "start:watch-build": "cross-env NODE_ENV=development webpack --config internals/webpack/webpack.prod.babel.js --color -p --progress --hide-modules --display-optimization-bailout --watch",
         "start:tunnel": "cross-env NODE_ENV=development ENABLE_TUNNEL=true node server",
         "start:production": "yarn run test && yarn run build && yarn run start:prod",
