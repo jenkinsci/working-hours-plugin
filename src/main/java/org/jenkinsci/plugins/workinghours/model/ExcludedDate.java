@@ -145,7 +145,7 @@ public class ExcludedDate {
 
             return checkTime.equals(LocalDate.of(
                 holidayThisYear.getDate().getYear(),
-                holidayThisYear.getDate().getMonthOfYear(),
+                holidayThisYear.getDate().getMonthOfYear()+1,
                 holidayThisYear.getDate().getDayOfMonth()));
         } else if (this.startDate.isDynamic()) {
             /*Judge by dynamic date */
@@ -156,7 +156,7 @@ public class ExcludedDate {
                 case REPEAT_BY_MONTH:
                     return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday(),checkTime).isEqual(checkTime);
                 case REPEAT_BY_YEAR:
-                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicMonth(), startDate.getDynamicWeekday(),checkTime).isEqual(checkTime);
+                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicWeek(), startDate.getDynamicWeekday(),checkTime).isEqual(checkTime);
                 default:
                     return false;
             }
@@ -237,8 +237,8 @@ public class ExcludedDate {
         return utcOffset;
     }
 
-    public String getType() {
-        return String.valueOf(type);
+    public int getType() {
+        return type.getValue();
     }
 
     public String getName() {
