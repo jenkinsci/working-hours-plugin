@@ -18,7 +18,7 @@ function getApiBaseUrl(){
 }
 
 const AXIOS_DEFAULT_CONFIG = {
-  baseURL: process.env.BASE_URL||getApiBaseUrl(),
+  baseURL: process.env.BASE_URL || getApiBaseUrl(),
   timeout: 20000,
   maxContentLength: 2000,
   headers: {},
