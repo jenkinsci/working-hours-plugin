@@ -30,7 +30,7 @@ export default function DateInput(props) {
     return function (e) {
       let changedState = {};
       changedState[field] = {...self.state[field]};
-      changedState[field][subField] = e.target.value;
+      changedState[field][subField] = parseInt(e.target.value);
       self.setState(changedState);
     };
   }
