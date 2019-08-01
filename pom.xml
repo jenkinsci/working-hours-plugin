@@ -142,46 +142,46 @@
     </dependencies>
     <build>
         <plugins>
-<!--            <plugin>-->
-<!--                <groupId>com.github.eirslett</groupId>-->
-<!--                <artifactId>frontend-maven-plugin</artifactId>-->
-<!--                &lt;!&ndash; NB! Set <version> to the latest released version of frontend-maven-plugin, like in README.md &ndash;&gt;-->
-<!--                <version>1.7.5</version>-->
-<!--                <configuration>-->
-<!--                    <workingDirectory>src/main/react</workingDirectory>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>install node and npm</id>-->
-<!--                        <goals>-->
-<!--                            <goal>install-node-and-yarn</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            &lt;!&ndash; See https://nodejs.org/en/download/ for latest node and npm (lts) versions &ndash;&gt;-->
-<!--                            <nodeVersion>v10.15.0</nodeVersion>-->
-<!--                            <yarnVersion>v1.13.0</yarnVersion>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>yarn install</id>-->
-<!--                        <goals>-->
-<!--                            <goal>yarn</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <arguments>install</arguments>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>yarn run build:copy</id>-->
-<!--                        <goals>-->
-<!--                            <goal>yarn</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <arguments>run build:copy</arguments>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+           <plugin>
+               <groupId>com.github.eirslett</groupId>
+               <artifactId>frontend-maven-plugin</artifactId>
+               <version> to the latest released version of frontend-maven-plugin, like in README.md &ndash;&gt;
+               <version>1.7.5</version>
+               <configuration>
+                   <workingDirectory>src/main/react</workingDirectory>
+               </configuration>-->
+               <executions>
+                   <execution>
+                        <id>install node and npm</id>
+                       <goals>
+                           <goal>install-node-and-yarn</goal>
+                       </goals>
+                       <configuration>
+                           <!-- See https://nodejs.org/en/download/ for latest node and npm (lts) versions &ndash;&gt; -->
+                           <nodeVersion>v10.15.0</nodeVersion>
+                           <yarnVersion>v1.13.0</yarnVersion>
+                       </configuration>
+                   </execution>
+                   <execution>
+                       <id>yarn install</id>
+                       <goals>
+                           <goal>yarn</goal>
+                       </goals>
+                       <configuration>
+                           <arguments>install</arguments>
+                       </configuration>
+                   </execution>
+                   <execution>
+                       <id>yarn run build:copy</id>
+                       <goals>
+                           <goal>yarn</goal>
+                       </goals>
+                       <configuration>
+                           <arguments>run build:copy</arguments>
+                       </configuration>
+                   </execution>
+               </executions>
+           </plugin>
         </plugins>
     </build>
 
