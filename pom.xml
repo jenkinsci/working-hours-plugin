@@ -14,6 +14,8 @@
     <properties>
         <jenkins.version>2.73.3</jenkins.version>
         <java.level>8</java.level>
+        <node.version>10.13.0</node.version>
+        <npm.version>6.8.0</npm.version>
     </properties>
     <name>Working Hours Plugin</name>
     <description>Queues builds that ran after certain working hours</description>
@@ -158,8 +160,10 @@
                         </goals>
                         <configuration>
                             <!-- See https://nodejs.org/en/download/ for latest node and npm (lts) versions -->
-                            <nodeVersion>v10.15.0</nodeVersion>
-                            <npmVersion>v6.4.1</npmVersion>
+                            <nodeVersion>v${node.version}</nodeVersion>
+                            <npmVersion>${npm.version}</npmVersion>
+                            <nodeDownloadRoot>https://repo.jenkins-ci.org/nodejs-dist/</nodeDownloadRoot>
+                            <npmDownloadRoot>https://repo.jenkins-ci.org/npm-dist/</npmDownloadRoot>
                         </configuration>
                     </execution>
                     <execution>
