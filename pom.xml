@@ -167,15 +167,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>npm install pngquant</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install --save-dev pngquant --msvs_version=2013</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>npm install</id>
                         <goals>
                             <goal>npm</goal>
