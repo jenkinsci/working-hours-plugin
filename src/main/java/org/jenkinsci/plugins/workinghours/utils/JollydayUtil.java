@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Helper methods when using jollyday.
  */
-public class HolidayUtil {
+public class JollydayUtil {
 
     /**
      * Get two years holiday, so we could show the next occurrence if this year's holiday is past.
@@ -19,8 +19,9 @@ public class HolidayUtil {
      * @param regionCode Code of the target region whose holidays should be returned.
      * @return Set with two years holidays.
      */
-    public static List[] getTwoYearsHoliday(String regionCode) {
-        List resultThisYear = new ArrayList<Holiday>(HolidayManager.getInstance(regionCode).getHolidays(Calendar.getInstance().get(Calendar.YEAR)));
+
+    public static List<org.jenkinsci.plugins.workinghours.model.Holiday> getTwoYearsHoliday(String regionCode) {
+        List resultThisYear = new ArrayList<>(HolidayManager.getInstance(regionCode).getHolidays(Calendar.getInstance().get(Calendar.YEAR)));
         resultThisYear.sort((Comparator<Holiday>) (day1, day2) -> {
             if (day1.getDate().isBefore(day2.getDate())) {
                 return -1;
@@ -31,8 +32,8 @@ public class HolidayUtil {
             }
         });
 
-        List resultNextYear = new ArrayList<Holiday>(HolidayManager.getInstance(regionCode).getHolidays(Calendar.getInstance().get(Calendar.YEAR) + 1));
-        resultThisYear.sort((Comparator<Holiday>) (day1, day2) -> {
+        List resultNextYear = new ArrayList<>(HolidayManager.getInstance(regionCode).getHolidays(Calendar.getInstance().get(Calendar.YEAR) + 1));
+        resultNextYear.sort((Comparator<Holiday>) (day1, day2) -> {
             if (day1.getDate().isBefore(day2.getDate())) {
                 return -1;
             } else if (day1.getDate().isEqual(day2.getDate())) {
@@ -41,7 +42,8 @@ public class HolidayUtil {
                 return 1;
             }
         });
-        return new List[]{resultThisYear, resultNextYear};
+
+        return org.jenkinsci.plugins.workinghours.model.Holiday.mergeTwoYearsHoliday(resultThisYear, resultNextYear);
     }
 
     /**

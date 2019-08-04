@@ -1,7 +1,5 @@
 package org.jenkinsci.plugins.workinghours;
 
-import de.jollyday.HolidayCalendar;
-import de.jollyday.HolidayManager;
 import hudson.ExtensionList;
 import hudson.util.HttpResponses;
 import net.sf.json.JSONArray;
@@ -9,7 +7,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
-import org.jenkinsci.plugins.workinghours.utils.HolidayUtil;
+import org.jenkinsci.plugins.workinghours.presets.PresetManager;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.json.JsonHttpResponse;
@@ -74,35 +72,28 @@ public class WorkingHoursUI {
 
     /**
      * Stapler's handler for getting the list of region's code.
+     *
      * @return {@link HttpResponse} Response with data.
      */
     private HttpResponse getRegions() {
-        List<String> calendars = new ArrayList<>();
-        for (HolidayCalendar calendar : HolidayCalendar.values()) {
-            calendars.add(calendar.getId());
-        }
-        return HttpResponses.okJSON(JSONArray.fromObject(calendars));
+        return HttpResponses.okJSON(JSONArray.fromObject(PresetManager.getInstance().getRegions()));
     }
 
     /**
      * Handler for getting the passed region's holidays, this year and next year,
      * next year's data is for showing next occurrence.
+     *
      * @param params The params in the url. For here, it should be like ['regions','us']
      * @return {@link HttpResponse} Response with the region's holidays.
      */
     private HttpResponse getRegionHolidays(List<String> params) {
-        Thread t = Thread.currentThread();
-        ClassLoader orig = t.getContextClassLoader();
-        t.setContextClassLoader(HolidayManager.class.getClassLoader());
-        try {
-            return HttpResponses.okJSON(JSONArray.fromObject(HolidayUtil.getTwoYearsHoliday(params.get(1))));
-        } finally {
-            t.setContextClassLoader(orig);
-        }
+
+        return HttpResponses.okJSON(JSONArray.fromObject(PresetManager.getInstance().getRegionHolidays(params.get(1))));
     }
 
     /**
      * Handler for return stored time ranges.
+     *
      * @param request The http request passed in.
      * @return {@link HttpResponse} Response with time ranges.
      */

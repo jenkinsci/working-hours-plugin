@@ -27,7 +27,7 @@ import de.jollyday.Holiday;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
 import org.jenkinsci.plugins.workinghours.utils.DynamicDateUtil;
-import org.jenkinsci.plugins.workinghours.utils.HolidayUtil;
+import org.jenkinsci.plugins.workinghours.utils.JollydayUtil;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.time.LocalDate;
@@ -141,7 +141,7 @@ public class ExcludedDate {
 
         if (this.isHoliday()) {
             /*Judge by holiday*/
-            Holiday holidayThisYear = HolidayUtil.getHolidayThisYear(this.getHolidayRegion(), this.getHolidayId());
+            Holiday holidayThisYear = JollydayUtil.getHolidayThisYear(this.getHolidayRegion(), this.getHolidayId());
 
             return checkTime.equals(LocalDate.of(
                 holidayThisYear.getDate().getYear(),

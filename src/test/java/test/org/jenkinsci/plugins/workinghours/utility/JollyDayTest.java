@@ -3,7 +3,7 @@ package test.org.jenkinsci.plugins.workinghours.utility;
 import de.jollyday.HolidayCalendar;
 import de.jollyday.HolidayManager;
 import net.sf.json.JSONArray;
-import org.jenkinsci.plugins.workinghours.utils.HolidayUtil;
+import org.jenkinsci.plugins.workinghours.utils.JollydayUtil;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class JollyDayTest {
 
     @Test
     public void testGetTwoYearsHoliday() {
-        System.out.println(JSONArray.fromObject(HolidayUtil.getTwoYearsHoliday("US")));
+        System.out.println(JSONArray.fromObject(JollydayUtil.getTwoYearsHoliday("US")));
         assertTrue(true);
     }
 }
