@@ -13,7 +13,7 @@ export function stringifyQuery(args) {
 /**
  * Get relative url from the parent page, because the plugin is running in iframe.
  */
-function getApiBaseUrl(){
+function getApiBaseUrl() {
   return window.parent.location.href
 }
 
