@@ -14,11 +14,11 @@ public class ChineseHolidayManager {
 
     static final String REGION_CODE = "CN";
 
-    private List<ChineseLunarHoliday> chineseLunarHolidays;
+    private List<Holiday> chineseLunarHolidays;
 
-    public List<? extends Holiday> getHolidayThisYear() {
-        for (ChineseHolidayManager.ChineseLunarHoliday chineseLunarHoliday : chineseLunarHolidays) {
-            chineseLunarHoliday.updateNextOccurrence();
+    public List<Holiday> getHolidayThisYear() {
+        for (Holiday chineseLunarHoliday : chineseLunarHolidays) {
+            ((ChineseLunarHoliday) chineseLunarHoliday).updateNextOccurrence();
         }
         return this.chineseLunarHolidays;
     }
