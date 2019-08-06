@@ -1,7 +1,7 @@
 package org.jenkinsci.plugins.workinghours.presets;
 
+import com.github.heqiao2010.lunar.LunarCalendar;
 import org.jenkinsci.plugins.workinghours.model.Holiday;
-import org.jenkinsci.plugins.workinghours.utils.ChineseLunarCalendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,11 +61,11 @@ public class ChineseHolidayManager {
 
         /*Update next occurrence according to now.*/
         void updateNextOccurrence() {
-            final Date occurrenceThisYear = ChineseLunarCalendar.lunar2Solar(Calendar.getInstance().get(Calendar.YEAR), this.getMonthOfYear(), this.getDayOfMonth(), false).getTime();
+            final Date occurrenceThisYear = LunarCalendar.lunar2Solar(Calendar.getInstance().get(Calendar.YEAR), this.getMonthOfYear(), this.getDayOfMonth(), false).getTime();
             if (occurrenceThisYear.after(new Date())) {
                 this.nextOccurrence = occurrenceThisYear;
             } else {
-                this.nextOccurrence = ChineseLunarCalendar.lunar2Solar(Calendar.getInstance().get(Calendar.YEAR) + 1, this.getMonthOfYear(), this.getDayOfMonth(), false).getTime();
+                this.nextOccurrence = LunarCalendar.lunar2Solar(Calendar.getInstance().get(Calendar.YEAR) + 1, this.getMonthOfYear(), this.getDayOfMonth(), false).getTime();
             }
         }
     }

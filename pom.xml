@@ -141,6 +141,12 @@
             <version>0.4.9</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.heqiao2010</groupId>
+            <artifactId>lunar</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
