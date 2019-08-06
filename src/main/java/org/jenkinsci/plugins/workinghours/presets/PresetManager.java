@@ -27,7 +27,7 @@ public class PresetManager {
     /**
      * Get available regions.
      *
-     * @return {@link List<String>} A list of region codes.
+     * @return {@link List} A list of region codes.
      */
     public List<String> getRegions() {
         List<String> calendars = new ArrayList<>();
@@ -42,9 +42,9 @@ public class PresetManager {
      * Get regional holidays according to the given region code.
      *
      * @param regionCode Code of the region.
-     * @return {@link List<Holiday>} Region's holidays.
+     * @return {@link List} Region's holidays.
      */
-    public List<Holiday> getRegionHolidays(String regionCode) {
+    public List<? extends Holiday> getRegionHolidays(String regionCode) {
         Thread t = Thread.currentThread();
         ClassLoader orig = t.getContextClassLoader();
         t.setContextClassLoader(HolidayManager.class.getClassLoader());

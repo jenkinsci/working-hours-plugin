@@ -79,7 +79,7 @@ public class ExcludedDate {
         this.timezone = sourceJSON.getString(FIELD_TIMEZONE);
         this.startDate = new Date(sourceJSON.getJSONObject(FIELD_START_DATE), false);
         if (!sourceJSON.getJSONObject(FIELD_END_DATE).isEmpty()) {
-            this.endDate = new Date(sourceJSON.getJSONObject(FIELD_END_DATE),true);
+            this.endDate = new Date(sourceJSON.getJSONObject(FIELD_END_DATE), true);
         }
         this.type = DateType.valueOf(sourceJSON.getInt(FIELD_TYPE));
         if (this.type == DateType.TYPE_HOLIDAY) {
@@ -110,13 +110,13 @@ public class ExcludedDate {
             return new ValidationResult(false, FIELD_UTC_OFFSET, "should be between max:720 and min:-720");
         }
 
-        final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE),false);
+        final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE), false);
         if (!startDateValidationResult.isValid()) {
             return startDateValidationResult;
         }
 
         if (targetJson.containsKey(FIELD_END_DATE)) {
-            final ValidationResult endDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_END_DATE),true);
+            final ValidationResult endDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_END_DATE), true);
             if (!endDateValidationResult.isValid()) {
                 return startDateValidationResult;
             }
@@ -150,13 +150,13 @@ public class ExcludedDate {
         } else if (this.startDate.isDynamic()) {
             /*Judge by dynamic date */
             final Date startDate = this.getStartDate();
-            switch (this.getRepeatPeriod()) {
+            switch (this.repeatPeriod) {
                 case REPEAT_BY_WEEK:
                     return checkTime.getDayOfWeek().getValue() == startDate.getDynamicWeekday();
                 case REPEAT_BY_MONTH:
-                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday(),checkTime).isEqual(checkTime);
+                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkTime).isEqual(checkTime);
                 case REPEAT_BY_YEAR:
-                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicWeek(), startDate.getDynamicWeekday(),checkTime).isEqual(checkTime);
+                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkTime).isEqual(checkTime);
                 default:
                     return false;
             }
@@ -265,8 +265,8 @@ public class ExcludedDate {
         return repeatCount;
     }
 
-    public RepeatPeriod getRepeatPeriod() {
-        return repeatPeriod;
+    public int getRepeatPeriod() {
+        return repeatPeriod.getValue();
     }
 
     public int getRepeatInterval() {
@@ -305,7 +305,7 @@ public class ExcludedDate {
 
         public Date(JSONObject jsonObject, boolean isEnd) {
             this.date = jsonObject.getString(FIELD_DATE);
-            if(isEnd){
+            if (isEnd) {
                 return;
             }
             this.dynamic = jsonObject.getBoolean(FIELD_DYNAMIC);
@@ -326,7 +326,7 @@ public class ExcludedDate {
             if (!targetObject.containsKey(FIELD_DYNAMIC)) {
                 return new ValidationResult(false, FIELD_DYNAMIC, "is required");
             } else {
-                if(isEndDate){
+                if (isEndDate) {
                     return ValidationResult.getSuccessValidation();
                 }
                 if (!(targetObject.get(FIELD_DYNAMIC) instanceof Boolean)) {

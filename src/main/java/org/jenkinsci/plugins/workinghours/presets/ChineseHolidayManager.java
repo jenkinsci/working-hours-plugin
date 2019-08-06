@@ -5,24 +5,22 @@ import org.jenkinsci.plugins.workinghours.utils.ChineseLunarCalendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-public class ChineseHolidayManager{
+public class ChineseHolidayManager {
 
     private static ChineseHolidayManager instance;
 
     static final String REGION_CODE = "CN";
 
-    private static List<ChineseLunarHoliday> chineseLunarHolidays;
+    private List<ChineseLunarHoliday> chineseLunarHolidays;
 
-    public List<Holiday> getHolidayThisYear() {
-        ChineseLunarCalendar lunar = new ChineseLunarCalendar();
-        Calendar today = ChineseLunarCalendar.lunar2Solar(lunar.getLyear(), lunar.getLmonth(), lunar.getLdate(), lunar.isLeapMonth());
-        final List<Holiday> holidays = new ArrayList<>();
+    public List<? extends Holiday> getHolidayThisYear() {
         for (ChineseHolidayManager.ChineseLunarHoliday chineseLunarHoliday : chineseLunarHolidays) {
-            holidays.add(new Holiday(chineseLunarHoliday));
+            chineseLunarHoliday.updateNextOccurrence();
         }
-        return holidays;
+        return this.chineseLunarHolidays;
     }
 
     private ChineseHolidayManager() {
@@ -42,19 +40,15 @@ public class ChineseHolidayManager{
 
 
     public static class ChineseLunarHoliday extends Holiday {
-        private String name;
         private int monthOfYear;
         private int dayOfMonth;
 
-        public ChineseLunarHoliday(String name, int monthOfYear, int dayOfMonth) {
-            super();
+        ChineseLunarHoliday(final String name, final int monthOfYear, final int dayOfMonth) {
             this.name = name;
+            this.key = name.toUpperCase().replace(" ", "_");
             this.monthOfYear = monthOfYear;
             this.dayOfMonth = dayOfMonth;
-        }
-
-        public String getName() {
-            return name;
+            this.updateNextOccurrence();
         }
 
         public int getMonthOfYear() {
@@ -63,6 +57,16 @@ public class ChineseHolidayManager{
 
         public int getDayOfMonth() {
             return dayOfMonth;
+        }
+
+        /*Update next occurrence according to now.*/
+        void updateNextOccurrence() {
+            final Date occurrenceThisYear = ChineseLunarCalendar.lunar2Solar(Calendar.getInstance().get(Calendar.YEAR), this.getMonthOfYear(), this.getDayOfMonth(), false).getTime();
+            if (occurrenceThisYear.after(new Date())) {
+                this.nextOccurrence = occurrenceThisYear;
+            } else {
+                this.nextOccurrence = ChineseLunarCalendar.lunar2Solar(Calendar.getInstance().get(Calendar.YEAR) + 1, this.getMonthOfYear(), this.getDayOfMonth(), false).getTime();
+            }
         }
     }
 }
