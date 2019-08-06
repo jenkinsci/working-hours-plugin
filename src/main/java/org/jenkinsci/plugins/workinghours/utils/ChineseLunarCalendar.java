@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
  *
  * @author joel
  */
+@SuppressWarnings("")
 public final class ChineseLunarCalendar implements Serializable {
     /**
      * 支持的最小年份
