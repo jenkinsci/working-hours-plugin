@@ -102,10 +102,12 @@ const REGIONS = {
   UK: "United Kingdom",
   UY: "Uruguay",
   VE: "Venezuela",
+
+  CN: "China",
   // NYSE: ""
 }
 
-export function getRegions(){
+export function getRegions() {
   return REGIONS
 }
 
