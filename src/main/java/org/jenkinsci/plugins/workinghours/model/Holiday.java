@@ -1,8 +1,5 @@
 package org.jenkinsci.plugins.workinghours.model;
 
-import org.jenkinsci.plugins.workinghours.presets.ChineseHolidayManager;
-import org.jenkinsci.plugins.workinghours.utils.ChineseLunarCalendar;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,16 +25,6 @@ public class Holiday {
             jollyday.getDate().getDayOfMonth()
         );
         this.nextOccurrence = new GregorianCalendar(dateOfJollyday.getYear(), dateOfJollyday.getMonth().getValue(), dateOfJollyday.getDayOfMonth()).getTime();
-    }
-
-    /**
-     * Construct holiday from a chinese lunar holiday.
-     *
-     * @param chineseLunarHoliday {@link ChineseLunarCalendar} Source holiday.
-     */
-    public Holiday(ChineseHolidayManager.ChineseLunarHoliday chineseLunarHoliday) {
-        this.name = chineseLunarHoliday.getName();
-
     }
 
     protected Holiday() {
