@@ -1,10 +1,13 @@
 package org.jenkinsci.plugins.workinghours;
 
 import hudson.ExtensionList;
+import hudson.security.csrf.CrumbIssuer;
 import hudson.util.HttpResponses;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import org.jenkinsci.plugins.workinghours.presets.PresetManager;
@@ -184,5 +187,26 @@ public class WorkingHoursUI {
             throw new JsonHttpResponse(new JSONObject());
         }
         return body;
+    }
+
+
+    /**
+     * Get the crumb token value
+     *
+     * @return the crumb token value or empty String if no {@link CrumbIssuer}
+     */
+    public String getCrumbToken() {
+        CrumbIssuer crumbIssuer = Jenkins.getInstance().getCrumbIssuer();
+        return crumbIssuer == null ? StringUtils.EMPTY : crumbIssuer.getCrumb();
+    }
+
+    /**
+     * Get the crumb request field
+     *
+     * @return the crumb request field or empty String if no {@link CrumbIssuer}
+     */
+    public String getCrumbRequestField() {
+        CrumbIssuer crumbIssuer = Jenkins.getInstance().getCrumbIssuer();
+        return crumbIssuer == null ? StringUtils.EMPTY : crumbIssuer.getCrumbRequestField();
     }
 }

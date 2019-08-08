@@ -11,7 +11,7 @@ import "sanitize.css/sanitize.css";
 // Import root app
 import App from "containers/App";
 
-const MOUNT_NODE = document.getElementById("container-excluded-dates");
+const MOUNT_NODE = document.getElementById("app");
 const render = () => {
   ReactDOM.render(
     <App/>,

@@ -1,5 +1,6 @@
 import axios from "axios";
 import qs from "qs";
+import {UrlConfig} from "./utils/urlConfig";
 
 let axiosInstance = {};
 
@@ -17,6 +18,7 @@ function getApiBaseUrl() {
   return window.parent.location.href
 }
 
+
 const AXIOS_DEFAULT_CONFIG = {
   baseURL: process.env.BASE_URL || getApiBaseUrl(),
   timeout: 20000,
@@ -27,6 +29,13 @@ const AXIOS_DEFAULT_CONFIG = {
 };
 
 axiosInstance = axios.create(AXIOS_DEFAULT_CONFIG);
+
+const crumbHeaderName = UrlConfig.getCrumbHeaderName();
+console.log(crumbHeaderName);
+console.log(UrlConfig.getCrumbToken());
+if (crumbHeaderName) {
+  axiosInstance.defaults.headers.common[crumbHeaderName] = UrlConfig.getCrumbToken();
+}
 
 export default axiosInstance;
 
