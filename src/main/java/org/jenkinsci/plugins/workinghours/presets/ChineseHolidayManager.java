@@ -28,6 +28,7 @@ public class ChineseHolidayManager {
         chineseLunarHolidays.add(new ChineseLunarHoliday("Spring Festival", 1, 1));
         chineseLunarHolidays.add(new ChineseLunarHoliday("Lantern Festival", 1, 15));
         chineseLunarHolidays.add(new ChineseLunarHoliday("Dragon Boat Festival", 5, 5));
+        chineseLunarHolidays.add(new ChineseLunarHoliday("Chinese Valentine's Festival", 7, 7));
         chineseLunarHolidays.add(new ChineseLunarHoliday("Mid-Autumn Festival", 8, 15));
     }
 
