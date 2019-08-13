@@ -302,9 +302,9 @@ public class ExcludedDate {
 
         private static final String[] REQUIRED_FIELDS_FOR_DYNAMIC = {FIELD_DYNAMIC_MONTH, FIELD_DYNAMIC_WEEK, FIELD_DYNAMIC_WEEKDAY};
 
-        public Date(JSONObject jsonObject, boolean isEnd) {
+        public Date(JSONObject jsonObject, boolean isEndDate) {
             this.date = jsonObject.getString(FIELD_DATE);
-            if (isEnd) {
+            if (isEndDate) {
                 return;
             }
             this.dynamic = jsonObject.getBoolean(FIELD_DYNAMIC);
