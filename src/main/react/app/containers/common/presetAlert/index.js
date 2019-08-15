@@ -15,8 +15,7 @@ let defaultState = {
   alertTip: "Select",
   regions: [],
   regionalHolidays: [],// regional holiday(This year).
-  regionalHolidaysNextYear: [],// next year's holiday.
-  selectedHolidayId: undefined,
+  selectedHolidayKey: undefined,
   selectedHoliday: undefined,
 }
 
@@ -31,34 +30,31 @@ class Alert extends Component {
     return childrenArray[0] || null;
   }
 
+  /*Fetch holidays with the new region*/
   handleRegionChange = (e) => {
     fetchRegionalHolidays(e.value).then(res => {
       let holidays = res.data.data;
-      holidays[0].forEach(item => {
-        item.region = e.value;
-      })
-      holidays[1].forEach(item => {
+      holidays.forEach(item => {
         item.region = e.value;
       })
       this.setState({
-        regionalHolidays: holidays[0],
-        regionalHolidaysNextYear: holidays[1]
+        regionalHolidays: holidays,
       })
     })
   };
 
   handleHolidaySelected = (e) => {
-    const holidayId = e.value;
+    const key = e.value;
     this.setState({
       /*Set the preset index for later apply.*/
-      selectedHolidayId: holidayId,
-      selectedHoliday: this.state.regionalHolidays.find(item => item.propertiesKey === holidayId)
+      selectedHolidayKey: key,
+      selectedHoliday: this.state.regionalHolidays.find(item => item.key === key)
     });
   };
 
   confirm = () => {
-    const selectedHoliday = this.state.regionalHolidays.find(item => item.propertiesKey === this.state.selectedHolidayId)
-    if (!this.state.selectedHoliday && this.state.selectedHolidayId) {
+    const selectedHoliday = this.state.regionalHolidays.find(item => item.key === this.state.selectedHolidayKey)
+    if (!this.state.selectedHoliday && this.state.selectedHolidayKey) {
       this.setState({
         selectedHoliday: selectedHoliday
       })
@@ -130,19 +126,19 @@ class Alert extends Component {
 
               <p><strong>Select Day</strong></p>
               <Select className='select-holiday'
-                      defaultValue={this.state.selectedHolidayId}
+                      defaultValue={this.state.selectedHolidayKey}
                       onChange={this.handleHolidaySelected}
                       options={this.state.regionalHolidays.map((item, index) => {
                           return {
-                            value: item.propertiesKey,
-                            label: item.description
+                            value: item.key,
+                            label: item.name
                           }
                         }
                       )}
               />
               <p><strong>Next Occurrence</strong></p>
               <div>
-                {this.state.selectedHoliday && formatDate(moment(this.state.selectedHoliday.date.values))}
+                {this.state.selectedHoliday && formatDate(moment(this.state.selectedHoliday.nextOccurrence))}
               </div>
 
             </div>
@@ -163,6 +159,7 @@ class Alert extends Component {
   }
 }
 
+/*Mount the alert to DOM*/
 let div = document.createElement('div');
 let props = {};
 document.body.appendChild(div);

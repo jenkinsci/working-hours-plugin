@@ -117,7 +117,7 @@ export default class ExcludeDate extends React.Component {
     /*Call onEdit, also emit data to parent(for serializing use).*/
     if (this.isHoliday()) {
       this.setState({
-        holidayId: this.state.selectedHoliday.propertiesKey,
+        holidayId: this.state.selectedHoliday.key,
         holidayRegion: this.state.selectedHoliday.region,
       }, () => {
         this.props.onEdit(this.props.index, !this.props.opened, this.state);
@@ -158,7 +158,7 @@ export default class ExcludeDate extends React.Component {
               {RepeatInterval.call(this)}
               {RepeatCount.call(this)}
             </div>}
-            {!this.isHoliday()&&DateInput.call(this,
+            {!this.isHoliday() && DateInput.call(this,
               {
                 field: "startDate",
                 name: "Start Date"
@@ -177,10 +177,7 @@ export default class ExcludeDate extends React.Component {
             {type === DATE_TYPE.TYPE_HOLIDAY && <div className={"form-row"} style={{marginTop: "20px"}}>
               <label className={"form-item-label"}>Next Occurrence</label>
               <div className={"text-highlight"}>
-                {formatDate(moment([
-                  selectedHoliday.date.values[0],
-                  selectedHoliday.date.values[1] - 1,
-                  selectedHoliday.date.values[2]]))}
+                {formatDate(moment(selectedHoliday.nextOccurrence))}
               </div>
             </div>}
 

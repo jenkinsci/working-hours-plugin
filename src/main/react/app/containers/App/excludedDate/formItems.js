@@ -117,7 +117,7 @@ export function TimezoneInput() {
 export function PresetSelect() {
   return <div className="form-row">
     <label className={"form-item-label"}>Using Preset</label>
-    <p><strong>{this.state.selectedHoliday.description}</strong></p>
+    <p><strong>{this.state.selectedHoliday.name}</strong></p>
     <button type="button" className={"btn"}
             onClick={this.removePreset}>X
     </button>
