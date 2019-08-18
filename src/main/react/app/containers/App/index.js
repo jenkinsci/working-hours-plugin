@@ -29,15 +29,14 @@ export default class App extends React.Component {
       datesLoaded: false,
       rangesLoaded: false,
     }
-    return (<PluginContext.Provider value={initialPluginContext}>
-        <div>
-          <h3>
-            Configure Working Hours
-          </h3>
-          <TimeRangeContainer/>
-          <ExcludedDateContainer/>
-        </div>
-      </PluginContext.Provider>
+    return (
+      <div>
+        <h3>
+          Configure Working Hours
+        </h3>
+        <TimeRangeContainer/>
+        <ExcludedDateContainer/>
+      </div>
     );
   }
 }

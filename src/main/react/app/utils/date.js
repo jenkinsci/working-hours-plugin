@@ -1,5 +1,4 @@
 import moment from "moment";
-import ChineseLunarCalendar from "./chineseLunar";
 
 /**
  * Get next occurrence yearly for a given rule like the first sunday of May.
@@ -7,12 +6,13 @@ import ChineseLunarCalendar from "./chineseLunar";
  * @param month The month for the rule.
  * @param week The nth week of the rule.
  * @param day The weekday of the rule.
+ * @param now Today.
  * @returns {moment.Moment} The occurrence in moment of the target date.
  */
-export function nextOccurrenceByYear(month, week, day) {
-  let next = moment().hour(0).second(0).minute(0);
-  let today = moment().hour(0).second(0).minute(0);
-  let nextOccurrenceInThisYear = moment().hour(0).second(0).minute(0).date(1);
+export function nextOccurrenceByYear(month, week, day, now) {
+  let next = now.clone() || moment();
+  let today = now.clone() || moment();
+  let nextOccurrenceInThisYear = now.clone() || moment().date(1);
   if (today.month() === month - 1) {
     let tempWeek = week;
     if (nextOccurrenceInThisYear.day() <= day) {
@@ -41,32 +41,36 @@ export function nextOccurrenceByYear(month, week, day) {
 /**
  * Get next occurrence each month for a given rule like the first sunday.
  *
- * @param week The nth week of the rule.
- * @param day The weekday of the rule.
+ * @param weekOfMonth The nth week of the rule.
+ * @param dayOfWeek The weekday of the rule.
+ * @param now Today.
  * @returns {moment.Moment} The occurrence in moment of the target date.
  */
-export function nextOccurrenceByMonth(week, day) {
-  let next = moment().hour(0).second(0).minute(0);
-  let today = moment().hour(0).second(0).minute(0);
-  let nextOccurrenceInThisMonth = moment().hour(0).second(0).minute(0).date(1);
-  let tempWeek = week;
-  if (nextOccurrenceInThisMonth.day() <= day) {
-    tempWeek = week - 1;
+export function nextOccurrenceByMonth(weekOfMonth, dayOfWeek, now) {
+  let next = now.clone() || moment();
+  let today = now.clone() || moment();
+  let nextOccurrenceInThisMonth = now.clone() || moment().date(1);
+  let tempWeek = weekOfMonth;
+  if (nextOccurrenceInThisMonth.day() <= dayOfWeek) {
+    tempWeek = weekOfMonth - 1;
   }
-  nextOccurrenceInThisMonth.date(1 + (tempWeek * 7) + (day - nextOccurrenceInThisMonth.day()));
+  nextOccurrenceInThisMonth.date(1 + (tempWeek * 7) + (dayOfWeek - nextOccurrenceInThisMonth.day()));
   //If in same month but earlier
-  if (nextOccurrenceInThisMonth.isSameOrAfter(today)) {
+  if (nextOccurrenceInThisMonth.isSame(today, 'date') ||
+    nextOccurrenceInThisMonth.isAfter(today)) {
+
     return nextOccurrenceInThisMonth;
-  } else {
-    //Add to next month
-    next.add(1, "month");
   }
+
+  //Add to next month
+  next.add(1, "month");
+
   // In earlier month
   next.date(1);
-  if (next.day() <= day) {
-    week = week - 1;
+  if (next.day() <= dayOfWeek) {
+    weekOfMonth = weekOfMonth - 1;
   }
-  next.date(1 + (week * 7) + (day - next.day()));
+  next.date(1 + (weekOfMonth * 7) + (dayOfWeek - next.day()));
   return next;
 }
 
@@ -76,40 +80,4 @@ export function format(moment) {
 
 export function formatDate(date) {
   return moment(date).format("dddd, MMMM Do YYYY");
-}
-
-/**
- * Get next occurrence of a Chinese Lunar type date.
- * @param param Params used to decide a regional(At here, it's chinese lunar calendar) date.
- * Typically, param for a chinese lunar day is like "1,1". Which stands for the first day of the first lunar month.
- */
-export function nextOccurrenceChineseLunar(param) {
-  let splitParam = param.split(",").map(item => parseInt(item));
-  if (splitParam[0] && splitParam[1]) {
-    let now = moment();
-
-    /*This year's target day in solar calendar.*/
-    let solarResult = ChineseLunarCalendar.lunar2solar(now.year(), splitParam[0], splitParam[1]);
-
-    if (moment({
-      year: solarResult.cYear,
-      month: solarResult.cMonth - 1,
-      date: solarResult.cDay
-    }).isBefore(moment({ year: now.year(), month: now.month(), date: now.date() }))) {
-      /*If is before today, we set it to the next year.*/
-      let solarResultNextYear = ChineseLunarCalendar.lunar2solar(now.year() + 1, splitParam[0], splitParam[1]);
-      console.log(solarResultNextYear);
-      return moment({
-        year: solarResultNextYear.cYear,
-        month: solarResultNextYear.cMonth - 1,
-        date: solarResultNextYear.cDay
-      });
-    } else {
-      return moment({
-        year: solarResult.cYear,
-        month: solarResult.cMonth - 1,
-        date: solarResult.cDay
-      });
-    }
-  }
 }
