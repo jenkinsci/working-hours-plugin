@@ -70,8 +70,12 @@ public final class DateTimeUtility {
         return null;
     }
 
-    public static LocalTime localTimeFromMinutes(final int minutes) {
-        return LocalTime.of(minutes / 60, minutes % 60);
+    public static LocalTime localTimeFromMinutes(int minutes) {
+
+        if (minutes >= 1440) {
+            minutes = 1439;
+        }
+       return LocalTime.of(minutes / 60, minutes % 60);
     }
 
     /**
@@ -112,5 +116,18 @@ public final class DateTimeUtility {
      */
     public static Boolean isValidDate(final String value) {
         return null != localDate(value);
+    }
+
+    /**
+     * Convert joda date to localDate
+     *
+     * @param jodaDate jodaDate
+     * @return LocalDate.
+     */
+    public static LocalDate jodaDateToLocalDate(org.joda.time.LocalDate jodaDate) {
+        return LocalDate.of(
+            jodaDate.getYear(),
+            jodaDate.getMonthOfYear(),
+            jodaDate.getDayOfMonth());
     }
 }

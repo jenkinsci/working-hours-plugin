@@ -26,13 +26,17 @@ package org.jenkinsci.plugins.workinghours.model;
 import de.jollyday.Holiday;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
+import org.jenkinsci.plugins.workinghours.utils.DateTimeUtility;
 import org.jenkinsci.plugins.workinghours.utils.DynamicDateUtil;
 import org.jenkinsci.plugins.workinghours.utils.JollydayUtil;
-import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Encapsulates an excluded date along with name for UI purposes.
@@ -73,7 +77,6 @@ public class ExcludedDate {
      *
      * @param sourceJSON Json data to deserialize to an ExcludedDate object.
      */
-    @DataBoundConstructor
     public ExcludedDate(JSONObject sourceJSON) {
         this.utcOffset = sourceJSON.getInt(FIELD_UTC_OFFSET);
         this.timezone = sourceJSON.getString(FIELD_TIMEZONE);
@@ -93,9 +96,26 @@ public class ExcludedDate {
         this.repeatInterval = sourceJSON.getInt(FIELD_REPEAT_INTERVAL);
     }
 
+    public ExcludedDate(int utcOffset, String timezone, DateType type, String name, Date startDate, Date endDate, boolean noEnd, boolean repeat, int repeatCount, String holidayId, String holidayRegion, RepeatPeriod repeatPeriod, int repeatInterval) {
+        this.utcOffset = utcOffset;
+        this.timezone = timezone;
+        this.type = type;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.noEnd = noEnd;
+        this.repeat = repeat;
+        this.repeatCount = repeatCount;
+        this.holidayId = holidayId;
+        this.holidayRegion = holidayRegion;
+        this.repeatPeriod = repeatPeriod;
+        this.repeatInterval = repeatInterval;
+    }
+
     private ExcludedDate() {
 
     }
+
 
     public static ValidationResult validateExcludedDate(JSONObject targetJson) {
         for (String requiredField : REQUIRED_FIELDS) {
@@ -127,41 +147,35 @@ public class ExcludedDate {
 
     /**
      * Judge whether today should be excluded according to this excluded date item.
-     *
-     * @param date {@link Calendar} Today.
-     * @return {@link Boolean} Whether should be excluded.
+     * @param checkDate The date to check, if null, the field timezone would be used to get a
+     * {@link ZonedDateTime} to get a localDate.
+     * @return {@link Boolean} Whether now should be excluded.
      */
-    public Boolean shouldExclude(Calendar date) {
-
-        LocalDate checkTime = LocalDate.of(
-            date.get(Calendar.YEAR),
-            date.get(Calendar.MONTH) + 1,
-            date.get(Calendar.DAY_OF_MONTH));
-
+    public Boolean shouldExclude(LocalDate checkDate) {
+        if (checkDate == null) {
+            checkDate = ZonedDateTime.now(ZoneId.of(this.getTimezone())).toLocalDate();
+        }
         if (this.isHoliday()) {
             /*Judge by holiday*/
             Holiday holidayThisYear = JollydayUtil.getHolidayThisYear(this.getHolidayRegion(), this.getHolidayId());
 
-            return checkTime.equals(LocalDate.of(
-                holidayThisYear.getDate().getYear(),
-                holidayThisYear.getDate().getMonthOfYear() + 1,
-                holidayThisYear.getDate().getDayOfMonth()));
+            return checkDate.equals(DateTimeUtility.jodaDateToLocalDate(holidayThisYear.getDate()));
         } else if (this.startDate.isDynamic()) {
             /*Judge by dynamic date */
             final Date startDate = this.getStartDate();
             switch (this.repeatPeriod) {
                 case REPEAT_BY_WEEK:
-                    return checkTime.getDayOfWeek().getValue() == startDate.getDynamicWeekday();
+                    return checkDate.getDayOfWeek().getValue() == startDate.getDynamicWeekday();
                 case REPEAT_BY_MONTH:
-                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkTime).isEqual(checkTime);
+                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkDate).isEqual(checkDate);
                 case REPEAT_BY_YEAR:
-                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkTime).isEqual(checkTime);
+                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkDate).isEqual(checkDate);
                 default:
                     return false;
             }
         } else {
             /*Judge by static date */
-            return this.getStartDate().getLocalDate().isEqual(checkTime);
+            return this.getStartDate().getLocalDate().isEqual(checkDate);
         }
     }
 
@@ -313,6 +327,10 @@ public class ExcludedDate {
             this.dynamicWeekday = jsonObject.getInt(FIELD_DYNAMIC_WEEKDAY);
         }
 
+        public Date() {
+
+        }
+
         LocalDate getLocalDate() {
             return LocalDate.parse(this.getDate(), DateTimeFormatter.ISO_DATE_TIME);
         }
@@ -411,6 +429,159 @@ public class ExcludedDate {
 
         public int getDynamicWeek() {
             return dynamicWeek;
+        }
+
+        public void setDynamic(boolean dynamic) {
+            this.dynamic = dynamic;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public void setDynamicMonth(int dynamicMonth) {
+            this.dynamicMonth = dynamicMonth;
+        }
+
+        public void setDynamicWeekday(int dynamicWeekday) {
+            this.dynamicWeekday = dynamicWeekday;
+        }
+
+        public void setDynamicWeek(int dynamicWeek) {
+            this.dynamicWeek = dynamicWeek;
+        }
+
+        public static Date fromLocalDateTime(LocalDateTime date) {
+            Date newDate = new Date();
+            newDate.setDate(DateTimeFormatter.ISO_DATE_TIME.format(date));
+            newDate.setDynamic(false);
+            return newDate;
+        }
+    }
+
+    public void setUtcOffset(int utcOffset) {
+        this.utcOffset = utcOffset;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public void setType(DateType type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public void setNoEnd(boolean noEnd) {
+        this.noEnd = noEnd;
+    }
+
+    public void setRepeat(boolean repeat) {
+        this.repeat = repeat;
+    }
+
+    public void setRepeatCount(int repeatCount) {
+        this.repeatCount = repeatCount;
+    }
+
+    public void setRepeatPeriod(RepeatPeriod repeatPeriod) {
+        this.repeatPeriod = repeatPeriod;
+    }
+
+    public void setRepeatInterval(int repeatInterval) {
+        this.repeatInterval = repeatInterval;
+    }
+
+
+    public static final class Builder {
+        private ExcludedDate excludedDate;
+
+        private Builder() {
+            excludedDate = new ExcludedDate();
+        }
+
+        public static Builder anExcludedDate() {
+            return new Builder();
+        }
+
+        public Builder withUtcOffset(int utcOffset) {
+            excludedDate.setUtcOffset(utcOffset);
+            return this;
+        }
+
+        public Builder withTimezone(String timezone) {
+            excludedDate.setTimezone(timezone);
+            return this;
+        }
+
+        public Builder withType(DateType type) {
+            excludedDate.setType(type);
+            return this;
+        }
+
+        public Builder withName(String name) {
+            excludedDate.setName(name);
+            return this;
+        }
+
+        public Builder withStartDate(Date startDate) {
+            excludedDate.setStartDate(startDate);
+            return this;
+        }
+
+        public Builder withEndDate(Date endDate) {
+            excludedDate.setEndDate(endDate);
+            return this;
+        }
+
+        public Builder withNoEnd(boolean noEnd) {
+            excludedDate.setNoEnd(noEnd);
+            return this;
+        }
+
+        public Builder withRepeat(boolean repeat) {
+            excludedDate.setRepeat(repeat);
+            return this;
+        }
+
+        public Builder withRepeatCount(int repeatCount) {
+            excludedDate.setRepeatCount(repeatCount);
+            return this;
+        }
+
+        public Builder withHolidayId(String holidayId) {
+            excludedDate.setHolidayId(holidayId);
+            return this;
+        }
+
+        public Builder withHolidayRegion(String holidayRegion) {
+            excludedDate.setHolidayRegion(holidayRegion);
+            return this;
+        }
+
+        public Builder withRepeatPeriod(RepeatPeriod repeatPeriod) {
+            excludedDate.setRepeatPeriod(repeatPeriod);
+            return this;
+        }
+
+        public Builder withRepeatInterval(int repeatInterval) {
+            excludedDate.setRepeatInterval(repeatInterval);
+            return this;
+        }
+
+        public ExcludedDate build() {
+            return excludedDate;
         }
     }
 }

@@ -35,6 +35,8 @@ import hudson.model.Queue.Task;
 import hudson.model.Run;
 import hudson.model.queue.CauseOfBlockage;
 import hudson.model.queue.QueueTaskDispatcher;
+
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +51,7 @@ import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
 /**
  * QueueTaskDispatcher implementation that can block jobs configured with the
  * enforceBuildSchedule property outside of configured working hours.
- * 
+ *
  * @author jxpearce@godaddy.com
  */
 @Extension(optional = true)
@@ -64,12 +66,12 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
     public CauseOfBlockage canRun(Queue.Item item) {
 
         // Don't block tasks which don't have owners. This filters out both
-        // freestyle jobs and the task for the Job. The latter is important 
+        // freestyle jobs and the task for the Job. The latter is important
         // because we want to block the Run not the Job.
         if (item.task == item.task.getOwnerTask()) {
             return super.canRun(item);
         }
-        
+
         // We will only consider blocking PlaceholderTasks. We can get the
         // run directly from such tasks.
         if (!(item.task instanceof ExecutorStepExecution.PlaceholderTask)) {
@@ -112,12 +114,12 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
     /**
      * Determines whether a queue item can run at the current moment.
      * @param itemActionable The item being checked.
-     * @param item The queue item to check.     
+     * @param item The queue item to check.
      * @return true if the item can run now; false otherwise.
      */
     public boolean canRunNow(Actionable itemActionable,
             Queue.Item item) {
-        Calendar now = Calendar.getInstance();
+        LocalDateTime now = LocalDateTime.now();
 
         EnforceBuildScheduleAction action = itemActionable.getAction(EnforceBuildScheduleAction.class);
 
@@ -125,7 +127,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
 
         // Check whether today should be excluded according to the excluded dates we set.
         for (ExcludedDate excludedDate : config.getExcludedDates()) {
-            if(excludedDate.shouldExclude(now)){
+            if(excludedDate.shouldExclude(null)){
                 return false;
             }
         }

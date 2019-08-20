@@ -9,10 +9,10 @@ public class DynamicDateUtil {
      *
      * @param weekOfMonth Week of month.
      * @param dayOfWeek   Day of week.
-     * @param now {@link LocalDate} Today.
+     * @param now         {@link LocalDate} Today.
      * @return {@link LocalDate} Next occurrence.
      */
-    public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek,final LocalDate now) {
+    public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek, final LocalDate now) {
         LocalDate next;
         LocalDate today;
         if (now != null) {
@@ -27,7 +27,7 @@ public class DynamicDateUtil {
         if (nextOccurrenceInThisMonth.getDayOfWeek().getValue() <= dayOfWeek) {
             tempWeekOfMonth = weekOfMonth - 1;
         }
-        nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfMonth()));
+        nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfWeek().getValue()));
         //If in same month but later
         if (nextOccurrenceInThisMonth.isEqual(today) ||
             nextOccurrenceInThisMonth.isAfter(today)
@@ -54,7 +54,7 @@ public class DynamicDateUtil {
      * @param monthOfYear Month of year.
      * @param weekOfMonth Week of month.
      * @param dayOfWeek   Day of week.
-     * @param now {@link LocalDate} Today.
+     * @param now         {@link LocalDate} Today.
      * @return {@link LocalDate} Next occurrence.
      */
     public static LocalDate nextOccurrenceByYear(final int monthOfYear, final int weekOfMonth, final int dayOfWeek, final LocalDate now) {
@@ -120,5 +120,22 @@ public class DynamicDateUtil {
             //If in same month but later
             return next;
         }
+    }
+
+    /**
+     * Calculate the date is the nth occurrence of its day of week.
+     *
+     * @param date The date to be calculated
+     * @return nth occurrence
+     */
+    public static int calculateNthDayOfThisMonth(LocalDate date) {
+        int thisMonth = date.getMonth().getValue();
+        int occurrenceCount = 1;//Default occurrence;
+        LocalDate newDate = date.minusWeeks(1);
+        while (newDate.getMonth().getValue() == thisMonth) {
+            occurrenceCount++;
+            newDate = newDate.minusWeeks(1);
+        }
+        return occurrenceCount;
     }
 }

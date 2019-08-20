@@ -27,6 +27,8 @@ import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
 import org.jenkinsci.plugins.workinghours.utils.DateTimeUtility;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Calendar;
 
@@ -63,9 +65,9 @@ public class TimeRange {
 
         if (!(targetJson.containsKey(FIELD_DAY_OF_WEEK))) {
             return new ValidationResult(false, FIELD_DAY_OF_WEEK, "is needed");
-        } else if (!(targetJson.get(FIELD_DAY_OF_WEEK) instanceof Number)) {
+           } else if (!(targetJson.get(FIELD_DAY_OF_WEEK) instanceof Number)) {
             return new ValidationResult(false, FIELD_DAY_OF_WEEK, "is not a number");
-        } else if (targetJson.getInt(FIELD_DAY_OF_WEEK) > Calendar.SATURDAY-1 || targetJson.getInt(FIELD_DAY_OF_WEEK) < Calendar.SUNDAY-1) {
+        } else if (targetJson.getInt(FIELD_DAY_OF_WEEK) > DayOfWeek.SUNDAY.getValue()  || targetJson.getInt(FIELD_DAY_OF_WEEK) < DayOfWeek.MONDAY.getValue()) {
             return new ValidationResult(false, FIELD_DAY_OF_WEEK, "should be between 1 and 7");
         }
 
@@ -80,7 +82,7 @@ public class TimeRange {
      * @param endTime   The endTime of the time range.
      * @param dayOfWeek The day of the time range.
      */
-    public TimeRange(int startTime, int endTime, int dayOfWeek) {
+    public TimeRange(int startTime, int endTime, DayOfWeek dayOfWeek) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.dayOfWeek = dayOfWeek;
@@ -94,29 +96,25 @@ public class TimeRange {
     public TimeRange(JSONObject sourceJSON) {
         this.startTime = sourceJSON.getInt(FIELD_START_TIME);
         this.endTime = sourceJSON.getInt(FIELD_END_TIME);
-        this.dayOfWeek = sourceJSON.getInt(FIELD_DAY_OF_WEEK);
+        this.dayOfWeek = DayOfWeek.of(sourceJSON.getInt(FIELD_DAY_OF_WEEK));
     }
 
 
     /**
      * Check whether configured rule includes a date.
      *
-     * @param date date to check
+     * @param checkTime Time to check
      * @return true if date is inside of configured rule.
      */
-    public Boolean includesTime(Calendar date) {
+    public Boolean includesTime(LocalDateTime checkTime) {
         LocalTime allowedStartTime = DateTimeUtility.localTimeFromMinutes(getStartTime());
         LocalTime allowedEndTime = DateTimeUtility.localTimeFromMinutes(getEndTime());
 
-        LocalTime checkTime = LocalTime.of(
-                date.get(Calendar.HOUR_OF_DAY),
-                date.get(Calendar.MINUTE));
-
-        return date.get(Calendar.DAY_OF_WEEK)-1 == this.getDayOfWeek()
-                && (checkTime.equals(allowedStartTime)
-                || checkTime.isAfter(allowedStartTime))
-                && (checkTime.equals(allowedEndTime)
-                || checkTime.isBefore(allowedEndTime));
+        return checkTime.getDayOfWeek().getValue() == this.getDayOfWeek()
+            && (checkTime.toLocalTime().equals(allowedStartTime)
+            || checkTime.toLocalTime().isAfter(allowedStartTime))
+            && (checkTime.toLocalTime().equals(allowedEndTime)
+            || checkTime.toLocalTime().isBefore(allowedEndTime));
     }
 
 
@@ -127,7 +125,7 @@ public class TimeRange {
     private int endTime = 0;
 
     /*The day of week*/
-    private int dayOfWeek;
+    private DayOfWeek dayOfWeek;
 
     public int getStartTime() {
         return startTime;
@@ -138,6 +136,6 @@ public class TimeRange {
     }
 
     public int getDayOfWeek() {
-        return dayOfWeek;
+        return dayOfWeek.getValue();
     }
 }

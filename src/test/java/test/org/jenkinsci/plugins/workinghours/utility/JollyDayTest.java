@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 public class JollyDayTest {
     @Test
+
     public void testGetHolidays() {
         HolidayManager manager = HolidayManager.getInstance("US");
         Set result = manager.getHolidays(2019);
