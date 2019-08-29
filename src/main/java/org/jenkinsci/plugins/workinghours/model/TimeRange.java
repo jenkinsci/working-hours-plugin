@@ -44,9 +44,11 @@ public class TimeRange {
     private static final String FIELD_END_TIME = "endTime";
     private static final String FIELD_DAY_OF_WEEK = "dayOfWeek";
 
-    private static final int MAX_MINUTES = 1440;
-    private static final int MAX_MINUTES_MINUS_ONE = 1439;
-    private static final int MIN_MINUTES = 0;
+    public static final int MAX_MINUTES = 1440;
+    public static final int MAX_MINUTES_MINUS_ONE = 1439;
+    public static final int MIN_MINUTES = 0;
+
+    public static final int MINUTES_IN_HOUR = 60;
 
     public static ValidationResult validateTimeRange(JSONObject targetJson) {
         if (!(targetJson.containsKey(FIELD_START_TIME))) {

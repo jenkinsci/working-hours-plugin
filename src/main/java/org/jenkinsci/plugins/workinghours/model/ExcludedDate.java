@@ -148,6 +148,14 @@ public class ExcludedDate {
         return ValidationResult.getSuccessValidation();
     }
 
+    public boolean shouldExclude(LocalDate checkDate){
+        return innerShouldExclude(checkDate);
+    }
+
+    public boolean shouldExclude(){
+        return innerShouldExclude(ZonedDateTime.now(ZoneId.of(this.getTimezone())).toLocalDate());
+    }
+
     /**
      * Judge whether today should be excluded according to this excluded date item.
      *
@@ -155,11 +163,7 @@ public class ExcludedDate {
      *                  {@link ZonedDateTime} to get a localDate.
      * @return {@link Boolean} Whether now should be excluded.
      */
-    public boolean shouldExclude(LocalDate checkDate) {
-        if (checkDate == null) {
-            checkDate = ZonedDateTime.now(ZoneId.of(this.getTimezone())).toLocalDate();
-        }
-
+    private boolean innerShouldExclude(LocalDate checkDate) {
         //If ends, exclude the date if it's after the end date.
         if (!this.isNoEnd()) {
             if (checkDate.isAfter(this.getEndDate().getLocalDate())) {

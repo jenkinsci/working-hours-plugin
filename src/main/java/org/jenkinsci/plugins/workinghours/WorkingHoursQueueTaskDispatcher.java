@@ -127,7 +127,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
 
         // Check whether today should be excluded according to the excluded dates we set.
         for (ExcludedDate excludedDate : config.getExcludedDates()) {
-            if(excludedDate.shouldExclude(null)){
+            if(excludedDate.shouldExclude()){
                 return false;
             }
         }

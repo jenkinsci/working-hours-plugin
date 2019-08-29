@@ -20,6 +20,6 @@ public class TimezoneTest {
         //So we can set one of them and there would be a date which is different from now.
         ExcludedDate excludedDateAnotherDate = ExcludedDateUtility.getAnotherDayExcludedDate();
         assertFalse("today should not be excluded because the excluded date is yesterday/tomorrow",
-            excludedDateAnotherDate.shouldExclude(null));
+            excludedDateAnotherDate.shouldExclude());
     }
 }

@@ -23,6 +23,11 @@
  */
 package org.jenkinsci.plugins.workinghours.utils;
 
+import org.jenkinsci.plugins.workinghours.model.TimeRange;
+import org.jfree.data.time.Hour;
+
+import java.sql.Time;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -72,10 +77,10 @@ public final class DateTimeUtility {
 
     public static LocalTime localTimeFromMinutes(int minutes) {
 
-        if (minutes >= 1440) {
-            minutes = 1439;
+        if (minutes >= TimeRange.MAX_MINUTES) {
+            minutes = TimeRange.MAX_MINUTES_MINUS_ONE;
         }
-       return LocalTime.of(minutes / 60, minutes % 60);
+       return LocalTime.of(minutes / TimeRange.MINUTES_IN_HOUR, minutes % TimeRange.MINUTES_IN_HOUR);
     }
 
     /**
