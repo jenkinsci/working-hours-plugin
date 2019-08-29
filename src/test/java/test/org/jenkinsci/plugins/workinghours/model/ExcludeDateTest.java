@@ -61,7 +61,6 @@ public class ExcludeDateTest {
             .build();
 
         assertTrue(excludedDate.shouldExclude(thanksgivingDayThisYear));
-
         assertFalse(excludedDate.shouldExclude(thanksgivingDayThisYear.minusDays(1)));
         assertFalse(excludedDate.shouldExclude(thanksgivingDayThisYear.plusDays(1)));
     }
