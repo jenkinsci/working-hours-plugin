@@ -44,21 +44,25 @@ public class TimeRange {
     private static final String FIELD_END_TIME = "endTime";
     private static final String FIELD_DAY_OF_WEEK = "dayOfWeek";
 
+    private static final int MAX_MINUTES = 1440;
+    private static final int MAX_MINUTES_MINUS_ONE = 1439;
+    private static final int MIN_MINUTES = 0;
+
     public static ValidationResult validateTimeRange(JSONObject targetJson) {
         if (!(targetJson.containsKey(FIELD_START_TIME))) {
             return new ValidationResult(false, FIELD_START_TIME, "is needed");
         } else if (!(targetJson.get(FIELD_START_TIME) instanceof Number)) {
             return new ValidationResult(false, FIELD_START_TIME, "is not a number");
-        } else if (targetJson.getInt(FIELD_START_TIME) > 2400 || targetJson.getInt(FIELD_START_TIME) < 0) {
-            return new ValidationResult(false, FIELD_START_TIME, "should be between 0 and 2400");
+        } else if (targetJson.getInt(FIELD_START_TIME) > MAX_MINUTES || targetJson.getInt(FIELD_START_TIME) < MIN_MINUTES) {
+            return new ValidationResult(false, FIELD_START_TIME, "should be between 0 and 1440");
         }
 
         if (!(targetJson.containsKey(FIELD_END_TIME))) {
             return new ValidationResult(false, FIELD_END_TIME, "is needed");
         } else if (!(targetJson.get(FIELD_END_TIME) instanceof Number)) {
             return new ValidationResult(false, FIELD_END_TIME, "is not a number");
-        } else if (targetJson.getInt(FIELD_END_TIME) > 2400 || targetJson.getInt(FIELD_END_TIME) < 0) {
-            return new ValidationResult(false, FIELD_END_TIME, "should be between 0 and 2400");
+        } else if (targetJson.getInt(FIELD_END_TIME) > MAX_MINUTES || targetJson.getInt(FIELD_END_TIME) < MIN_MINUTES) {
+            return new ValidationResult(false, FIELD_END_TIME, "should be between 0 and 1440");
         } else if (targetJson.getInt(FIELD_END_TIME) < targetJson.getInt(FIELD_START_TIME)) {
             return new ValidationResult(false, FIELD_END_TIME, "should be after start time");
         }

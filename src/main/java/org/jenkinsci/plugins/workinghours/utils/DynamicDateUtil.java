@@ -4,6 +4,30 @@ package org.jenkinsci.plugins.workinghours.utils;
 import java.time.LocalDate;
 
 public class DynamicDateUtil {
+
+    /**
+     * Get the next certain weekday.
+     * @param dayOfWeek The certain weekday that's needed.
+     * @param now The day used to calculate.
+     * @return The next occurrence.
+     */
+    public static LocalDate nextOccurrenceByWeek(final int dayOfWeek, final LocalDate now) {
+        LocalDate next;
+        LocalDate today;
+        if (now != null) {
+            next = now;
+            today = now;
+        } else {
+            next = LocalDate.now();
+            today = LocalDate.now();
+        }
+        int deltaDays = dayOfWeek - today.getDayOfWeek().getValue();
+        if(deltaDays<0){
+            deltaDays+=7;
+        }
+        return next.plusDays(deltaDays);
+    }
+
     /**
      * Get next occurrence, by month.
      *
@@ -89,7 +113,7 @@ public class DynamicDateUtil {
                 tempWeekOfMonth = weekOfMonth - 1;
             }
 
-            nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfMonth()));
+            nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfWeek().getValue()));
             //If in same month but later
             if (nextOccurrenceInThisMonth.isEqual(today) ||
                 nextOccurrenceInThisMonth.isAfter(today)

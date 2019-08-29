@@ -30,13 +30,9 @@ import org.jenkinsci.plugins.workinghours.utils.DateTimeUtility;
 import org.jenkinsci.plugins.workinghours.utils.DynamicDateUtil;
 import org.jenkinsci.plugins.workinghours.utils.JollydayUtil;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.temporal.ChronoField;
 
 /**
  * Encapsulates an excluded date along with name for UI purposes.
@@ -72,6 +68,8 @@ public class ExcludedDate {
     private static final int MAX_TIME_OFFSET = 720;
     private static final int MIN_TIME_OFFSET = -720;
 
+    public static final int REPEAT_NO_END = -1;
+
     /**
      * Constructs an ExcludedDate object using json.
      *
@@ -94,6 +92,8 @@ public class ExcludedDate {
         this.repeatCount = sourceJSON.getInt(FIELD_REPEAT_COUNT);
         this.repeatPeriod = RepeatPeriod.valueOf(sourceJSON.getInt(FIELD_REPEAT_PERIOD));
         this.repeatInterval = sourceJSON.getInt(FIELD_REPEAT_INTERVAL);
+
+        this.initializeFirstOccurrence(null);
     }
 
     public ExcludedDate(int utcOffset, String timezone, DateType type, String name, Date startDate, Date endDate, boolean noEnd, boolean repeat, int repeatCount, String holidayId, String holidayRegion, RepeatPeriod repeatPeriod, int repeatInterval) {
@@ -112,6 +112,9 @@ public class ExcludedDate {
         this.repeatInterval = repeatInterval;
     }
 
+    /**
+     * Disable the default constructor, use {@link ExcludedDate.Builder}
+     */
     private ExcludedDate() {
 
     }
@@ -147,36 +150,100 @@ public class ExcludedDate {
 
     /**
      * Judge whether today should be excluded according to this excluded date item.
+     *
      * @param checkDate The date to check, if null, the field timezone would be used to get a
-     * {@link ZonedDateTime} to get a localDate.
+     *                  {@link ZonedDateTime} to get a localDate.
      * @return {@link Boolean} Whether now should be excluded.
      */
-    public Boolean shouldExclude(LocalDate checkDate) {
+    public boolean shouldExclude(LocalDate checkDate) {
         if (checkDate == null) {
             checkDate = ZonedDateTime.now(ZoneId.of(this.getTimezone())).toLocalDate();
         }
+
+        //If ends, exclude the date if it's after the end date.
+        if (!this.isNoEnd()) {
+            if (checkDate.isAfter(this.getEndDate().getLocalDate())) {
+                return false;
+            }
+        }
+
         if (this.isHoliday()) {
             /*Judge by holiday*/
             Holiday holidayThisYear = JollydayUtil.getHolidayThisYear(this.getHolidayRegion(), this.getHolidayId());
-
             return checkDate.equals(DateTimeUtility.jodaDateToLocalDate(holidayThisYear.getDate()));
         } else if (this.startDate.isDynamic()) {
             /*Judge by dynamic date */
             final Date startDate = this.getStartDate();
-            switch (this.repeatPeriod) {
+            switch (this.getRepeatPeriodEnum()) {
                 case REPEAT_BY_WEEK:
-                    return checkDate.getDayOfWeek().getValue() == startDate.getDynamicWeekday();
+                    return DynamicDateUtil.nextOccurrenceByWeek(startDate.getDynamicWeekday(), checkDate).isEqual(checkDate)
+                        && judgeRepeatIntervalAndCount(getTwoDaysDistanceInWeeks(startDate.getFirstOccurrence(), checkDate));
                 case REPEAT_BY_MONTH:
-                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkDate).isEqual(checkDate);
+                    return DynamicDateUtil.nextOccurrenceByMonth(startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkDate).isEqual(checkDate)
+                        && judgeRepeatIntervalAndCount(getTwoDaysDistanceInMonths(startDate.getFirstOccurrence(), checkDate));
                 case REPEAT_BY_YEAR:
-                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkDate).isEqual(checkDate);
+                    return DynamicDateUtil.nextOccurrenceByYear(startDate.getDynamicMonth(), startDate.getDynamicWeek(), startDate.getDynamicWeekday(), checkDate).isEqual(checkDate)
+                        && judgeRepeatIntervalAndCount(getTwoDaysDistanceInYears(startDate.getFirstOccurrence(), checkDate));
                 default:
                     return false;
             }
         } else {
             /*Judge by static date */
+            if (this.isRepeat()) {
+                return this.judgeRepeatWithStaticDate(checkDate, this.getStartDate().getLocalDate());
+            }
             return this.getStartDate().getLocalDate().isEqual(checkDate);
         }
+    }
+
+    /**
+     * Check whether a date should be excluded according to the repeat interval/period/count rule.
+     *
+     * @param checkDate  The date to check, typically would be LocalDate.now()
+     * @param targetDate The date which has been set to judge a date.
+     * @return Whether the check date should be excluded.
+     */
+    private boolean judgeRepeatWithStaticDate(LocalDate checkDate, LocalDate targetDate) {
+        switch (this.getRepeatPeriodEnum()) {
+            case REPEAT_BY_WEEK:
+                return checkDate.getDayOfWeek().getValue() == targetDate.getDayOfWeek().getValue()
+                    && judgeRepeatIntervalAndCount(getTwoDaysDistanceInWeeks(targetDate, checkDate));
+            case REPEAT_BY_MONTH:
+                return checkDate.getDayOfMonth() == targetDate.getDayOfMonth()
+                    && judgeRepeatIntervalAndCount(getTwoDaysDistanceInMonths(targetDate, checkDate));
+            case REPEAT_BY_YEAR:
+                return checkDate.getDayOfMonth() == targetDate.getDayOfMonth()
+                    && checkDate.getMonth() == targetDate.getMonth()
+                    && judgeRepeatIntervalAndCount(getTwoDaysDistanceInYears(targetDate, checkDate));
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Judge this occurrence is hit the repeat interval and count rule.
+     *
+     * @param appearTimes The times the excluded date has occurred.
+     * @return Whether this occurrence is hit by the rule.
+     */
+    private boolean judgeRepeatIntervalAndCount(long appearTimes) {
+        return appearTimes % getRepeatInterval() == 0 && (getRepeatCount() == REPEAT_NO_END || (getRepeatCount() > 0 && appearTimes / getRepeatInterval() <= getRepeatCount()));
+    }
+
+    private long getTwoDaysDistanceInDays(LocalDate earlyDate, LocalDate laterDate) {
+        return laterDate.getLong(ChronoField.EPOCH_DAY) - earlyDate.getLong(ChronoField.EPOCH_DAY);
+    }
+
+    private long getTwoDaysDistanceInWeeks(LocalDate earlyDate, LocalDate laterDate) {
+        return (laterDate.getLong(ChronoField.EPOCH_DAY) - earlyDate.getLong(ChronoField.EPOCH_DAY)) / 7;
+    }
+
+    private long getTwoDaysDistanceInMonths(LocalDate earlyDate, LocalDate laterDate) {
+        return laterDate.getLong(ChronoField.PROLEPTIC_MONTH) - earlyDate.getLong(ChronoField.PROLEPTIC_MONTH);
+    }
+
+    private long getTwoDaysDistanceInYears(LocalDate earlyDate, LocalDate laterDate) {
+        return laterDate.getLong(ChronoField.YEAR) - earlyDate.getLong(ChronoField.YEAR);
     }
 
     private boolean isHoliday() {
@@ -267,7 +334,7 @@ public class ExcludedDate {
     }
 
     public boolean isNoEnd() {
-        return noEnd;
+        return this.noEnd;
     }
 
     public boolean isRepeat() {
@@ -280,6 +347,10 @@ public class ExcludedDate {
 
     public int getRepeatPeriod() {
         return repeatPeriod.getValue();
+    }
+
+    public RepeatPeriod getRepeatPeriodEnum() {
+        return repeatPeriod;
     }
 
     public int getRepeatInterval() {
@@ -318,6 +389,7 @@ public class ExcludedDate {
 
         public Date(JSONObject jsonObject, boolean isEndDate) {
             this.date = jsonObject.getString(FIELD_DATE);
+            //The end date is static.
             if (isEndDate) {
                 return;
             }
@@ -358,7 +430,7 @@ public class ExcludedDate {
                         }
                         if (!(targetObject.get(FIELD_DYNAMIC_WEEKDAY) instanceof Integer)) {
                             return new ValidationResult(false, FIELD_DYNAMIC_WEEKDAY, "should be int");
-                        } else if (targetObject.getInt(FIELD_DYNAMIC_WEEKDAY) > 7 || targetObject.getInt(FIELD_DYNAMIC_WEEKDAY) < 1) {
+                        } else if (targetObject.getInt(FIELD_DYNAMIC_WEEKDAY) > DayOfWeek.SUNDAY.getValue() || targetObject.getInt(FIELD_DYNAMIC_WEEKDAY) < DayOfWeek.MONDAY.getValue()) {
                             return new ValidationResult(false, FIELD_DYNAMIC_WEEKDAY, "should be between 1 and 7");
                         }
 
@@ -370,7 +442,7 @@ public class ExcludedDate {
 
                         if (!(targetObject.get(FIELD_DYNAMIC_MONTH) instanceof Integer)) {
                             return new ValidationResult(false, FIELD_DYNAMIC_MONTH, "should be int");
-                        } else if (targetObject.getInt(FIELD_DYNAMIC_MONTH) > 12 || targetObject.getInt(FIELD_DYNAMIC_MONTH) < 1) {
+                        } else if (targetObject.getInt(FIELD_DYNAMIC_MONTH) > Month.DECEMBER.getValue() || targetObject.getInt(FIELD_DYNAMIC_MONTH) < Month.JANUARY.getValue()) {
                             return new ValidationResult(false, FIELD_DYNAMIC_MONTH, "should be between 1 and 12");
                         }
                     } else {
@@ -396,6 +468,7 @@ public class ExcludedDate {
          */
         private String date;
 
+        private LocalDate firstOccurrence;
 
         public String getDate() {
             return date;
@@ -451,11 +524,19 @@ public class ExcludedDate {
             this.dynamicWeek = dynamicWeek;
         }
 
-        public static Date fromLocalDateTime(LocalDateTime date) {
+        public static Date fromLocalDate(LocalDate date) {
             Date newDate = new Date();
-            newDate.setDate(DateTimeFormatter.ISO_DATE_TIME.format(date));
+            newDate.setDate(DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.of(date,LocalTime.of(0,0))));
             newDate.setDynamic(false);
             return newDate;
+        }
+
+        public LocalDate getFirstOccurrence() {
+            return firstOccurrence;
+        }
+
+        public void setFirstOccurrence(LocalDate firstOccurrence) {
+            this.firstOccurrence = firstOccurrence;
         }
     }
 
@@ -581,7 +662,27 @@ public class ExcludedDate {
         }
 
         public ExcludedDate build() {
+            excludedDate.initializeFirstOccurrence(null);
             return excludedDate;
+        }
+    }
+
+    public void initializeFirstOccurrence(LocalDate now) {
+        //If dynamic, initialize the first occurrence of the data.
+        if (this.startDate != null && this.startDate.isDynamic()) {
+            switch (this.getRepeatPeriodEnum()) {
+                case REPEAT_BY_WEEK:
+                    this.getStartDate().setFirstOccurrence(DynamicDateUtil.nextOccurrenceByWeek(this.getStartDate().getDynamicWeekday(), now));
+                    break;
+                case REPEAT_BY_MONTH:
+                    this.getStartDate().setFirstOccurrence(DynamicDateUtil.nextOccurrenceByMonth(this.getStartDate().getDynamicWeek(), this.getStartDate().getDynamicWeekday(), now));
+                    break;
+                case REPEAT_BY_YEAR:
+                    this.getStartDate().setFirstOccurrence(DynamicDateUtil.nextOccurrenceByYear(this.getStartDate().getDynamicMonth(), this.getStartDate().getDynamicWeek(), this.getStartDate().getDynamicWeekday(), now));
+                    break;
+                default:
+                    return;
+            }
         }
     }
 }

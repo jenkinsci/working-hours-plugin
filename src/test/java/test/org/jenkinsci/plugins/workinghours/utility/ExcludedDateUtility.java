@@ -13,20 +13,22 @@ import java.time.ZonedDateTime;
 public class ExcludedDateUtility {
     public static ExcludedDate getTodayInStaticExcludedDate() {
         return ExcludedDate.Builder.anExcludedDate()
-            .withStartDate(ExcludedDate.Date.fromLocalDateTime(LocalDateTime.now()))
+            .withStartDate(ExcludedDate.Date.fromLocalDate(LocalDate.now()))
             .withName("testExcludeOnStaticDate")
             .withTimezone(ZoneId.systemDefault().getId())
             .withType(DateType.TYPE_CUSTOM)
             .build();
     }
 
-    public static ExcludedDate getTodayInDynamicExcludedDateByYear() {
+    public static ExcludedDate getTodayInDynamicExcludedDateByYear(LocalDate targetDate) {
         ExcludedDate.Date dynamicDate = new ExcludedDate.Date();
-        LocalDate today = LocalDate.now();
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
         dynamicDate.setDynamic(true);
         dynamicDate.setDynamicMonth(dynamicDate.getDynamicMonth());
-        dynamicDate.setDynamicWeek(DynamicDateUtil.calculateNthDayOfThisMonth(today));
-        dynamicDate.setDynamicWeekday(today.getDayOfWeek().getValue());
+        dynamicDate.setDynamicWeek(DynamicDateUtil.calculateNthDayOfThisMonth(targetDate));
+        dynamicDate.setDynamicWeekday(targetDate.getDayOfWeek().getValue());
         return ExcludedDate.Builder.anExcludedDate()
             .withStartDate(dynamicDate)
             .withName("today in dynamic date by year")
@@ -35,12 +37,14 @@ public class ExcludedDateUtility {
             .build();
     }
 
-    public static ExcludedDate getTodayInDynamicExcludedDateByMonth() {
+    public static ExcludedDate getTodayInDynamicExcludedDateByMonth(LocalDate targetDate) {
         ExcludedDate.Date dynamicDate = new ExcludedDate.Date();
-        LocalDate today = LocalDate.now();
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
         dynamicDate.setDynamic(true);
-        dynamicDate.setDynamicWeek(DynamicDateUtil.calculateNthDayOfThisMonth(today));
-        dynamicDate.setDynamicWeekday(today.getDayOfWeek().getValue());
+        dynamicDate.setDynamicWeek(DynamicDateUtil.calculateNthDayOfThisMonth(targetDate));
+        dynamicDate.setDynamicWeekday(targetDate.getDayOfWeek().getValue());
         return ExcludedDate.Builder.anExcludedDate()
             .withStartDate(dynamicDate)
             .withName("today in dynamic date by month")
@@ -49,11 +53,13 @@ public class ExcludedDateUtility {
             .build();
     }
 
-    public static ExcludedDate getTodayInDynamicExcludedDateByWeek() {
+    public static ExcludedDate getTodayInDynamicExcludedDateByWeek(LocalDate targetDate) {
         ExcludedDate.Date dynamicDate = new ExcludedDate.Date();
-        LocalDate today = LocalDate.now();
+        if (targetDate == null) {
+            targetDate = LocalDate.now();
+        }
         dynamicDate.setDynamic(true);
-        dynamicDate.setDynamicWeekday(today.getDayOfWeek().getValue());
+        dynamicDate.setDynamicWeekday(targetDate.getDayOfWeek().getValue());
         return ExcludedDate.Builder.anExcludedDate()
             .withStartDate(dynamicDate)
             .withName("today in dynamic date by week")
@@ -73,7 +79,7 @@ public class ExcludedDateUtility {
      */
     public static ExcludedDate getAnotherDayExcludedDate() {
         ExcludedDate.Builder builder = ExcludedDate.Builder.anExcludedDate()
-            .withStartDate(ExcludedDate.Date.fromLocalDateTime(LocalDateTime.now()))
+            .withStartDate(ExcludedDate.Date.fromLocalDate(LocalDate.now()))
             .withName("get timezone which is another day")
             .withType(DateType.TYPE_CUSTOM);
 
@@ -86,4 +92,14 @@ public class ExcludedDateUtility {
 
         return builder.build();
     }
+
+
+    public static LocalDate getOccurrenceOfTargetInXYears(LocalDate targetDate, int years){
+        return DynamicDateUtil.nextOccurrenceByYear(
+            targetDate.getMonth().getValue(),
+            DynamicDateUtil.calculateNthDayOfThisMonth(targetDate),
+            targetDate.getDayOfWeek().getValue(),
+            targetDate.withDayOfYear(1).plusYears(years));
+    }
+
 }

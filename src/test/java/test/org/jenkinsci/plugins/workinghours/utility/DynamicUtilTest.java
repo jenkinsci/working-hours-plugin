@@ -9,6 +9,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DynamicUtilTest {
+
+    @Test
+    public void testNextOccurrenceByWeek() {
+        LocalDate testDate = LocalDate.of(2019, 7, 25);
+        assertTrue(LocalDate.of(2019, 7, 29).isEqual(DynamicDateUtil.nextOccurrenceByWeek(1,testDate)));
+        assertTrue(LocalDate.of(2019, 7, 30).isEqual(DynamicDateUtil.nextOccurrenceByWeek(2,testDate)));
+        assertTrue(LocalDate.of(2019, 7, 31).isEqual(DynamicDateUtil.nextOccurrenceByWeek(3,testDate)));
+        assertTrue(LocalDate.of(2019, 7, 25).isEqual(DynamicDateUtil.nextOccurrenceByWeek(4,testDate)));
+        assertTrue(LocalDate.of(2019, 7, 26).isEqual(DynamicDateUtil.nextOccurrenceByWeek(5,testDate)));
+        assertTrue(LocalDate.of(2019, 7, 27).isEqual(DynamicDateUtil.nextOccurrenceByWeek(6,testDate)));
+        assertTrue(LocalDate.of(2019, 7, 28).isEqual(DynamicDateUtil.nextOccurrenceByWeek(7,testDate)));
+    }
+
     @Test
     public void testNextOccurrenceByMonth() {
         LocalDate testDate = LocalDate.of(2019, 7, 22);
