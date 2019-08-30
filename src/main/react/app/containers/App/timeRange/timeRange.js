@@ -6,8 +6,6 @@ import "rc-slider/assets/index.css";
 import {Range} from "rc-slider";
 import {debounce} from "lodash";
 
-import {PluginContext} from "../../context/context";
-
 const timeRegExp = /^(^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])|^(24:00))$/;
 
 const timeMarks = {
@@ -48,8 +46,6 @@ function timeStringToMinutes(timeString) {
 }
 
 export default class TimeRange extends React.Component {
-  static contextType = PluginContext;
-
   constructor(props) {
     super(props);
     this.state = {
