@@ -26,6 +26,7 @@ package org.jenkinsci.plugins.workinghours.model;
 import de.jollyday.Holiday;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
+import org.jenkinsci.plugins.workinghours.presets.PresetManager;
 import org.jenkinsci.plugins.workinghours.utils.DateTimeUtility;
 import org.jenkinsci.plugins.workinghours.utils.DynamicDateUtil;
 import org.jenkinsci.plugins.workinghours.utils.JollydayUtil;
@@ -48,7 +49,8 @@ public class ExcludedDate {
     private static final String FIELD_START_DATE = "startDate";
     private static final String FIELD_END_DATE = "endDate";
     private static final String FIELD_HOLIDAY_REGION = "holidayRegion";
-    private static final String FIELD_HOLIDAY_ID = "holidayId";
+    private static final String FIELD_HOLIDAY_KEY = "key";
+    private static final String FIELD_HOLIDAY = "holiday";
     private static final String FIELD_NO_END = "noEnd";
     private static final String FIELD_REPEAT = "repeat";
     private static final String FIELD_REPEAT_COUNT = "repeatCount";
@@ -84,7 +86,8 @@ public class ExcludedDate {
         }
         this.type = DateType.valueOf(sourceJSON.getInt(FIELD_TYPE));
         if (this.type == DateType.TYPE_HOLIDAY) {
-            this.holidayId = sourceJSON.getString(FIELD_HOLIDAY_ID);
+            JSONObject holiday = sourceJSON.getJSONObject(FIELD_HOLIDAY);
+            this.holidayId = holiday.getString(FIELD_HOLIDAY_KEY);
             this.holidayRegion = sourceJSON.getString(FIELD_HOLIDAY_REGION);
         }
         this.name = sourceJSON.getString(FIELD_NAME);
@@ -148,11 +151,11 @@ public class ExcludedDate {
         return ValidationResult.getSuccessValidation();
     }
 
-    public boolean shouldExclude(LocalDate checkDate){
+    public boolean shouldExclude(LocalDate checkDate) {
         return innerShouldExclude(checkDate);
     }
 
-    public boolean shouldExclude(){
+    public boolean shouldExclude() {
         return innerShouldExclude(ZonedDateTime.now(ZoneId.of(this.getTimezone())).toLocalDate());
     }
 
@@ -369,6 +372,14 @@ public class ExcludedDate {
         return holidayRegion;
     }
 
+    public org.jenkinsci.plugins.workinghours.model.Holiday getHoliday() {
+        if (this.getHolidayId() != null) {
+            return PresetManager.getInstance().getCertainHolidayThisYear(this.getHolidayRegion(), this.getHolidayId());
+        } else {
+            return null;
+        }
+    }
+
     public void setHolidayRegion(String holidayRegion) {
         this.holidayRegion = holidayRegion;
     }
@@ -530,7 +541,7 @@ public class ExcludedDate {
 
         public static Date fromLocalDate(LocalDate date) {
             Date newDate = new Date();
-            newDate.setDate(DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.of(date,LocalTime.of(0,0))));
+            newDate.setDate(DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.of(date, LocalTime.of(0, 0))));
             newDate.setDynamic(false);
             return newDate;
         }

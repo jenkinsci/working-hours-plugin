@@ -85,7 +85,7 @@ export function NameInput() {
            className={"input input-text"}
            style={{width: 200}}
            onChange={handleNameChange}/>
-    <button type="button" className={"btn btn-gray"}
+    <button type="button" className={"btn btn-gray select-preset"}
             onClick={this.applyPreset}>Select Preset
     </button>
   </div>;
@@ -117,7 +117,7 @@ export function TimezoneInput() {
 export function PresetSelect() {
   return <div className="form-row">
     <label className={"form-item-label"}>Using Preset</label>
-    <p><strong>{this.state.selectedHoliday.name}</strong></p>
+    <p><strong>{this.state.holiday.name}</strong></p>
     <button type="button" className={"btn"}
             onClick={this.removePreset}>X
     </button>

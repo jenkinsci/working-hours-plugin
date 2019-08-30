@@ -58,4 +58,15 @@ public class PresetManager {
             t.setContextClassLoader(orig);
         }
     }
+
+    public Holiday getCertainHolidayThisYear(String regionCode,String holidayKey){
+        if (regionCode.equals(ChineseHolidayManager.REGION_CODE)){
+            return ChineseHolidayManager.getInstance().getCertainHolidayThisYear(holidayKey);
+        }else {
+            return Holiday.getHolidayFromTwoJollyDay(
+                JollydayUtil.getHolidayThisYear(regionCode,holidayKey),
+                JollydayUtil.getHolidayNextYear(regionCode,holidayKey)
+            );
+        }
+    }
 }

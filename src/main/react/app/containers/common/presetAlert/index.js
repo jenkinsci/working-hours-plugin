@@ -63,6 +63,7 @@ class Alert extends Component {
     this.state.onApply({
       selectedHoliday: selectedHoliday
     })
+
     this.setState({
       alertStatus: false
     })

@@ -2,7 +2,7 @@ import React from "react";
 import DateInput from "./dateInput";
 import {DATE_TYPE, PERIODS} from "../constants";
 import {formatDate} from "../../../utils/date";
-import {getBrief} from "../../../utils";
+import {getBrief, getDefaultTimezone} from "../../../utils";
 import moment from "moment";
 import Alert from '../../common/presetAlert'
 import {
@@ -22,13 +22,14 @@ export default class ExcludeDate extends React.Component {
     this.state = {
       nextOccurrence: undefined,
 
+      holiday: undefined,
       selectedHoliday: undefined,
 
       name: "",
       type: DATE_TYPE.TYPE_CUSTOM,
 
       utcOffset: moment().utcOffset(),
-      timezone: "",
+      timezone: getDefaultTimezone(),
 
       startDate: {
         dynamic: false,
@@ -60,7 +61,8 @@ export default class ExcludeDate extends React.Component {
       onApply: (result) => {
         this.setState({
           type: DATE_TYPE.TYPE_HOLIDAY,
-          selectedHoliday: result.selectedHoliday
+          holiday: result.selectedHoliday,
+          holidayRegion:result.selectedHoliday.holidayRegion
         })
       }
     });
@@ -68,7 +70,7 @@ export default class ExcludeDate extends React.Component {
 
   removePreset = () => {
     this.setState({
-      selectedHoliday: undefined,
+      holiday: undefined,
       type: DATE_TYPE.TYPE_CUSTOM,
     })
   }
@@ -92,9 +94,6 @@ export default class ExcludeDate extends React.Component {
         endDate: {
           dynamic: false,
           date: new Date(),
-          dynamicMonth: 1,
-          dynamicWeek: 1,
-          dynamicWeekday: 1
         }
       })
     }
@@ -115,20 +114,7 @@ export default class ExcludeDate extends React.Component {
   /*Tell the parent that this child want to be toggle open state.*/
   toggleEdit = () => {
     /*Call onEdit, also emit data to parent(for serializing use).*/
-    if (this.isHoliday()) {
-      let state = {}
-      if (this.props.opened) {
-        state = {
-          holidayId: this.state.selectedHoliday.key,
-          holidayRegion: this.state.selectedHoliday.region,
-        }
-      }
-      this.setState(state, () => {
-        this.props.onEdit(this.props.index, !this.props.opened, this.state);
-      })
-    } else {
-      this.props.onEdit(this.props.index, !this.props.opened, this.state);
-    }
+    this.props.onEdit(this.props.index, !this.props.opened, this.state);
   };
 
   deleteDate = () => {
@@ -148,7 +134,7 @@ export default class ExcludeDate extends React.Component {
   }
 
   render() {
-    const {repeat, noEnd, type, selectedHoliday, startDate} = this.state;
+    const {repeat, noEnd, type, holiday, startDate} = this.state;
     return (
       <div className={"config-item"}>
         {/*Allow each date item to open or close, need help of the parent component.*/}
@@ -182,7 +168,7 @@ export default class ExcludeDate extends React.Component {
             <div className={"form-row"} style={{marginTop: "20px"}}>
               <label className={"form-item-label"}>Next Occurrence</label>
               <div className={"text-highlight"}>
-                {formatDate(moment(selectedHoliday.nextOccurrence))}
+                {formatDate(moment(holiday.nextOccurrence))}
               </div>
             </div>}
 

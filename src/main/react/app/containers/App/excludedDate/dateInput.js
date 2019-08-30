@@ -1,10 +1,14 @@
 import DatePicker from "react-datepicker/es";
 import React from "react";
 import {MONTHS, ORDERS, PERIODS, WEEKDAYS} from "../constants";
-import {format, nextOccurrenceByMonth, nextOccurrenceByYear} from "../../../utils/date";
+import {
+  format,
+  nextOccurrenceByMonth,
+  nextOccurrenceByYear
+} from "../../../utils/date";
 
 export default function DateInput(props) {
-  const {field, name,isEndDate} = props;
+  const {field, name, isEndDate} = props;
   const self = this;
   const {repeatPeriod, repeat} = self.state;
 
@@ -41,54 +45,53 @@ export default function DateInput(props) {
     <hr/>
     <div className={"form-row"}>
       <div className={"form-item-label"}>{name}</div>
-
-      {!isEndDate && repeat && <div className={"form-item-label form-item-label-sub"}>
-        <input type='checkbox' checked={dateObject.dynamic}
-               onChange={updateCheckbox("dynamic")}/>
-        <label>Dynamic</label>
-      </div>}
     </div>
-    <hr/>
+    {!isEndDate && repeat && <div className={"form-row"}>
+      <label className={"form-item-label"}>Dynamic</label>
+      <input type='checkbox' checked={dateObject.dynamic}
+             onChange={updateCheckbox("dynamic")}/>
+    </div>}
 
     {(!dateObject.dynamic || !repeat) &&
-    <div className={"form-row form-row-indent"}>
-      <label style={{marginRight: 10}}>Date</label>
-      <DatePicker className={"input input-text"} selected={new Date(dateObject.date)} placeholder="select"
+    <div className={"form-row"}>
+      <label className={"form-item-label"}>Date</label>
+      <DatePicker className={"input input-text"}
+                  selected={new Date(dateObject.date)} placeholder="select"
                   onChange={updateDate()}/>
     </div>
     }
 
     {!isEndDate && repeat && dateObject.dynamic && <div>
-      <div className={"form-row form-row-indent"} style={{display: "flex", flexDirection: "row", lineHeight: "40px"}}>
-
+      <div className={"form-row"}>
+        <div
+          className={"form-item-label"}> {repeatPeriod === PERIODS.Week ? 'Each' : 'The'}</div>
         {(repeatPeriod >= PERIODS.Month || !repeat) &&
-        <div className={"date-control-item"}>
-          The
-          <select className={"input input-select select-dynamic-item"}
-                  value={dateObject.dynamicWeek}
-                  onChange={updateDynamicDateData("dynamicWeek")}>
-            {Object.keys(ORDERS).map(key => <option value={ORDERS[key]} key={key}>{key}</option>
-            )}
-          </select>
-        </div>
+        <select className={"input input-select select-dynamic-week"}
+                value={dateObject.dynamicWeek}
+                onChange={updateDynamicDateData("dynamicWeek")}>
+          {Object.keys(ORDERS).map(key => <option value={ORDERS[key]}
+                                                  key={key}>{key}</option>
+          )}
+        </select>
         }
         {(repeatPeriod >= PERIODS.Week || !repeat) &&
-        <div className={"date-control-item"}>
-          {repeatPeriod === PERIODS.Week && <div className={"hint"}>Each</div>}
-          <select className={"input input-select select-dynamic-item"}
-                  value={dateObject.dynamicWeekday}
-                  onChange={updateDynamicDateData("dynamicWeekday")}>
-            {Object.keys(WEEKDAYS).map(key => <option value={WEEKDAYS[key]} key={key}>{key}</option>)}
-          </select></div>
+        <select className={"input input-select select-dynamic-weekday"}
+                value={dateObject.dynamicWeekday}
+                onChange={updateDynamicDateData("dynamicWeekday")}>
+          {Object.keys(WEEKDAYS).map(key => <option value={WEEKDAYS[key]}
+                                                    key={key}>{key}</option>)}
+        </select>
         }
 
         {(repeatPeriod >= PERIODS.Year || !repeat) &&
-        <div className={"date-control-item"}>Of
-          <select className={"input input-select select-dynamic-item"}
+        <div>Of
+          <select className={"input input-select select-dynamic-month"}
                   value={dateObject.dynamicMonth}
                   onChange={updateDynamicDateData("dynamicMonth")}>
-            {Object.keys(MONTHS).map(key => <option value={MONTHS[key]} key={key}>{key}</option>)}
-          </select></div>
+            {Object.keys(MONTHS).map(key => <option value={MONTHS[key]}
+                                                    key={key}>{key}</option>)}
+          </select>
+        </div>
         }
 
       </div>

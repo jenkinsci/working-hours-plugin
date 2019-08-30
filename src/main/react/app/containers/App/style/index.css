@@ -1,19 +1,20 @@
 .form-item-label {
     margin-right: 20px;
-    width: 100px;
+    width: 130px;
     text-align: right;
     white-space: nowrap;
     font-weight: lighter;
 }
 
-.form-item-label-sub{
+.form-item-label-sub {
     width: auto;
     height: 12px;
 }
 
 .form-row {
     margin: 17px 0;
-    height: 25px;
+    height: 35px;
+    line-height: 35px;
 }
 
 .form-row-indent {
@@ -32,23 +33,23 @@
     background: #f9f9f9;
 }
 
-.config-count{
+.config-count {
     flex: 0 1 auto;
     align-self: flex-end;
 }
 
-.config-header{
+.config-header {
     margin: 0 10px;
     display: flex;
 }
 
-.config-title{
-    flex:0 1 auto;
+.config-title {
+    flex: 0 1 auto;
     font-size: 25px;
 }
 
-.config-loading-status{
-    flex:1 1 auto;
+.config-loading-status {
+    flex: 1 1 auto;
     align-self: flex-end;
 }
 
@@ -69,7 +70,7 @@
 
 .btn {
     width: auto;
-    height: 29px;
+    height: 35px;
     font-size: 12px;
     border-radius: 3px;
     cursor: pointer;
@@ -78,7 +79,7 @@
     margin-left: 10px;
 }
 
-.btn:disabled{
+.btn:disabled {
     cursor: not-allowed;
 }
 
@@ -126,8 +127,8 @@
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     background: white;
     max-height: 45px;
-
     padding: 2px 8px;
+    height: 35px;
 }
 
 .input-time {
@@ -162,22 +163,34 @@ input[type='checkbox'] {
     padding: 2px;
 }
 
-.select-preset-type{
+.select-preset-type {
     width: 150px;
     margin-right: 10px
 }
 
-.select-preset-item{
+.select-preset-item {
     width: 300px;
 }
 
-.select-dynamic-item{
+.select-dynamic-item {
     width: 120px;
-    margin-left: 10px;
     height: 35px;
 }
 
-.date-control-item{
+.select-dynamic-week {
+    margin-left: 0;
+}
+
+.select-dynamic-weekday {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.select-dynamic-month {
+    margin-left: 10px;
+}
+
+.date-control-item {
     display: inline-flex;
     margin-left: 5px;
 }
@@ -199,4 +212,22 @@ input[type='checkbox'] {
     right: -4px;
     top: -4px;
     border-radius: 5px;
+}
+
+hr {
+    border-top: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+
+.input:hover {
+    border-color: #b3b5b5;
+}
+
+.input:focus {
+    border-color: #aeb0b0;
+    border-right-width: 1px !important;
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 2px rgba(155, 151, 153, 0.2);
+    box-shadow: 0 0 0 2px rgba(155, 151, 153, 0.2);
+
 }

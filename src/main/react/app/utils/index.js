@@ -1,6 +1,7 @@
 import {MONTHS, ORDERS, PERIODS, WEEKDAYS} from "../containers/App/constants";
 import {formatDate} from "./date";
-
+import moment from 'moment'
+import timezones from "../containers/common/timezonePicker/timezones"
 /*Get a brief description of this excluded date.*/
 export function getBrief() {
   let words = [];
@@ -53,4 +54,14 @@ export function getBrief() {
   }
 
   return words.join(" ");
+}
+
+export function getDefaultTimezone() {
+  const offset = moment().utcOffset()/60;
+  let timezone = timezones.find(item=>item.offset=== offset);
+  if(!timezone){
+    return  "UTC";
+  }else {
+    return timezone.name
+  }
 }

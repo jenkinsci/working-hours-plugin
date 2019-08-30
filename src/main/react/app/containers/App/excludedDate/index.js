@@ -75,7 +75,7 @@ export default class ExcludeDateContainer extends React.Component {
     setExcludedDates({
       data: param
         .map(item => only(item, [
-          "holidayId",
+          "holiday",
           "holidayRegion",
           "name",
           "type",

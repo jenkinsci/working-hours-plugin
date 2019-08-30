@@ -1,13 +1,14 @@
 package org.jenkinsci.plugins.workinghours.model;
 
+import de.jollyday.HolidayManager;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 public class Holiday {
     protected String name;
+
+
     protected Date nextOccurrence;
     protected String key;
 
@@ -37,18 +38,26 @@ public class Holiday {
      * @param jollydayNextYear Next year's holiday.
      * @return Next Occurrence.
      */
-    private static Holiday getHolidayFromTwoJollyDay(de.jollyday.Holiday jollydayThisYear, de.jollyday.Holiday jollydayNextYear) {
-        final LocalDate now = LocalDate.now();
-        final LocalDate jollydayThisYearDate = LocalDate.of(
-            jollydayThisYear.getDate().getYear(),
-            jollydayThisYear.getDate().getMonthOfYear(),
-            jollydayThisYear.getDate().getDayOfMonth()
-        );
-        if (jollydayThisYearDate.isAfter(now) || jollydayThisYearDate.isEqual(now)) {
-            return new Holiday(jollydayThisYear);
-        } else {
-            return new Holiday(jollydayNextYear);
+    public static Holiday getHolidayFromTwoJollyDay(de.jollyday.Holiday jollydayThisYear, de.jollyday.Holiday jollydayNextYear) {
+        Thread t = Thread.currentThread();
+        ClassLoader orig = t.getContextClassLoader();
+        t.setContextClassLoader(HolidayManager.class.getClassLoader());
+        try {
+            final LocalDate now = LocalDate.now();
+            final LocalDate jollydayThisYearDate = LocalDate.of(
+                jollydayThisYear.getDate().getYear(),
+                jollydayThisYear.getDate().getMonthOfYear(),
+                jollydayThisYear.getDate().getDayOfMonth()
+            );
+            if (jollydayThisYearDate.isAfter(now) || jollydayThisYearDate.isEqual(now)) {
+                return new Holiday(jollydayThisYear);
+            } else {
+                return new Holiday(jollydayNextYear);
+            }
+        } finally {
+            t.setContextClassLoader(orig);
         }
+
     }
 
     /**
