@@ -21,12 +21,9 @@ import com.google.inject.Inject;
 import com.google.inject.Module;
 import hudson.Extension;
 import hudson.model.ManagementLink;
-
-import java.util.logging.Logger;
-
 import org.kohsuke.stapler.StaplerProxy;
 
-import javax.management.Descriptor;
+import java.util.logging.Logger;
 
 /**
  * An entry point for Working Hours Plugin's config page.
@@ -45,7 +42,7 @@ public class WorkingHoursMgmtLink extends ManagementLink implements StaplerProxy
 
     @Override
     public String getIconFileName() {
-        return "/plugin/working-hours/images/play.png";
+        return "/plugin/working-hours/images/icon.png";
     }
 
     @Override
@@ -55,7 +52,7 @@ public class WorkingHoursMgmtLink extends ManagementLink implements StaplerProxy
 
     @Override
     public String getDescription() {
-        return "Working Hours Config";
+        return "Set allowed time ranges and excluded dates to schedule a build";
     }
 
 
