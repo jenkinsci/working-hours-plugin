@@ -46,8 +46,6 @@ function timeStringToMinutes(timeString) {
 }
 
 export default class TimeRange extends React.Component {
-  static contextType = PluginContext;
-
   constructor(props) {
     super(props);
     this.state = {
