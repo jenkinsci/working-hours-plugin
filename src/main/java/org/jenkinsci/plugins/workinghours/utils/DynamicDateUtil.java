@@ -4,15 +4,39 @@ package org.jenkinsci.plugins.workinghours.utils;
 import java.time.LocalDate;
 
 public class DynamicDateUtil {
+
+    /**
+     * Get the next certain weekday.
+     * @param dayOfWeek The certain weekday that's needed.
+     * @param now The day used to calculate.
+     * @return The next occurrence.
+     */
+    public static LocalDate nextOccurrenceByWeek(final int dayOfWeek, final LocalDate now) {
+        LocalDate next;
+        LocalDate today;
+        if (now != null) {
+            next = now;
+            today = now;
+        } else {
+            next = LocalDate.now();
+            today = LocalDate.now();
+        }
+        int deltaDays = dayOfWeek - today.getDayOfWeek().getValue();
+        if(deltaDays<0){
+            deltaDays+=7;
+        }
+        return next.plusDays(deltaDays);
+    }
+
     /**
      * Get next occurrence, by month.
      *
      * @param weekOfMonth Week of month.
      * @param dayOfWeek   Day of week.
-     * @param now {@link LocalDate} Today.
+     * @param now         {@link LocalDate} Today.
      * @return {@link LocalDate} Next occurrence.
      */
-    public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek,final LocalDate now) {
+    public static LocalDate nextOccurrenceByMonth(final int weekOfMonth, final int dayOfWeek, final LocalDate now) {
         LocalDate next;
         LocalDate today;
         if (now != null) {
@@ -27,7 +51,7 @@ public class DynamicDateUtil {
         if (nextOccurrenceInThisMonth.getDayOfWeek().getValue() <= dayOfWeek) {
             tempWeekOfMonth = weekOfMonth - 1;
         }
-        nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfMonth()));
+        nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfWeek().getValue()));
         //If in same month but later
         if (nextOccurrenceInThisMonth.isEqual(today) ||
             nextOccurrenceInThisMonth.isAfter(today)
@@ -54,7 +78,7 @@ public class DynamicDateUtil {
      * @param monthOfYear Month of year.
      * @param weekOfMonth Week of month.
      * @param dayOfWeek   Day of week.
-     * @param now {@link LocalDate} Today.
+     * @param now         {@link LocalDate} Today.
      * @return {@link LocalDate} Next occurrence.
      */
     public static LocalDate nextOccurrenceByYear(final int monthOfYear, final int weekOfMonth, final int dayOfWeek, final LocalDate now) {
@@ -89,7 +113,7 @@ public class DynamicDateUtil {
                 tempWeekOfMonth = weekOfMonth - 1;
             }
 
-            nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfMonth()));
+            nextOccurrenceInThisMonth = nextOccurrenceInThisMonth.withDayOfMonth(1 + (tempWeekOfMonth * 7) + (dayOfWeek - nextOccurrenceInThisMonth.getDayOfWeek().getValue()));
             //If in same month but later
             if (nextOccurrenceInThisMonth.isEqual(today) ||
                 nextOccurrenceInThisMonth.isAfter(today)
@@ -120,5 +144,22 @@ public class DynamicDateUtil {
             //If in same month but later
             return next;
         }
+    }
+
+    /**
+     * Calculate the date is the nth occurrence of its day of week.
+     *
+     * @param date The date to be calculated
+     * @return nth occurrence
+     */
+    public static int calculateNthDayOfThisMonth(LocalDate date) {
+        int thisMonth = date.getMonth().getValue();
+        int occurrenceCount = 1;//Default occurrence;
+        LocalDate newDate = date.minusWeeks(1);
+        while (newDate.getMonth().getValue() == thisMonth) {
+            occurrenceCount++;
+            newDate = newDate.minusWeeks(1);
+        }
+        return occurrenceCount;
     }
 }

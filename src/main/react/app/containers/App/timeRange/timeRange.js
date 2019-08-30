@@ -172,12 +172,12 @@ export default class TimeRange extends React.Component {
    * Set the initial data passed in (currently with just weekday)
    */
   componentDidMount() {
-    this.setState(this.props.range,()=>{
+    this.setState(this.props.range, () => {
       this.setState({
-        tempStartTime:timeFormatter(this.state.startTime),
-        tempEndTime:timeFormatter(this.state.endTime),
+        tempStartTime: timeFormatter(this.state.startTime),
+        tempEndTime: timeFormatter(this.state.endTime),
       })
-      if(this.state.isNew){
+      if (this.state.isNew) {
         this.debouncedSave()
       }
     });
@@ -190,11 +190,12 @@ export default class TimeRange extends React.Component {
 
         <div className={["time-range"]}>
           <div className={"label-weekday"}>
-            {Object.keys(WEEKDAYS)[this.state.dayOfWeek]}
+            {Object.keys(WEEKDAYS)[this.state.dayOfWeek - 1]}
             {this.state.isNew && <div className={"is-new"}/>}
           </div>
 
-          <input value={this.state.tempStartTime} className={["input", "input-text", "input-time",].join(' ')}
+          <input value={this.state.tempStartTime}
+                 className={["input", "input-text", "input-time",].join(' ')}
                  style={{width: 70, marginLeft: 10}}
                  onChange={this.updateStartTime}
                  onBlur={this.handleInputBlur}
@@ -225,13 +226,18 @@ export default class TimeRange extends React.Component {
 
           >
           </Range>
-          <input value={this.state.tempEndTime} className={"input input-text input-time"} style={{width: 70}}
+          <input value={this.state.tempEndTime}
+                 className={"input input-text input-time"} style={{width: 70}}
                  onChange={this.updateEndTime}
                  onBlur={this.handleInputBlur}
           />
-          <button type="button" className={"btn btn-delete"} onClick={this.delete}>X</button>
+          <button type="button" className={"btn btn-delete"}
+                  onClick={this.delete}>X
+          </button>
         </div>
-        {!this.validate() ? <div style={{color: "red", fontWeight: "100"}}>Invalid time string</div> : ""}
+        {!this.validate() ?
+          <div style={{color: "red", fontWeight: "100"}}>Invalid time
+            string</div> : ""}
 
       </div>
     );

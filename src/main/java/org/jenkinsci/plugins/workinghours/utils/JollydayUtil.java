@@ -62,7 +62,25 @@ public class JollydayUtil {
         } finally {
             t.setContextClassLoader(orig);
         }
+    }
 
+    /**
+     * Get a certain holiday in a certain year.
+     *
+     * @param regionCode The region's code of the holiday.
+     * @param holidayKey Key of the target holiday.
+     * @param year The certain year to specify.
+     * @return {@link Holiday} The target holiday.
+     */
+    public static Holiday getCertainYearsHoliday(String regionCode, String holidayKey,int year) {
+        Thread t = Thread.currentThread();
+        ClassLoader orig = t.getContextClassLoader();
+        t.setContextClassLoader(HolidayManager.class.getClassLoader());
+        try {
+            return HolidayManager.getInstance(regionCode).getHolidays(year).stream().filter(holiday -> holiday.getPropertiesKey().equals(holidayKey)).findFirst().get();
+        } finally {
+            t.setContextClassLoader(orig);
+        }
     }
 }
 

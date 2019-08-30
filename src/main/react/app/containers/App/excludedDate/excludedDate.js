@@ -116,10 +116,14 @@ export default class ExcludeDate extends React.Component {
   toggleEdit = () => {
     /*Call onEdit, also emit data to parent(for serializing use).*/
     if (this.isHoliday()) {
-      this.setState({
-        holidayId: this.state.selectedHoliday.key,
-        holidayRegion: this.state.selectedHoliday.region,
-      }, () => {
+      let state = {}
+      if (this.props.opened) {
+        state = {
+          holidayId: this.state.selectedHoliday.key,
+          holidayRegion: this.state.selectedHoliday.region,
+        }
+      }
+      this.setState(state, () => {
         this.props.onEdit(this.props.index, !this.props.opened, this.state);
       })
     } else {
@@ -174,7 +178,8 @@ export default class ExcludeDate extends React.Component {
               </div>
             </div>}
 
-            {type === DATE_TYPE.TYPE_HOLIDAY && <div className={"form-row"} style={{marginTop: "20px"}}>
+            {type === DATE_TYPE.TYPE_HOLIDAY &&
+            <div className={"form-row"} style={{marginTop: "20px"}}>
               <label className={"form-item-label"}>Next Occurrence</label>
               <div className={"text-highlight"}>
                 {formatDate(moment(selectedHoliday.nextOccurrence))}
@@ -199,14 +204,22 @@ export default class ExcludeDate extends React.Component {
             <div className={"form-row"}>
               <div className={"form-item-label"}/>
               {/*<button type="button" className="btn btn-outline-primary">Save</button>*/}
-              <button type="button" className={"btn btn-gray"} onClick={this.toggleEdit}>Save and Close</button>
-              <button type="button" className={"btn btn-delete"} onClick={this.deleteDate}>Delete</button>
+              <button type="button" className={"btn btn-gray"}
+                      onClick={this.toggleEdit}>Save and Close
+              </button>
+              <button type="button" className={"btn btn-delete"}
+                      onClick={this.deleteDate}>Delete
+              </button>
             </div>
           </div> :
           <div>
             <span style={{lineHeight: "20px"}}>{getBrief.call(this)}</span>
-            <button type="button" className={"btn btn-gray"} onClick={this.toggleEdit}>Edit</button>
-            <button type="button" className={"btn btn-delete"} onClick={this.deleteDate}>X</button>
+            <button type="button" className={"btn btn-gray"}
+                    onClick={this.toggleEdit}>Edit
+            </button>
+            <button type="button" className={"btn btn-delete"}
+                    onClick={this.deleteDate}>X
+            </button>
           </div>}
       </div>
     );

@@ -16,6 +16,7 @@
         <java.level>8</java.level>
         <node.version>10.13.0</node.version>
         <npm.version>6.8.0</npm.version>
+        <javadoc.exec.goal>javadoc-no-fork</javadoc.exec.goal> <!-- stop initialize phase plugins executing twice -->
     </properties>
     <name>Working Hours Plugin</name>
     <description>Queues builds that ran after certain working hours</description>
@@ -144,12 +145,20 @@
         <dependency>
             <groupId>com.github.heqiao2010</groupId>
             <artifactId>lunar</artifactId>
-            <version>LATEST</version>
+            <version>1.0</version>
         </dependency>
 
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <source>8</source>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>

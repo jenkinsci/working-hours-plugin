@@ -23,6 +23,8 @@
  */
 package test.org.jenkinsci.plugins.workinghours.model;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import org.junit.Test;
@@ -30,120 +32,63 @@ import static org.junit.Assert.*;
 
 public class TimeRangeTest {
 
-//    @Test
-    public void testGetStartTime() {
-//        TimeRange instance = new TimeRange();
-//        String expResult = "";
-//        String result = instance.getStartTime();
-//        assertEquals(expResult, result);
-    }
-
-//    @Test
-    public void testSetStartTime() {
-//        String startTime = "";
-//        TimeRange instance = new TimeRange();
-//        instance.setStartTime(startTime);
-//        assertEquals(startTime, instance.getStartTime());
-    }
-
-//    @Test
-    public void testGetEndTime() {
-//        TimeRange instance = new TimeRange();
-//        String expResult = "";
-//        String result = instance.getEndTime();
-//        assertEquals(expResult, result);
-    }
-
-    /**
-     * Test of setEndTime method, of class JobTimeRange.
-     */
-//    @Test
-    public void testSetEndTime() {
-//        System.out.println("setEndTime");
-//        String endTime = "";
-//        TimeRange instance = new TimeRange();
-//        instance.setEndTime(endTime);
-//        assertEquals(endTime, instance.getEndTime());
-    }
-
-//    @Test
-    public void testSetDayOfWeek() {
-//        System.out.println("setDayOfWeek");
-//        int dayOfWeek = 4;
-//        TimeRange instance = new TimeRange();
-//        instance.setDayOfWeek(dayOfWeek);
-//        assertEquals(dayOfWeek, instance.getDayOfWeek());
-    }
-
-//    @Test
+    @Test
     public void testIncludesTime() {
-//        TimeRange instance = new TimeRange("10:00 AM", "11:00 AM", Calendar.THURSDAY);
-//
-//        Calendar testValue = Calendar.getInstance();
-//        // Jan 1, 2018 is a Thursday
-//        testValue.set(2018, 0, 18, 10, 30);
-//
-//        assertTrue(instance.includesTime(testValue));
-        assertTrue(true);
+        TimeRange instance = new TimeRange(8*60,18*60, DayOfWeek.THURSDAY);
+
+        LocalDateTime testValue = LocalDateTime.of(2018,1,18,10,30);
+        // Jan 18, 2018 is a Thursday
+
+        assertTrue(instance.includesTime(testValue));
     }
 
-//    @Test
+    @Test
     public void testIncludesLowerBound() {
-//        TimeRange instance = new TimeRange("10:00 AM", "11:00 AM", Calendar.THURSDAY);
-//
-//        Calendar testValue = Calendar.getInstance();
-//        // Jan 1, 2018 is a Thursday
-//        testValue.set(2018, 0, 18, 10, 00);
-//
-//        assertTrue(instance.includesTime(testValue));
-        assertTrue(true);
+        TimeRange instance = new TimeRange(8*60, 18*60, DayOfWeek.THURSDAY);
+
+        LocalDateTime testValue = LocalDateTime.of(2018,1,18,8,0);
+        // Jan 18, 2018 is a Thursday
+
+        assertTrue(instance.includesTime(testValue));
     }
 
-//    @Test
+    @Test
     public void testIncludesUpperBound() {
-//        TimeRange instance = new TimeRange("10:00 AM", "11:00 AM", Calendar.THURSDAY);
-//
-//        Calendar testValue = Calendar.getInstance();
-//        // Jan 1, 2018 is a Thursday
-//        testValue.set(2018, 0, 18, 11, 00);
-//
-//        assertTrue(instance.includesTime(testValue));
-        assertTrue(true);
+        TimeRange instance = new TimeRange(8*60, 18*60, DayOfWeek.THURSDAY);
+
+        // Jan 18, 2018 is a Thursday
+        LocalDateTime testValue = LocalDateTime.of(2018, 1, 18, 18, 0);
+
+        assertTrue(instance.includesTime(testValue));
     }
 
-//    @Test
+    @Test
     public void testExcludesTimeBefore() {
-//        TimeRange instance = new TimeRange("10:00 AM", "11:00 AM", Calendar.THURSDAY);
-//
-//        Calendar testValue = Calendar.getInstance();
-//        // Jan 1, 2018 is a Thursday
-//        testValue.set(2018, 0, 18, 9, 59);
-//
-//        assertFalse(instance.includesTime(testValue));
-        assertTrue(true);
+        TimeRange instance = new TimeRange(8*60, 18*60, DayOfWeek.THURSDAY);
+
+        // Jan 18, 2018 is a Thursday
+        LocalDateTime testValue = LocalDateTime.of(2018, 1, 18, 7, 59);
+
+        assertFalse(instance.includesTime(testValue));
     }
 
-//    @Test
+    @Test
     public void testExcludesTimeAfter() {
-//        TimeRange instance = new TimeRange("10:00 AM", "11:00 AM", Calendar.THURSDAY);
-//
-//        Calendar testValue = Calendar.getInstance();
-//        // Jan 1, 2018 is a Thursday
-//        testValue.set(2018, 0, 18, 11, 1);
-//
-//        assertFalse(instance.includesTime(testValue));
-        assertTrue(true);
+        TimeRange instance =  new TimeRange(8*60, 18*60, DayOfWeek.THURSDAY);
+
+        // Jan 18, 2018 is a Thursday
+        LocalDateTime testValue = LocalDateTime.of(2018, 1, 18, 18, 1);
+
+        assertFalse(instance.includesTime(testValue));
     }
 
-//    @Test
+    @Test
     public void testExcludesIfDayDifferent() {
-//        TimeRange instance = new TimeRange("10:00 AM", "11:00 AM", Calendar.WEDNESDAY);
-//
-//        Calendar testValue = Calendar.getInstance();
-//        // Jan 1, 2018 is a Thursday
-//        testValue.set(2018, 0, 18, 10, 30);
-//
-//        assertFalse(instance.includesTime(testValue));
-        assertTrue(true);
+        TimeRange instance =  new TimeRange(8*60, 18*60, DayOfWeek.FRIDAY);
+
+        // Jan 18, 2018 is a Thursday
+        LocalDateTime testValue = LocalDateTime.of(2018, 1, 18, 10, 30);
+
+        assertFalse(instance.includesTime(testValue));
     }
 }
