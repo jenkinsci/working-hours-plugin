@@ -1,3 +1,3 @@
-buildPlugin(
-  configurations: buildPlugin.recommendedConfigurations().findAll { it.platform == 'linux' },
-)
+buildPlugin(/*...*/, configurations: [
+  [ platform: "linux", jdk: "8", jenkins: null ],
+])
