@@ -120,6 +120,10 @@
     color: white;
 }
 
+.btn-save {
+    margin-left: 0;
+}
+
 .input {
     width: auto;
     border-radius: 3px;
@@ -178,11 +182,10 @@ input[type='checkbox'] {
 }
 
 .select-dynamic-week {
-    margin-left: 0;
+    margin-right: 10px;
 }
 
 .select-dynamic-weekday {
-    margin-left: 10px;
     margin-right: 10px;
 }
 

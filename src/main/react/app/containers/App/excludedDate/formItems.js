@@ -77,6 +77,8 @@ export function NameInput() {
   const handleNameChange = (e) => {
     this.setState({
       name: e.target.value
+    },()=>{
+      this.checkValue();
     });
   };
   return <div className={"form-row"}>

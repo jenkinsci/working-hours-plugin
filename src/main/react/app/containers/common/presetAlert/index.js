@@ -17,6 +17,7 @@ let defaultState = {
   regionalHolidays: [],// regional holiday(This year).
   selectedHolidayKey: undefined,
   selectedHoliday: undefined,
+  selectedRegion:undefined,
 }
 
 class Alert extends Component {
@@ -32,6 +33,9 @@ class Alert extends Component {
 
   /*Fetch holidays with the new region*/
   handleRegionChange = (e) => {
+    this.setState({
+      selectedRegion:e.value,
+    })
     fetchRegionalHolidays(e.value).then(res => {
       let holidays = res.data.data;
       holidays.forEach(item => {
@@ -61,7 +65,8 @@ class Alert extends Component {
     }
 
     this.state.onApply({
-      selectedHoliday: selectedHoliday
+      selectedHoliday: selectedHoliday,
+      holidayRegion:this.state.selectedRegion,
     })
 
     this.setState({
@@ -113,7 +118,7 @@ class Alert extends Component {
 
               <p><strong>Select Region</strong></p>
               <Select className='select-region '
-                      defaultValue={this.state.selectedDateType}
+                      defaultValue={this.state.selectedRegion}
                       onChange={this.handleRegionChange}
                       options={Object.keys(regions).map((key, index) => {
                           return {

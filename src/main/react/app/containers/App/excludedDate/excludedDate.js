@@ -15,6 +15,7 @@ import {
   TimezoneInput
 } from "./formItems";
 
+const REPEAT_NO_END = -1;
 
 export default class ExcludeDate extends React.Component {
   constructor() {
@@ -43,11 +44,14 @@ export default class ExcludeDate extends React.Component {
       },
       noEnd: true, //No end in repeat
       repeat: true,
-      repeatCount: -1,
+      repeatCount: REPEAT_NO_END,
       repeatInterval: 1,
       repeatPeriod: PERIODS.Year,
 
       isNew: false,
+
+      errorString: "please input name",
+      passCheck: false,
     };
   }
 
@@ -62,7 +66,11 @@ export default class ExcludeDate extends React.Component {
         this.setState({
           type: DATE_TYPE.TYPE_HOLIDAY,
           holiday: result.selectedHoliday,
-          holidayRegion:result.selectedHoliday.holidayRegion
+          holidayRegion: result.holidayRegion,
+          repeat:true,
+          repeatPeriod:PERIODS.Year,
+          repeatCount:REPEAT_NO_END,
+          repeatInterval:1,
         })
       }
     });
@@ -113,6 +121,12 @@ export default class ExcludeDate extends React.Component {
 
   /*Tell the parent that this child want to be toggle open state.*/
   toggleEdit = () => {
+    if (this.props.opened) {
+      //If close
+      if (this.checkValue()) {
+
+      }
+    }
     /*Call onEdit, also emit data to parent(for serializing use).*/
     this.props.onEdit(this.props.index, !this.props.opened, this.state);
   };
@@ -124,17 +138,37 @@ export default class ExcludeDate extends React.Component {
     }
   };
 
+
+  checkValue() {
+    if (!this.state.name) {
+      this.setState({
+        errorString: "Please input name",
+        passCheck: false
+      })
+    } else {
+      this.setState({
+        passCheck: true
+      })
+    }
+  }
+
+  showRepeatControl() {
+    return !this.isHoliday()
+  }
+
   componentDidMount() {
     this.setState(this.props.date, () => {
       /*If the date is new, submit it.*/
       if (this.props.date.isNew) {
         this.props.onEdit(this.props.index, true, this.state);
       }
+      this.checkValue();
     });
+
   }
 
   render() {
-    const {repeat, noEnd, type, holiday, startDate} = this.state;
+    const {repeat, noEnd, type, holiday, startDate,passCheck} = this.state;
     return (
       <div className={"config-item"}>
         {/*Allow each date item to open or close, need help of the parent component.*/}
@@ -142,8 +176,8 @@ export default class ExcludeDate extends React.Component {
             {NameInput.call(this)}
             {type === DATE_TYPE.TYPE_HOLIDAY && PresetSelect.call(this)}
             {TimezoneInput.call(this)}
-            {RepeatCheckbox.call(this)}
-            {repeat && <div>
+            {this.showRepeatControl() && RepeatCheckbox.call(this)}
+            {this.showRepeatControl() && repeat && <div>
               {RepeatPeriod.call(this)}
               {RepeatInterval.call(this)}
               {RepeatCount.call(this)}
@@ -190,8 +224,9 @@ export default class ExcludeDate extends React.Component {
             <div className={"form-row"}>
               <div className={"form-item-label"}/>
               {/*<button type="button" className="btn btn-outline-primary">Save</button>*/}
-              <button type="button" className={"btn btn-gray"}
-                      onClick={this.toggleEdit}>Save and Close
+              <button type="button" className={"btn btn-gray btn-save"}
+                      disabled={!passCheck}
+                      onClick={this.toggleEdit}>{passCheck?"Save and Close":this.state.errorString}
               </button>
               <button type="button" className={"btn btn-delete"}
                       onClick={this.deleteDate}>Delete
@@ -210,4 +245,5 @@ export default class ExcludeDate extends React.Component {
       </div>
     );
   }
+
 }

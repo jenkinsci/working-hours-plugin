@@ -6,6 +6,7 @@ import {
   nextOccurrenceByMonth,
   nextOccurrenceByYear
 } from "../../../utils/date";
+import {divide} from "../../common/devide";
 
 export default function DateInput(props) {
   const {field, name, isEndDate} = props;
@@ -42,10 +43,7 @@ export default function DateInput(props) {
   const dateObject = self.state[field];
 
   return <div>
-    <hr/>
-    <div className={"form-row"}>
-      <div className={"form-item-label"}>{name}</div>
-    </div>
+    {divide({content:name})}
     {!isEndDate && repeat && <div className={"form-row"}>
       <label className={"form-item-label"}>Dynamic</label>
       <input type='checkbox' checked={dateObject.dynamic}

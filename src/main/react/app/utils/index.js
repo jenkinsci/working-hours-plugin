@@ -2,6 +2,7 @@ import {MONTHS, ORDERS, PERIODS, WEEKDAYS} from "../containers/App/constants";
 import {formatDate} from "./date";
 import moment from 'moment'
 import timezones from "../containers/common/timezonePicker/timezones"
+
 /*Get a brief description of this excluded date.*/
 export function getBrief() {
   let words = [];
@@ -9,7 +10,9 @@ export function getBrief() {
   if (this.state.repeat) {
     words.push("repeat");
     words.push("on");
-    if (this.state.startDate.dynamic) {
+    if (this.isHoliday()) {
+      words.push(this.state.holiday.name);
+    } else if (this.state.startDate.dynamic) {
       words.push("each");
       if (this.state.repeatPeriod > PERIODS.Week) {
         words.push(Object.keys(ORDERS)[this.state.startDate.dynamicWeek - 1]);
@@ -39,7 +42,9 @@ export function getBrief() {
 
   } else {
     words.push("on");
-    if (this.state.startDate.dynamic) {
+    if (this.isHoliday()) {
+      words.push(this.state.holiday.name);
+    } else if (this.state.startDate.dynamic) {
       if (this.state.repeatPeriod > PERIODS.Week) {
         words.push(Object.keys(ORDERS)[this.state.startDate.dynamicDate.week - 1]);
       }
@@ -57,11 +62,11 @@ export function getBrief() {
 }
 
 export function getDefaultTimezone() {
-  const offset = moment().utcOffset()/60;
-  let timezone = timezones.find(item=>item.offset=== offset);
-  if(!timezone){
-    return  "UTC";
-  }else {
+  const offset = moment().utcOffset() / 60;
+  let timezone = timezones.find(item => item.offset === offset);
+  if (!timezone) {
+    return "UTC";
+  } else {
     return timezone.name
   }
 }
