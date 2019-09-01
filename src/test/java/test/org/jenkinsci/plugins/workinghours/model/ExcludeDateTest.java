@@ -10,7 +10,6 @@ import org.junit.Test;
 import test.org.jenkinsci.plugins.workinghours.utility.ExcludedDateUtility;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

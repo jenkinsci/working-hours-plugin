@@ -1,7 +1,6 @@
 import {range} from "lodash";
 import React from "react";
 import {PERIODS} from "../constants";
-import TimezonePicker from '../../common/timezonePicker'
 
 /**
  * Functional render for select repeat count.
@@ -56,7 +55,8 @@ export function RepeatPeriod() {
 export function RepeatInterval() {
   return <div className={"form-row"}>
     <label className={"form-item-label"}>Repeat Interval</label>
-    <div>Each <select className={"input input-select"} value={this.state.repeatInterval}
+    <div>Each <select className={"input input-select"}
+                      value={this.state.repeatInterval}
                       style={{width: 70, marginRight: 10}}
                       onChange={this.handleIntervalChange}>
       {range(1, 6).map(item =>
@@ -77,7 +77,7 @@ export function NameInput() {
   const handleNameChange = (e) => {
     this.setState({
       name: e.target.value
-    },()=>{
+    }, () => {
       this.checkValue();
     });
   };
@@ -90,24 +90,6 @@ export function NameInput() {
     <button type="button" className={"btn btn-gray select-preset"}
             onClick={this.applyPreset}>Select Preset
     </button>
-  </div>;
-}
-
-/**
- * Functional render for select timezone.
- * @returns {*} render content
- * @constructor
- */
-export function TimezoneInput() {
-  const handleTimezoneChange = (e) => {
-    this.setState({
-      timezone: e.name,
-      utcOffset: e.offset * 60,
-    });
-  };
-  return <div className={"form-row"}>
-    <label className={"form-item-label"}>Base Timezone</label>
-    <TimezonePicker value={this.state.timezone} onChange={handleTimezoneChange}/>
   </div>;
 }
 
@@ -134,8 +116,10 @@ export function PresetSelect() {
 export function RepeatCheckbox() {
   return <div className={"form-row"}
   >
-    <label className={"form-item-label"} htmlFor="checkbox-repeat">Repeat</label>
-    <input id='checkbox-repeat' type='checkbox' checked={this.state.repeat} onChange={this.handleRepeatChange}>
+    <label className={"form-item-label"}
+           htmlFor="checkbox-repeat">Repeat</label>
+    <input id='checkbox-repeat' type='checkbox' checked={this.state.repeat}
+           onChange={this.handleRepeatChange}>
     </input>
   </div>;
 }

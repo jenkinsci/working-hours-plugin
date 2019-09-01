@@ -2,7 +2,7 @@ import React from "react";
 import DateInput from "./dateInput";
 import {DATE_TYPE, PERIODS} from "../constants";
 import {formatDate} from "../../../utils/date";
-import {getBrief, getDefaultTimezone} from "../../../utils";
+import {getBrief} from "../../../utils";
 import moment from "moment";
 import Alert from '../../common/presetAlert'
 import {
@@ -11,8 +11,7 @@ import {
   RepeatCheckbox,
   RepeatCount,
   RepeatInterval,
-  RepeatPeriod,
-  TimezoneInput
+  RepeatPeriod
 } from "./formItems";
 
 const REPEAT_NO_END = -1;
@@ -28,9 +27,6 @@ export default class ExcludeDate extends React.Component {
 
       name: "",
       type: DATE_TYPE.TYPE_CUSTOM,
-
-      utcOffset: moment().utcOffset(),
-      timezone: getDefaultTimezone(),
 
       startDate: {
         dynamic: false,
@@ -57,7 +53,7 @@ export default class ExcludeDate extends React.Component {
 
   isHoliday = () => {
     return this.state.type === DATE_TYPE.TYPE_HOLIDAY
-  }
+  };
 
   /*Apply the selected preset.*/
   applyPreset = () => {
@@ -164,7 +160,6 @@ export default class ExcludeDate extends React.Component {
       }
       this.checkValue();
     });
-
   }
 
   render() {
@@ -175,7 +170,6 @@ export default class ExcludeDate extends React.Component {
         {this.props.opened ? <div>
             {NameInput.call(this)}
             {type === DATE_TYPE.TYPE_HOLIDAY && PresetSelect.call(this)}
-            {TimezoneInput.call(this)}
             {this.showRepeatControl() && RepeatCheckbox.call(this)}
             {this.showRepeatControl() && repeat && <div>
               {RepeatPeriod.call(this)}

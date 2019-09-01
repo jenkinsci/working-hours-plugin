@@ -79,8 +79,6 @@ export default class ExcludeDateContainer extends React.Component {
           "holidayRegion",
           "name",
           "type",
-          "timezone",
-          "utcOffset",
           "startDate",
           "endDate",
           "noEnd",

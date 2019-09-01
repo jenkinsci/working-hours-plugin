@@ -18,7 +18,6 @@ function getApiBaseUrl() {
   return window.parent.location.href
 }
 
-
 const AXIOS_DEFAULT_CONFIG = {
   baseURL: process.env.BASE_URL || getApiBaseUrl(),
   timeout: 20000,
@@ -54,6 +53,14 @@ export const getTimeRanges = () => {
 export const setTimeRanges = (params) => {
   return axiosInstance.post("/set-time-ranges", params);
 };
+
+export const setTimezone = (params) => {
+  return axiosInstance.post("/set-timezone", params);
+};
+
+export const apiGetTimezone = ()=>{
+  return axiosInstance.post("/get-timezone");
+}
 
 export function fetchRegionalHolidays(regionCode) {
   return axiosInstance.post(`/regions/${regionCode}`)

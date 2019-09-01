@@ -216,6 +216,7 @@ class TimezonePicker extends React.Component {
             .timezone-ul {
               background:white;
               position: absolute;
+              z-index:1;
               top: 100%;
               left: 0;
               right: 0;

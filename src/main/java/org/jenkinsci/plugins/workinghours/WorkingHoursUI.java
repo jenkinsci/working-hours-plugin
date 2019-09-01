@@ -59,6 +59,10 @@ public class WorkingHoursUI {
                 return listTimeRanges(request);
             case "set-time-ranges":
                 return setTimeRanges(request);
+            case "set-timezone":
+                return setTimezone(request);
+            case "get-timezone":
+                return getTimezone(request);
             case "regions":
                 /*If there are more than 1 param, the second should be the region's code.*/
                 if (params.size() > 1) {
@@ -71,6 +75,20 @@ public class WorkingHoursUI {
         // TODO: 30/5/2019 Implement or find a detailed error response Object
         throw new JsonHttpResponse(new JSONObject());
 
+    }
+
+    private HttpResponse setTimezone(StaplerRequest request) {
+        JSONObject params = (JSONObject) getRequestBody(request).get("data");
+        config.setTimezone(params.getString(WorkingHoursPlugin.FIELD_TIMEZONE));
+        config.setUtcOffset(params.getInt(WorkingHoursPlugin.FIELD_UTC_OFFSET));
+        return getTimezone(request);
+    }
+
+    private HttpResponse getTimezone(StaplerRequest request) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(WorkingHoursPlugin.FIELD_TIMEZONE,config.getTimezone());
+        jsonObject.put(WorkingHoursPlugin.FIELD_UTC_OFFSET,config.getUtcOffset());
+        return HttpResponses.okJSON(jsonObject);
     }
 
     /**

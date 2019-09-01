@@ -140,7 +140,8 @@ export default class TimeRangeContainer extends React.Component {
           <div className={'config-loading-status'}>
             <LoadingState loadingState={this.state.loadingState}/>
           </div>
-          <div className={'config-count'}>Total:{this.state.timeRanges.length}</div>
+          <div
+            className={'config-count'}>Total:{this.state.timeRanges.length}</div>
         </div>
         <div className={"config-item"}>
           {this.state.timeRanges.length <= 0 ?
@@ -154,10 +155,12 @@ export default class TimeRangeContainer extends React.Component {
               />
             ))}
           {/*No more than 7 time ranges*/}
-          {this.state.timeRanges.length < 7 && <div className={"form-row"} style={{marginBottom: 0}}>
-            Add
+          {this.state.timeRanges.length < 7 &&
+          <div className={"form-row"} style={{marginBottom: 0}}>
+            <span className={"time-range-add-hint"}>Add</span>
             {this.weekdayList().map(item => (
-              <button onClick={() => this.addTimeRange(item[1])} className='btn btn-gray'>{item[0]}</button>
+              <button onClick={() => this.addTimeRange(item[1])}
+                      className='btn btn-gray'>{item[0]}</button>
             ))}
           </div>
           }

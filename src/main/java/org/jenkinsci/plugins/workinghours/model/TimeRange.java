@@ -30,8 +30,8 @@ import org.jenkinsci.plugins.workinghours.utils.DateTimeUtility;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Calendar;
 
+/**
 /**
  * Encapsulates a time range, which matches a times on a particular day of the
  * week that occur between a start and end time.
