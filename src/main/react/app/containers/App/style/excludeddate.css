@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2019.
+ */
+
+input[type='radio'] {
+    height: 100%;
+}
+
+input[type='checkbox'] {
+    height: 100%;
+}
+
+
+.select-preset-type {
+    width: 150px;
+    margin-right: 10px
+}
+
+.select-preset-item {
+    width: 300px;
+}
+
+.select-dynamic-item {
+    width: 120px;
+    height: 35px;
+}
+
+.select-dynamic-week {
+    margin-right: 10px;
+}
+
+.select-dynamic-weekday {
+    margin-right: 10px;
+}
+
+.select-dynamic-month {
+    margin-left: 10px;
+}
+
+
+.date-control-item {
+    display: inline-flex;
+    margin-left: 5px;
+}

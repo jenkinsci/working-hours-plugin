@@ -1,0 +1,33 @@
+.divide {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    height: 2rem;
+}
+
+.divide-left{
+    flex: 1 0  auto;
+    display: flex;
+    align-items: center;
+    width: 130px;
+    margin-right: 20px;
+}
+
+.divide-line-left {
+    border-top: 1px dashed rgba(0, 0, 0, 0.1);
+    width: 45px;
+}
+
+.divide-content {
+    width: 85px;
+    text-align: right;
+}
+
+.divide-line-right {
+    border-top: 1px dashed rgba(0, 0, 0, 0.1);
+    width: 100%;
+}

@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class ChineseHolidayManager {
+public class ChineseHolidayManager implements HolidayManager {
 
     private static ChineseHolidayManager instance;
 
@@ -16,6 +16,7 @@ public class ChineseHolidayManager {
 
     private List<Holiday> chineseLunarHolidays;
 
+    @Override
     public List<Holiday> getHolidayThisYear() {
         for (Holiday chineseLunarHoliday : chineseLunarHolidays) {
             ((ChineseLunarHoliday) chineseLunarHoliday).updateNextOccurrence();
@@ -37,6 +38,11 @@ public class ChineseHolidayManager {
             instance = new ChineseHolidayManager();
         }
         return instance;
+    }
+
+    @Override
+    public Holiday getCertainHolidayThisYear(String holidayKey) {
+        return this.chineseLunarHolidays.stream().filter(holiday -> holiday.getKey().equals(holidayKey)).findFirst().get();
     }
 
 

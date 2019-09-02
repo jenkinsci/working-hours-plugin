@@ -35,7 +35,7 @@ class TimezonePicker extends React.Component {
 
   static getDerivedStateFromProps(props, state) {
     if (props.value !== (state.currentZone ? state.currentZone.name : "")) {
-      return { currentZone: timezones.find(zone => zone.name === props.value) };
+      return {currentZone: timezones.find(zone => zone.name === props.value)};
     }
     return null;
   }
@@ -60,7 +60,7 @@ class TimezonePicker extends React.Component {
   }
 
   handleFocus = e => {
-    this.setState({ focus: 0 });
+    this.setState({focus: 0});
 
     if (this.props.inputProps.onFocus) {
       this.props.inputProps.onFocus(e);
@@ -68,7 +68,7 @@ class TimezonePicker extends React.Component {
   };
 
   handleBlur = e => {
-    this.setState({ focus: null, query: "" });
+    this.setState({focus: null, query: ""});
 
     if (this.props.inputProps.onBlur) {
       this.props.inputProps.onBlur(e);
@@ -76,7 +76,7 @@ class TimezonePicker extends React.Component {
   };
 
   handleChange = (e) => {
-    this.setState({ query: e.currentTarget.value, focus: 0 });
+    this.setState({query: e.currentTarget.value, focus: 0});
 
     if (this.props.inputProps.onChange) {
       this.props.inputProps.onChange(e);
@@ -95,7 +95,7 @@ class TimezonePicker extends React.Component {
 
         this.scrollToElement(ulElement.children[focus]);
 
-        return { focus };
+        return {focus};
       });
     } else if (e.key === "ArrowUp") {
       e.stopPropagation();
@@ -108,7 +108,7 @@ class TimezonePicker extends React.Component {
 
         this.scrollToElement(ulElement.children[focus]);
 
-        return { focus };
+        return {focus};
       });
     } else if (e.key === "Escape" && this.input) {
       e.stopPropagation();
@@ -134,7 +134,7 @@ class TimezonePicker extends React.Component {
   handleHoverItem = index => {
     if (index === this.state.focus) return;
 
-    this.setState({ focus: index });
+    this.setState({focus: index});
   };
 
   handleChangeZone = zone => {
@@ -162,14 +162,14 @@ class TimezonePicker extends React.Component {
   };
 
   render() {
-    const { offset, inputProps } = this.props;
-    const { currentZone, focus, query } = this.state;
+    const {offset, inputProps} = this.props;
+    const {currentZone, focus, query} = this.state;
 
     const open = focus !== null;
 
     return (
       <div className={"timezone-div"} style={this.props.style}>
-        <input className={"timezone-input input-select"}
+        <input className={"input input-text timezone-input"}
                type="text"
                autoComplete="off"
                {...inputProps}
@@ -204,34 +204,32 @@ class TimezonePicker extends React.Component {
             .timezone-div {
               width:320px;
               display: inline-block;
-              font: 13px sans-serif;
               position: relative;
             }
             .timezone-input {
               width: 100%;
-              padding: 9px 12px;
               font: inherit;
               box-sizing: border-box;
               outline: 0;
               background: #fff;
-              border: 1px solid #e6ebec;
-              border-radius: 2px;
-              color: #474747;
             }
             .timezone-ul {
               background:white;
               position: absolute;
+              z-index:1;
               top: 100%;
               left: 0;
               right: 0;
-              max-height: 200px;
+              max-height: 250px;
               overflow-y: auto;
               margin: 0;
               padding: 0;
-              border: 1px solid #e6ebec;
+              border: 1px solid #ccc;
               margin-top: -1px;
               border-radius: 0 0 3px 3px;
               display: none;
+              -webkit-box-shadow: 0 0 0 1px rgba(155, 151, 153, 0.2);
+              box-shadow: 0 0 0 1px rgba(155, 151, 153, 0.2);
             }
             .timezone-li {
               display: block;
@@ -265,4 +263,4 @@ class TimezonePicker extends React.Component {
   }
 }
 
-export { TimezonePicker as default, timezones };
+export {TimezonePicker as default, timezones};

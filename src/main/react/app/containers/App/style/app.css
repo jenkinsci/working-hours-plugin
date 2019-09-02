@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2019.
+ */
+
+
+.label-inline {
+    margin-right: 15px;
+}
+
+.config-item {
+    padding:10px 20px;
+    margin: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    background: #f9f9f9;
+}
+
+.config-count {
+    flex: 0 1 auto;
+    align-self: flex-end;
+}
+
+.config-header {
+    margin: 0 10px;
+    display: flex;
+}
+
+.config-title {
+    flex: 0 1 auto;
+    font-size: 25px;
+}
+
+.config-loading-status {
+    flex: 1 1 auto;
+    align-self: flex-end;
+}
+
+.app-header{
+    display: flex;
+}

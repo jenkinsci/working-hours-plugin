@@ -23,11 +23,8 @@
  */
 package org.jenkinsci.plugins.workinghours;
 
-import hudson.ExtensionList;
-import org.jenkinsci.plugins.workinghours.actions.EnforceBuildScheduleAction;
-import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
-import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import hudson.Extension;
+import hudson.ExtensionList;
 import hudson.model.Actionable;
 import hudson.model.Node;
 import hudson.model.Queue;
@@ -35,13 +32,18 @@ import hudson.model.Queue.Task;
 import hudson.model.Run;
 import hudson.model.queue.CauseOfBlockage;
 import hudson.model.queue.QueueTaskDispatcher;
-
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
+import org.jenkinsci.plugins.workinghours.actions.EnforceBuildScheduleAction;
+import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
+import org.jenkinsci.plugins.workinghours.model.TimeRange;
+import org.jenkinsci.plugins.workinghours.utils.TimezoneUtil;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -119,7 +121,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
      */
     public boolean canRunNow(Actionable itemActionable,
             Queue.Item item) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = ZonedDateTime.now(ZoneId.of(TimezoneUtil.getTimezone())).toLocalDateTime();
 
         EnforceBuildScheduleAction action = itemActionable.getAction(EnforceBuildScheduleAction.class);
 

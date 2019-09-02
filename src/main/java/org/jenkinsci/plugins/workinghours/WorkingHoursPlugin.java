@@ -23,29 +23,38 @@
  */
 package org.jenkinsci.plugins.workinghours;
 
-import hudson.ExtensionList;
-import hudson.Plugin;
+import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import jenkins.model.GlobalConfiguration;
-import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
-import hudson.Extension;
+import org.jenkinsci.plugins.workinghours.model.TimeRange;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Provides configuration options for this plugin.
+ * Class to persist configuration options for this plugin.
  *
  * @author jxpearce@godaddy.com
  */
 @Extension(optional = true)
 public class WorkingHoursPlugin extends Descriptor<WorkingHoursPlugin> implements Describable<WorkingHoursPlugin> {
+
+    public static final String FIELD_TIMEZONE = "timezone";
+    public static final String FIELD_UTC_OFFSET = "utcOffset";
+
+    /**
+     * Minutes offset to the UTC time, indicates the base timezone of the excluded date.
+     * Default to UTC(UTC+0).
+     */
+    private int utcOffset = 0;
+
+    /**
+     * Name of the selected timezone.
+     */
+    private String timezone = "UTC";
 
     /**
      * The list of valid times.
@@ -56,6 +65,7 @@ public class WorkingHoursPlugin extends Descriptor<WorkingHoursPlugin> implement
      * The list of excluded dates.
      */
     private List<ExcludedDate> excludedDates;
+
 
     /**
      * Default times for new configurations.
@@ -136,5 +146,21 @@ public class WorkingHoursPlugin extends Descriptor<WorkingHoursPlugin> implement
     @Override
     public Descriptor<WorkingHoursPlugin> getDescriptor() {
         return this;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public int getUtcOffset() {
+        return utcOffset;
+    }
+
+    public void setUtcOffset(int utcOffset) {
+        this.utcOffset = utcOffset;
     }
 }

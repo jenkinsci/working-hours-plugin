@@ -26,9 +26,11 @@ package org.jenkinsci.plugins.workinghours.model;
 import de.jollyday.Holiday;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.workinghours.ValidationResult;
+import org.jenkinsci.plugins.workinghours.presets.PresetManager;
 import org.jenkinsci.plugins.workinghours.utils.DateTimeUtility;
 import org.jenkinsci.plugins.workinghours.utils.DynamicDateUtil;
 import org.jenkinsci.plugins.workinghours.utils.JollydayUtil;
+import org.jenkinsci.plugins.workinghours.utils.TimezoneUtil;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -41,14 +43,13 @@ import java.time.temporal.ChronoField;
  */
 public class ExcludedDate {
 
-    private static final String FIELD_UTC_OFFSET = "utcOffset";
-    private static final String FIELD_TIMEZONE = "timezone";
     private static final String FIELD_TYPE = "type";
     private static final String FIELD_NAME = "name";
     private static final String FIELD_START_DATE = "startDate";
     private static final String FIELD_END_DATE = "endDate";
     private static final String FIELD_HOLIDAY_REGION = "holidayRegion";
-    private static final String FIELD_HOLIDAY_ID = "holidayId";
+    private static final String FIELD_HOLIDAY_KEY = "key";
+    private static final String FIELD_HOLIDAY = "holiday";
     private static final String FIELD_NO_END = "noEnd";
     private static final String FIELD_REPEAT = "repeat";
     private static final String FIELD_REPEAT_COUNT = "repeatCount";
@@ -56,8 +57,7 @@ public class ExcludedDate {
     private static final String FIELD_REPEAT_INTERVAL = "repeatInterval";
 
     /*The required fields of the class*/
-    private static final String[] REQUIRED_FIELDS = {FIELD_UTC_OFFSET,
-        FIELD_TIMEZONE,
+    private static final String[] REQUIRED_FIELDS = {
         FIELD_TYPE,
         FIELD_NAME,
         FIELD_NO_END,
@@ -76,15 +76,14 @@ public class ExcludedDate {
      * @param sourceJSON Json data to deserialize to an ExcludedDate object.
      */
     public ExcludedDate(JSONObject sourceJSON) {
-        this.utcOffset = sourceJSON.getInt(FIELD_UTC_OFFSET);
-        this.timezone = sourceJSON.getString(FIELD_TIMEZONE);
         this.startDate = new Date(sourceJSON.getJSONObject(FIELD_START_DATE), false);
         if (!sourceJSON.getJSONObject(FIELD_END_DATE).isEmpty()) {
             this.endDate = new Date(sourceJSON.getJSONObject(FIELD_END_DATE), true);
         }
         this.type = DateType.valueOf(sourceJSON.getInt(FIELD_TYPE));
         if (this.type == DateType.TYPE_HOLIDAY) {
-            this.holidayId = sourceJSON.getString(FIELD_HOLIDAY_ID);
+            JSONObject holiday = sourceJSON.getJSONObject(FIELD_HOLIDAY);
+            this.holidayId = holiday.getString(FIELD_HOLIDAY_KEY);
             this.holidayRegion = sourceJSON.getString(FIELD_HOLIDAY_REGION);
         }
         this.name = sourceJSON.getString(FIELD_NAME);
@@ -96,9 +95,7 @@ public class ExcludedDate {
         this.initializeFirstOccurrence(null);
     }
 
-    public ExcludedDate(int utcOffset, String timezone, DateType type, String name, Date startDate, Date endDate, boolean noEnd, boolean repeat, int repeatCount, String holidayId, String holidayRegion, RepeatPeriod repeatPeriod, int repeatInterval) {
-        this.utcOffset = utcOffset;
-        this.timezone = timezone;
+    public ExcludedDate(DateType type, String name, Date startDate, Date endDate, boolean noEnd, boolean repeat, int repeatCount, String holidayId, String holidayRegion, RepeatPeriod repeatPeriod, int repeatInterval) {
         this.type = type;
         this.name = name;
         this.startDate = startDate;
@@ -127,12 +124,6 @@ public class ExcludedDate {
             }
         }
 
-        if (!(targetJson.get(FIELD_UTC_OFFSET) instanceof Number)) {
-            return new ValidationResult(false, FIELD_UTC_OFFSET, "is not a number");
-        } else if (targetJson.getInt(FIELD_UTC_OFFSET) > MAX_TIME_OFFSET || targetJson.getInt(FIELD_UTC_OFFSET) < MIN_TIME_OFFSET) {
-            return new ValidationResult(false, FIELD_UTC_OFFSET, "should be between max:720 and min:-720");
-        }
-
         final ValidationResult startDateValidationResult = Date.validateDate(targetJson.getJSONObject(FIELD_START_DATE), false);
         if (!startDateValidationResult.isValid()) {
             return startDateValidationResult;
@@ -148,12 +139,12 @@ public class ExcludedDate {
         return ValidationResult.getSuccessValidation();
     }
 
-    public boolean shouldExclude(LocalDate checkDate){
+    public boolean shouldExclude(LocalDate checkDate) {
         return innerShouldExclude(checkDate);
     }
 
-    public boolean shouldExclude(){
-        return innerShouldExclude(ZonedDateTime.now(ZoneId.of(this.getTimezone())).toLocalDate());
+    public boolean shouldExclude() {
+        return innerShouldExclude(ZonedDateTime.now(ZoneId.of(TimezoneUtil.getTimezone())).toLocalDate());
     }
 
     /**
@@ -254,16 +245,6 @@ public class ExcludedDate {
         return this.type == DateType.TYPE_HOLIDAY;
     }
 
-    /**
-     * Minutes offset to the UTC time, indicates the base timezone of the excluded date.
-     * Default to UTC(UTC+0).
-     */
-    private int utcOffset = 0;
-
-    /**
-     * Name of the selected timezone.
-     */
-    private String timezone;
 
     /**
      * A type that indicates whether
@@ -317,10 +298,6 @@ public class ExcludedDate {
 
     private int repeatInterval = 1;
 
-    public int getUtcOffset() {
-        return utcOffset;
-    }
-
     public int getType() {
         return type.getValue();
     }
@@ -361,12 +338,16 @@ public class ExcludedDate {
         return repeatInterval;
     }
 
-    public String getTimezone() {
-        return timezone;
-    }
-
     public String getHolidayRegion() {
         return holidayRegion;
+    }
+
+    public org.jenkinsci.plugins.workinghours.model.Holiday getHoliday() {
+        if (this.getHolidayId() != null) {
+            return PresetManager.getInstance().getCertainHolidayThisYear(this.getHolidayRegion(), this.getHolidayId());
+        } else {
+            return null;
+        }
     }
 
     public void setHolidayRegion(String holidayRegion) {
@@ -530,7 +511,7 @@ public class ExcludedDate {
 
         public static Date fromLocalDate(LocalDate date) {
             Date newDate = new Date();
-            newDate.setDate(DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.of(date,LocalTime.of(0,0))));
+            newDate.setDate(DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.of(date, LocalTime.of(0, 0))));
             newDate.setDynamic(false);
             return newDate;
         }
@@ -542,14 +523,6 @@ public class ExcludedDate {
         public void setFirstOccurrence(LocalDate firstOccurrence) {
             this.firstOccurrence = firstOccurrence;
         }
-    }
-
-    public void setUtcOffset(int utcOffset) {
-        this.utcOffset = utcOffset;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
     }
 
     public void setType(DateType type) {
@@ -598,16 +571,6 @@ public class ExcludedDate {
 
         public static Builder anExcludedDate() {
             return new Builder();
-        }
-
-        public Builder withUtcOffset(int utcOffset) {
-            excludedDate.setUtcOffset(utcOffset);
-            return this;
-        }
-
-        public Builder withTimezone(String timezone) {
-            excludedDate.setTimezone(timezone);
-            return this;
         }
 
         public Builder withType(DateType type) {

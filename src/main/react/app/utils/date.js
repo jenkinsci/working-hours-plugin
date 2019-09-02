@@ -10,9 +10,12 @@ import moment from "moment";
  * @returns {moment.Moment} The occurrence in moment of the target date.
  */
 export function nextOccurrenceByYear(month, week, day, now) {
-  let next = now.clone() || moment();
-  let today = now.clone() || moment();
-  let nextOccurrenceInThisYear = now.clone() || moment().date(1);
+  if(!now){
+    now = moment()
+  }
+  let next = now.clone();
+  let today = now.clone();
+  let nextOccurrenceInThisYear = now.clone().date(1);
   if (today.month() === month - 1) {
     let tempWeek = week;
     if (nextOccurrenceInThisYear.day() <= day) {
@@ -47,9 +50,12 @@ export function nextOccurrenceByYear(month, week, day, now) {
  * @returns {moment.Moment} The occurrence in moment of the target date.
  */
 export function nextOccurrenceByMonth(weekOfMonth, dayOfWeek, now) {
-  let next = now.clone() || moment();
-  let today = now.clone() || moment();
-  let nextOccurrenceInThisMonth = now.clone() || moment().date(1);
+  if(!now){
+    now = moment()
+  }
+  let next = now.clone() ;
+  let today = now.clone() ;
+  let nextOccurrenceInThisMonth = now.clone().date(1);
   let tempWeek = weekOfMonth;
   if (nextOccurrenceInThisMonth.day() <= dayOfWeek) {
     tempWeek = weekOfMonth - 1;

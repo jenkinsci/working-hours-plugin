@@ -87,6 +87,8 @@ export default class TimeRange extends React.Component {
   updateStartTime = (e) => {
     this.setState({
       tempStartTime: e.target.value.trim()
+    },()=>{
+      this.handleInputBlur()
     });
   };
 
@@ -105,7 +107,7 @@ export default class TimeRange extends React.Component {
    */
   handleInputBlur = () => {
     /*Test input format*/
-    if (timeRegExp.test(this.state.tempStartTime)) {
+    if (timeRegExp.test(this.state.tempStartTime) && timeStringToMinutes(this.state.tempStartTime) < this.state.endTime) {
       this.setState({
         startTime: timeStringToMinutes(this.state.tempStartTime),
         tempStartTime: timeFormatter(timeStringToMinutes(this.state.tempStartTime)),
@@ -119,7 +121,7 @@ export default class TimeRange extends React.Component {
       });
     }
 
-    if (timeRegExp.test(this.state.tempEndTime)) {
+    if (timeRegExp.test(this.state.tempEndTime) && timeStringToMinutes(this.state.tempEndTime) > this.state.startTime) {
       this.setState({
         endTime: timeStringToMinutes(this.state.tempEndTime),
         tempEndTime: timeFormatter(timeStringToMinutes(this.state.tempEndTime)),
@@ -143,7 +145,7 @@ export default class TimeRange extends React.Component {
 
 
   /**
-   * Return whether the temp time string is valid.
+   * Return whether the temp time2 string is valid.
    * @returns {boolean}
    */
   validate = () => {
@@ -187,7 +189,6 @@ export default class TimeRange extends React.Component {
     return (
       <div className={[this.validate() ? "" : "time-range-invalid",].join(" ")}
       >
-
         <div className={["time-range"]}>
           <div className={"label-weekday"}>
             {Object.keys(WEEKDAYS)[this.state.dayOfWeek - 1]}
@@ -236,9 +237,8 @@ export default class TimeRange extends React.Component {
           </button>
         </div>
         {!this.validate() ?
-          <div style={{color: "red", fontWeight: "100"}}>Invalid time
+          <div className={"invalid-hint"}>Invalid time
             string</div> : ""}
-
       </div>
     );
   }
