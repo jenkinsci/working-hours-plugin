@@ -63,6 +63,8 @@ export default class ExcludeDate extends React.Component {
           type: DATE_TYPE.TYPE_HOLIDAY,
           holiday: result.selectedHoliday,
           holidayRegion: result.holidayRegion,
+          name: this.state.name || result.selectedHoliday.name,
+          passCheck: true,
           repeat:true,
           repeatPeriod:PERIODS.Year,
           repeatCount:REPEAT_NO_END,

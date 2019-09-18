@@ -8,4 +8,5 @@ work/
 /nbproject/
 build
 node_modules
-/webapp/page/
+src/main/webapp/page/
+src/main/react/node

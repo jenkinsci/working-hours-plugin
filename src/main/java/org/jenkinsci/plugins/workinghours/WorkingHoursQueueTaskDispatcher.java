@@ -121,37 +121,40 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
      */
     public boolean canRunNow(Actionable itemActionable,
             Queue.Item item) {
+        boolean canRunNow = true;
         LocalDateTime now = ZonedDateTime.now(ZoneId.of(TimezoneUtil.getTimezone())).toLocalDateTime();
 
         EnforceBuildScheduleAction action = itemActionable.getAction(EnforceBuildScheduleAction.class);
+        if (isReleased(action, item)) {
+            return true;
+        }
 
         WorkingHoursPlugin config = ExtensionList.lookup(WorkingHoursPlugin.class).get(0);
 
         // Check whether today should be excluded according to the excluded dates we set.
         for (ExcludedDate excludedDate : config.getExcludedDates()) {
             if(excludedDate.shouldExclude()){
-                return false;
+                canRunNow = false;
             }
         }
 
-        for (TimeRange allowableTime : config.getBuildTimeMatrix()) {
-            if (allowableTime.includesTime(now)) {
-                if (action != null) {
-                    // Mark the action as released for book-keeping
-                    action.markReleased();
+        if (canRunNow) {
+            for (TimeRange allowableTime : config.getBuildTimeMatrix()) {
+                if (allowableTime.includesTime(now)) {
+                    if (action != null) {
+                        // Mark the action as released for book-keeping
+                        action.markReleased();
+                    }
+                    break;
                 }
-                return true;
             }
         }
-        if (action == null) {
+        if (canRunNow == false && action == null) {
             action = new EnforceBuildScheduleAction();
             itemActionable.addAction(action);
         }
 
-        if (isReleased(action, item)) {
-            return true;
-        }
-        return false;
+        return canRunNow;
     }
 
     private static void log(Level level, String format, Object... args) {
