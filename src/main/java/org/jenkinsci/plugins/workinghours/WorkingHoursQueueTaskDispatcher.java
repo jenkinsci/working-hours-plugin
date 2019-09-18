@@ -90,6 +90,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
                             @Override
                             public String getShortDescription() {
                                 return WorkingHoursConfig.get().getJobHoldText();
+                            }
                         }
                     }
                 }
