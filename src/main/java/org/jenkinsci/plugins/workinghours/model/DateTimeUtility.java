@@ -52,16 +52,19 @@ public final class DateTimeUtility {
             DateTimeFormatter sdf = DateTimeFormatter.ofPattern("HHmm");
             return LocalTime.parse(value, sdf);
         } catch (DateTimeParseException ex) {
+            System.out.println("Could not parse into format HHmm");
         }
         try {
             DateTimeFormatter sdf = DateTimeFormatter.ofPattern("H:m");
             return LocalTime.parse(value, sdf);
         } catch (DateTimeParseException ex) {
+            System.out.println("Could not parse into format H:m");
         }
         try {
             DateTimeFormatter sdf = DateTimeFormatter.ofPattern("h:m a");
             return LocalTime.parse(value, sdf);
         } catch (DateTimeParseException ex) {
+            System.out.println("Could not parse into format h:m a");
         }
 
         return null;

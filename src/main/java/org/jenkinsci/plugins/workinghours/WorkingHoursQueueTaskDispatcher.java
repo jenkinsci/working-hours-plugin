@@ -23,7 +23,9 @@
  */
 package org.jenkinsci.plugins.workinghours;
 
+import org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject;
 import org.jenkinsci.plugins.workinghours.actions.EnforceBuildScheduleAction;
+import org.jenkinsci.plugins.workinghours.model.ExcludedDate;
 import org.jenkinsci.plugins.workinghours.model.TimeRange;
 import hudson.Extension;
 import hudson.model.Actionable;
@@ -79,14 +81,17 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
             Run workflowRun = ((ExecutorStepExecution.PlaceholderTask)item.task).run();
             EnforceScheduleJobProperty prop = workflowJob.getProperty(EnforceScheduleJobProperty.class);
             if (prop != null) {
-                if (!canRunNow(workflowRun, item)) {
-                    log(Level.INFO, "Blocking item %d", item.getId());
-                    return new CauseOfBlockage() {
-                        @Override
-                        public String getShortDescription() {
-                            return WorkingHoursConfig.get().getJobHoldText();
+                if (prop.getBranches() == null || prop.getBranches().size() == 0
+                        || !(workflowJob.getParent() instanceof WorkflowMultiBranchProject)
+                        || prop.getBranches().contains(workflowJob.getDisplayName())) {
+                    if (!canRunNow(workflowRun, item)) {
+                        log(Level.INFO, "Blocking item %d", item.getId());
+                        return new CauseOfBlockage() {
+                            @Override
+                            public String getShortDescription() {
+                                return WorkingHoursConfig.get().getJobHoldText();
                         }
-                    };
+                    }
                 }
             }
         }
@@ -125,6 +130,14 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
         EnforceBuildScheduleAction action = itemActionable.getAction(EnforceBuildScheduleAction.class);
 
         WorkingHoursConfig config = WorkingHoursConfig.get();
+
+        // Check whether today should be excluded according to the excluded dates we set.
+        for (ExcludedDate excludedDate : config.getExcludedDates()) {
+            if(excludedDate.shouldExclude(now)){
+                return false;
+            }
+        }
+
         for (TimeRange allowableTime : config.getBuildTimeMatrix()) {
             if (allowableTime.includesTime(now)) {
                 if (action != null) {

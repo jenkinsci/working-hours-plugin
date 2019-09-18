@@ -30,6 +30,10 @@ import hudson.util.FormValidation;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Calendar;
+
 /**
  * Encapsulates an excluded date along with name for UI purposes.
  *
@@ -124,5 +128,16 @@ public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
             }
             return FormValidation.ok();
         }
+    }
+
+    public Boolean shouldExclude(Calendar date) {
+        LocalDate localDate = DateTimeUtility.localDate(getDate());
+
+        LocalDate checkTime = LocalDate.of(
+                date.get(Calendar.YEAR),
+                date.get(Calendar.MONTH) + 1,
+                date.get(Calendar.DAY_OF_MONTH));
+
+        return localDate.equals(checkTime);
     }
 }

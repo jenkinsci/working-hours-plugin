@@ -1,12 +1,16 @@
 # Working Hours Jenkins Plugin
 
+[![Join the chat at https://gitter.im/jenkinsci/working-hours-plugin](https://badges.gitter.im/jenkinsci/working-hours-plugin.svg)](https://gitter.im/jenkinsci/working-hours-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 The working hours plugin allows you to set up a schedule of allowable build times;
 projects can opt in to use the schedule to prevent them from running outside of
 configured allowable build times. If a build is scheduled during non-working hours
 then it is kept in the build queue until the next allowable time.
 
 Jobs opt in via the `enforceBuildSchedule` job parameter, which is provided by this
-plugin.
+plugin. It can optionally take in a `branches` parameter to limit it's usage to only those branches.
+This only works in MultiBranchPipelines.
 
 ## Usage
 
@@ -34,6 +38,16 @@ pipeline {
         echo 'this can wait til morning'
       }
     }
+  }
+}
+```
+
+Sample job with branches parameter (works in both declarative and scripted):
+```
+node {
+  properties([enforceBuildSchedule(branches: ['dev', 'qa', 'prod')])
+  stage('Do some stuff') {
+    echo 'this can wait til morning'
   }
 }
 ```

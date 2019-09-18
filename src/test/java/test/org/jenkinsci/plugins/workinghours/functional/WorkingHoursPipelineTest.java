@@ -95,7 +95,7 @@ public class WorkingHoursPipelineTest {
                 + "    echo 'I ran'\n"
                 + "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
-        job.addProperty(new EnforceScheduleJobProperty());
+        job.addProperty(new EnforceScheduleJobProperty(null));
 
         QueueTaskFuture<WorkflowRun> run = job.scheduleBuild2(0);
 
@@ -124,7 +124,7 @@ public class WorkingHoursPipelineTest {
                 + "    echo 'I ran so far away'\n"
                 + "}";
         job.setDefinition(new CpsFlowDefinition(pipelineScript, true));
-        job.addProperty(new EnforceScheduleJobProperty());
+        job.addProperty(new EnforceScheduleJobProperty(null));
 
         QueueTaskFuture<WorkflowRun> run = job.scheduleBuild2(0);
 
