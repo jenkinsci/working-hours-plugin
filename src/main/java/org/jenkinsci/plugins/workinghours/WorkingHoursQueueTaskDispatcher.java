@@ -91,7 +91,7 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
                             public String getShortDescription() {
                                 return WorkingHoursConfig.get().getJobHoldText();
                             }
-                        }
+                        };
                     }
                 }
             }
