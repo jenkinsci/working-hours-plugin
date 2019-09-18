@@ -10,6 +10,9 @@
     <f:entry title="Excluded dates">
         <f:repeatableProperty field="excludedDates" />
     </f:entry>
-    
+
+      <f:entry title="Message to show when jobs are held" field="customJobHoldText">
+          <f:textbox field="customJobHoldText" />
+      </f:entry>
   </f:section>
 </j:jelly>

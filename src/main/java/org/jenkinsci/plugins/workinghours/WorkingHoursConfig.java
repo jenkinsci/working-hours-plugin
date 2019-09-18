@@ -52,6 +52,11 @@ public class WorkingHoursConfig extends GlobalConfiguration {
     private List<ExcludedDate> excludedDates;
 
     /**
+     *  Custom string to display when job is blocked
+     */
+    private String customJobHoldText;
+
+    /**
      * Default times for new configurations.
      */
     private final TimeRange[] defaultConfig = {
@@ -129,6 +134,26 @@ public class WorkingHoursConfig extends GlobalConfiguration {
     public void setExcludedDates(
             @CheckForNull List<ExcludedDate> value) {
         this.excludedDates = value;
+        save();
+    }
+
+    /**
+     * Gets the message to be displayed when the job is blocked
+     *
+     * @return custom message or the default message, if the custom message is null.
+     */
+    public String getJobHoldText() {
+        return customJobHoldText == null
+                ? Messages.WorkingHoursQueueTaskDispatcher_Offline()
+                : customJobHoldText;
+    }
+
+    /**
+     *  Sets new string to display when jobs are blocked
+     * @param customJobHoldText string to use as the jobHeldDescription
+     */
+    public void setCustomJobHoldText(String customJobHoldText) {
+        this.customJobHoldText = customJobHoldText.trim().length() > 0 ? customJobHoldText : null;
         save();
     }
 }

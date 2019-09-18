@@ -86,7 +86,12 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
                         || prop.getBranches().contains(workflowJob.getDisplayName())) {
                     if (!canRunNow(workflowRun, item)) {
                         log(Level.INFO, "Blocking item %d", item.getId());
-                        return CauseOfBlockage.fromMessage(Messages._WorkingHoursQueueTaskDispatcher_Offline());
+                        return new CauseOfBlockage() {
+                            @Override
+                            public String getShortDescription() {
+                                return WorkingHoursConfig.get().getJobHoldText();
+                            }
+                        };
                     }
                 }
             }
