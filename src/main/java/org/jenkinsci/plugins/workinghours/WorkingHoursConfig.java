@@ -36,7 +36,7 @@ import jenkins.model.GlobalConfiguration;
 /**
  * Provides configuration options for this plugin.
  *
- * @author jxpearce@godaddy.com
+ * @author jeffpearce
  */
 @Extension(optional = true)
 public class WorkingHoursConfig extends GlobalConfiguration {

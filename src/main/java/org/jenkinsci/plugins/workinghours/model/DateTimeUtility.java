@@ -32,7 +32,7 @@ import java.time.format.DateTimeParseException;
  * Provides common methods to validate and convert date/time strings in the
  * specific formats supported by the plugin.
  *
- * @author jxpearce@godaddy.com
+ * @author jeffpearce
  */
 public final class DateTimeUtility {
     /**

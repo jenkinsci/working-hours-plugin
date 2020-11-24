@@ -32,7 +32,7 @@ import java.util.Date;
  */
 public class EnforceBuildScheduleAction extends InvisibleAction {
 
-    protected transient boolean enforcingBuildSchedule;
+    protected volatile boolean enforcingBuildSchedule;
     private long releasedTimeStamp;
 
     /**

@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
     /**
  * Job property which is used to opt in to build schedules
- * @author jxpearce@godaddy.com
+ * @author jeffpearce
  */
 public class EnforceScheduleJobProperty extends OptionalJobProperty<WorkflowJob> {
 

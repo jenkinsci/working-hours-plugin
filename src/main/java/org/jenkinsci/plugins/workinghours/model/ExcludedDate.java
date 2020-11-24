@@ -37,7 +37,7 @@ import java.util.Calendar;
 /**
  * Encapsulates an excluded date along with name for UI purposes.
  *
- * @author jxpearce@godaddy.com
+ * @author jeffpearce
  */
 public class ExcludedDate extends AbstractDescribableImpl<ExcludedDate> {
 

@@ -31,6 +31,10 @@ import hudson.util.ListBoxModel;
 import java.text.DateFormatSymbols;
 import java.time.LocalTime;
 import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jenkinsci.plugins.workinghours.WorkingHoursQueueTaskDispatcher;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
@@ -38,7 +42,7 @@ import org.kohsuke.stapler.QueryParameter;
  * Encapsulates a time range, which matches a times on a particular day of the
  * week that occur between a start and end time.
  *
- * @author jxpearce@godaddy.com
+ * @author jeffpearce
  */
 public class TimeRange extends AbstractDescribableImpl<TimeRange> {
 
@@ -230,6 +234,17 @@ public class TimeRange extends AbstractDescribableImpl<TimeRange> {
         LocalTime allowedStartTime = DateTimeUtility.localTime(getStartTime());
         LocalTime allowedEndTime = DateTimeUtility.localTime(getEndTime());
 
+        // The config page allows you to save an invalid date, which we might fail to parse
+        // Avoid null pointer exception, and pretend the rule doesn't exist
+        if (allowedStartTime == null) {
+            log(Level.SEVERE, "Unable to parse start time %s - please check working hours config", getStartTime());
+            return false;
+        }
+        if (allowedEndTime == null) {
+            log(Level.SEVERE, "Unable to parse end time %s - please check working hours config", getEndTime());
+            return false;
+        }
+
         LocalTime checkTime = LocalTime.of(
                 date.get(Calendar.HOUR_OF_DAY),
                 date.get(Calendar.MINUTE));
@@ -240,5 +255,12 @@ public class TimeRange extends AbstractDescribableImpl<TimeRange> {
                 && (checkTime.equals(allowedEndTime)
                 || checkTime.isBefore(allowedEndTime));
 
+    }
+    private static void log(Level level, String format, Object... args) {
+        getLogger().log(level, String.format(format, args));
+    }
+
+    private static Logger getLogger() {
+        return Logger.getLogger(TimeRange.class.getName());
     }
 }

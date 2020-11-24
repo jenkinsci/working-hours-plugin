@@ -41,7 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 /**
  *
- * @author jxpearce
+ * @author jeffpearce
  */
 public class EnforceBuildScheduleActionTest {
     
