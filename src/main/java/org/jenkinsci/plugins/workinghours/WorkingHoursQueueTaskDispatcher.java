@@ -43,14 +43,14 @@ import org.jenkinsci.plugins.workflow.support.steps.ExecutorStepExecution;
 
 /**
  *
- * @author jxpearce
+ * @author jeffpearce
  */
 
 /**
  * QueueTaskDispatcher implementation that can block jobs configured with the
  * enforceBuildSchedule property outside of configured working hours.
  * 
- * @author jxpearce@godaddy.com
+ * @author jeffpearce
  */
 @Extension(optional = true)
 public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
@@ -64,12 +64,12 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
     public CauseOfBlockage canRun(Queue.Item item) {
 
         // Don't block tasks which don't have owners. This filters out both
-        // freestyle jobs and the task for the Job. The latter is important 
+        // freestyle jobs and the task for the Job. The latter is important
         // because we want to block the Run not the Job.
         if (item.task == item.task.getOwnerTask()) {
             return super.canRun(item);
         }
-        
+
         // We will only consider blocking PlaceholderTasks. We can get the
         // run directly from such tasks.
         if (!(item.task instanceof ExecutorStepExecution.PlaceholderTask)) {
@@ -126,6 +126,10 @@ public class WorkingHoursQueueTaskDispatcher extends QueueTaskDispatcher {
      */
     public boolean canRunNow(Actionable itemActionable,
             Queue.Item item) {
+
+        if (itemActionable == null || item == null) {
+            return true;
+        }
         Calendar now = Calendar.getInstance();
 
         EnforceBuildScheduleAction action = itemActionable.getAction(EnforceBuildScheduleAction.class);

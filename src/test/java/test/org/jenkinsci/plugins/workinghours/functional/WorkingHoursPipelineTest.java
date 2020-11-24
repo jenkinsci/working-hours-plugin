@@ -48,7 +48,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  *
- * @author jxpearce
+ * @author jeffpearce
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({WorkflowJob.class, WorkflowRun.class})
