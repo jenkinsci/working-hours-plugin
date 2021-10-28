@@ -78,7 +78,7 @@ In order to use the working hours plugin, you must set up a schedule in your Jen
 system configuration page. You can configure both daily working hours and specific dates (such
   as holidays). The following configuration will cause jobs with  `enforceBuildSchedule` to queue if ran outside of Monday - Friday 8:00 AM to 6:00 PM.
 
-  *Note:* all times are local to your Jenkins master.
+  *Note:* all times are local to your Jenkins controller.
 
 ![Configuration options](images/working-hours-config.png "Configuration options")
 
@@ -88,7 +88,7 @@ This section contains the times when guarded steps are allowed for each day. Tim
 - Abbreviated 24 hour eg `0900`, `1800`
 - 12 hour eg `9:00 AM`, `6:00 PM`
 
-**Note** All times are local to your Jenkins master.
+**Note** All times are local to your Jenkins controller.
 
 If the `enforceBuildStep` runs at a time that is not between a configured time range
 for the day it's running, the job will be aborted. Please note that if no allowable
