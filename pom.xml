@@ -16,7 +16,7 @@
     </properties>
     <name>Working Hours Plugin</name>
     <description>Queues builds that ran after certain working hours</description>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/Working-Hours-Plugin</url>
+    <url>https://github.com/jenkinsci/working-hours-plugin</url>
     <licenses>
         <license>
             <name>MIT License</name>
